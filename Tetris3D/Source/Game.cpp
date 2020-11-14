@@ -25,6 +25,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             TranslateMessage(&message);
             DispatchMessage(&message);
+            if (wnd.keyboard.KeyIsPressed(VK_SPACE))
+            {
+                MessageBox(nullptr, "Skibidi mazafaka", "space pressed", MB_OK | MB_ICONEXCLAMATION);
+            }
         }
 
         if (getMessageResult == -1)

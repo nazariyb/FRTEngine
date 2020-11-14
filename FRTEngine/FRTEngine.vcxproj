@@ -160,11 +160,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Exception.h" />
+    <ClInclude Include="Source\Keyboard.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Exception.cpp" />
+    <ClCompile Include="Source\Keyboard.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

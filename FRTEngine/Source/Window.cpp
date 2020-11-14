@@ -221,9 +221,9 @@ namespace frt
 			PostQuitMessage(0);
 			return 0;
 			//	// clear keystate when window loses focus to prevent input getting "stuck"
-			//case WM_KILLFOCUS:
-			//	kbd.ClearState();
-			//	break;
+			case WM_KILLFOCUS:
+				keyboard.ClearState();
+				break;
 			//case WM_ACTIVATE:
 			//	// confine/free cursor on window to foreground/background if cursor disabled
 			//	if (!cursorEnabled)
@@ -241,38 +241,38 @@ namespace frt
 			//	}
 			//	break;
 
-			//	/*********** KEYBOARD MESSAGES ***********/
-			//case WM_KEYDOWN:
-			//	// syskey commands need to be handled to track ALT key (VK_MENU) and F10
-			//case WM_SYSKEYDOWN:
-			//	// stifle this keyboard message if imgui wants to capture
-			//	if (imio.WantCaptureKeyboard)
-			//	{
-			//		break;
-			//	}
-			//	if (!(lParam & 0x40000000) || kbd.AutorepeatIsEnabled()) // filter autorepeat
-			//	{
-			//		kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
-			//	}
-			//	break;
-			//case WM_KEYUP:
-			//case WM_SYSKEYUP:
-			//	// stifle this keyboard message if imgui wants to capture
-			//	if (imio.WantCaptureKeyboard)
-			//	{
-			//		break;
-			//	}
-			//	kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
-			//	break;
-			//case WM_CHAR:
-			//	// stifle this keyboard message if imgui wants to capture
-			//	if (imio.WantCaptureKeyboard)
-			//	{
-			//		break;
-			//	}
-			//	kbd.OnChar(static_cast<unsigned char>(wParam));
-			//	break;
-			//	/*********** END KEYBOARD MESSAGES ***********/
+				/*********** KEYBOARD MESSAGES ***********/
+			case WM_KEYDOWN:
+				// syskey commands need to be handled to track ALT key (VK_MENU) and F10
+			case WM_SYSKEYDOWN:
+				// stifle this keyboard message if imgui wants to capture
+				//if (imio.WantCaptureKeyboard)
+				//{
+				//	break;
+				//}
+				if (!(lParam & 0x40000000) || keyboard.IsAutorepeatEnabled()) // filter autorepeat
+				{
+					keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
+				}
+				break;
+			case WM_KEYUP:
+			case WM_SYSKEYUP:
+				// stifle this keyboard message if imgui wants to capture
+				//if (imio.WantCaptureKeyboard)
+				//{
+				//	break;
+				//}
+				keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
+				break;
+			case WM_CHAR:
+				// stifle this keyboard message if imgui wants to capture
+				//if (imio.WantCaptureKeyboard)
+				//{
+				//	break;
+				//}
+				keyboard.OnChar(static_cast<unsigned char>(wParam));
+				break;
+				/*********** END KEYBOARD MESSAGES ***********/
 
 			//	/************* MOUSE MESSAGES ****************/
 			//case WM_MOUSEMOVE:

@@ -1,7 +1,7 @@
 #pragma once
 #include "WindowsMinimal.h"
 #include "Exception.h"
-//#include "Keyboard.h"
+#include "Keyboard.h"
 //#include "Mouse.h"
 //#include "Graphics.h"
 #include <optional>
@@ -68,7 +68,7 @@ namespace frt
 		static LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	public:
-		//Keyboard kbd;
+		Keyboard keyboard;
 		//Mouse mouse;
 	private:
 		//bool cursorEnabled = true;
