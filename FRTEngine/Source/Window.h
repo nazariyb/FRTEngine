@@ -2,7 +2,7 @@
 #include "WindowsMinimal.h"
 #include "Exception.h"
 #include "Keyboard.h"
-//#include "Mouse.h"
+#include "Mouse.h"
 //#include "Graphics.h"
 #include <optional>
 #include <memory>
@@ -51,7 +51,7 @@ namespace frt
 		~Window();
 		Window(const Window&) = delete;
 		Window& operator=(const Window&) = delete;
-		//void SetTitle(const std::string& title);
+		void SetTitle(const std::string& title);
 		//void EnableCursor() noexcept;
 		//void DisableCursor() noexcept;
 		//bool CursorEnabled() const noexcept;
@@ -69,7 +69,7 @@ namespace frt
 		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	public:
 		Keyboard keyboard;
-		//Mouse mouse;
+		Mouse mouse;
 	private:
 		//bool cursorEnabled = true;
 		int width;

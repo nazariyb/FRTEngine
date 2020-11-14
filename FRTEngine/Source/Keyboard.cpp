@@ -64,12 +64,12 @@ namespace frt
 		FlushChar();
 	}
 
-	void Keyboard::EnableAutorepeat() noexcept
+	inline void Keyboard::EnableAutorepeat() noexcept
 	{
 		autorepeatEnabled = true;
 	}
 
-	void Keyboard::DisableAutorepeat() noexcept
+	inline void Keyboard::DisableAutorepeat() noexcept
 	{
 		autorepeatEnabled = false;
 	}

@@ -163,7 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\GameMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FRTEngine\FRTEngine.vcxproj">

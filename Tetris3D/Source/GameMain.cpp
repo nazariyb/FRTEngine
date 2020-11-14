@@ -8,6 +8,7 @@
 
 using frt::Window;
 using frt::Exception;
+using frt::Mouse;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -25,10 +26,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             TranslateMessage(&message);
             DispatchMessage(&message);
-            if (wnd.keyboard.KeyIsPressed(VK_SPACE))
+            while (!wnd.mouse.IsEmpty())
             {
-                MessageBox(nullptr, "Skibidi mazafaka", "space pressed", MB_OK | MB_ICONEXCLAMATION);
-            }
+                const auto e = wnd.mouse.Read();
+                if (e.GetType() == Mouse::Event::Type::Move)
+                {
+                    std::ostringstream oss;
+                    oss << "Mouse position: " << e.GetPositionX() << ":" << e.GetPositionY() << std::endl;
+                    wnd.SetTitle(oss.str());
+                }
+           }
         }
 
         if (getMessageResult == -1)

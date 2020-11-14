@@ -46,7 +46,7 @@ namespace frt
 
 		inline void EnableAutorepeat() noexcept;
 		inline void DisableAutorepeat() noexcept;
-		inline bool IsAutorepeatEnabled() const noexcept;
+		bool IsAutorepeatEnabled() const noexcept;
 
 	private:
 		void OnKeyPressed(unsigned char keycode) noexcept;
