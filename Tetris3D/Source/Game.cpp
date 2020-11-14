@@ -3,6 +3,7 @@
 
 #include "Window.h"
 #include "Exception.h"
+#include "resource.h"
 
 
 using frt::Window;
@@ -14,7 +15,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     try
     {
 #endif // _DEBUG
-        Window wnd(1280, 720, "Yey");
+        Window wnd(1280, 720, "Yey",
+            LoadIcon(hInstance, MAKEINTRESOURCE(WIN_ICON))
+            );
 
         MSG message;
         BOOL getMessageResult;

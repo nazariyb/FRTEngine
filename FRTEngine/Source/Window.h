@@ -41,25 +41,9 @@ namespace frt
 		//	using Exception::Exception;
 		//	const char* GetType() const noexcept override;
 		//};
-	private:
-		// singleton manages registration/cleanup of window class
-		class SystemWindow
-		{
-		public:
-			static const char* GetName() noexcept;
-			static HINSTANCE GetInstance() noexcept;
 
-		private:
-			SystemWindow() noexcept;
-			~SystemWindow();
-			SystemWindow(const SystemWindow&) = delete;
-			SystemWindow& operator=(const SystemWindow&) = delete;
-			static constexpr const char* wndClassName = "FRT Engine Base Window";
-			static SystemWindow wndClass;
-			HINSTANCE hInst;
-		};
 	public:
-		Window(int width, int height, const char* name)
+		Window(int width, int height, const char* name, HICON icon)
 	#ifndef _DEBUG
 			noexcept
 	#endif // _DEBUG
@@ -91,9 +75,16 @@ namespace frt
 		int width;
 		int height;
 		HWND hWnd;
+		HINSTANCE hInst;
+
+		const char* windowClassName = "FRT Window Base Class";
+
 		//std::unique_ptr<Graphics> pGfx;
 		//std::vector<BYTE> rawBuffer;
 		//std::string commandLine;
+
+		void RegisterWinAPIClass(HICON winIcon) noexcept;
+
 	};
 
 	#define WINDOW_EXCEPT( hr ) Window::WinException(__LINE__, __FILE__, hr);

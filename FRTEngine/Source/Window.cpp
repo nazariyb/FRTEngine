@@ -1,15 +1,11 @@
 #include "Window.h"
 #include <sstream>
-//#include "resource.h"
 //#include "WindowsThrowMacros.h"
 //#include "imgui/imgui_impl_win32.h"
 
 namespace frt
 {
-	Window::SystemWindow Window::SystemWindow::wndClass;
-
-	Window::SystemWindow::SystemWindow() noexcept
-		: hInst(GetModuleHandle(nullptr))
+	void Window::RegisterWinAPIClass(HICON winIcon) noexcept
 	{
 		WNDCLASSEX wc = { 0 };
 		wc.cbSize = sizeof(wc);
@@ -17,39 +13,32 @@ namespace frt
 		wc.lpfnWndProc = HandleMsgSetup;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
-		wc.hInstance = GetInstance();
-		wc.hIcon = nullptr;
+		wc.hInstance = hInst;
+		wc.hIcon = winIcon;
 		wc.hCursor = nullptr;
 		wc.hbrBackground = nullptr;
 		wc.lpszMenuName = nullptr;
-		wc.lpszClassName = GetName();
+		wc.lpszClassName = windowClassName;
 		wc.hIconSm = nullptr;
 		RegisterClassEx(&wc);
 	}
 
-	Window::SystemWindow::~SystemWindow()
+	Window::~Window()
 	{
-		UnregisterClass(wndClassName, GetInstance());
-	}
-
-	const char* Window::SystemWindow::GetName() noexcept
-	{
-		return wndClassName;
-	}
-
-	HINSTANCE Window::SystemWindow::GetInstance() noexcept
-	{
-		return wndClass.hInst;
+		UnregisterClass(windowClassName, hInst);
+		//ImGui_ImplWin32_Shutdown();
+		DestroyWindow(hWnd);
 	}
 
 	// Window Stuff
-	Window::Window(int width, int height, const char* name)
+	Window::Window(int width, int height, const char* name, HICON icon)
 	#ifndef _DEBUG
 	noexcept
 	#endif // _DEBUG
-		: width(width), height(height)
+		: width(width), height(height), hInst(GetModuleHandle(nullptr))
 	{
-		// calculate window size based on desired client region size
+		RegisterWinAPIClass(icon);
+
 		RECT wr;
 		wr.left = 500;
 		wr.right = width + wr.left;
@@ -63,10 +52,10 @@ namespace frt
 		}
 
 		hWnd = CreateWindow(
-			SystemWindow::GetName(), name,
+			windowClassName, name,
 			WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 			CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
-			nullptr, nullptr, SystemWindow::GetInstance(), this
+			nullptr, nullptr, hInst, this
 		);
 
 		if (hWnd == nullptr)
@@ -94,12 +83,6 @@ namespace frt
 		//{
 		//	throw CHWND_LAST_EXCEPT();
 		//}
-	}
-
-	Window::~Window()
-	{
-		//ImGui_ImplWin32_Shutdown();
-		DestroyWindow(hWnd);
 	}
 
 	//void Window::SetTitle(const std::string& title)
