@@ -113,29 +113,29 @@ namespace frt
 	//{
 	//	return cursorEnabled;
 	//}
-	//
-	//std::optional<int> Window::ProcessMessages() noexcept
-	//{
-	//	MSG msg;
-	//	// while queue has messages, remove and dispatch them (but do not block on empty queue)
-	//	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-	//	{
-	//		// check for quit because peekmessage does not signal this via return val
-	//		if (msg.message == WM_QUIT)
-	//		{
-	//			// return optional wrapping int (arg to PostQuitMessage is in wparam) signals quit
-	//			return (int)msg.wParam;
-	//		}
-	//
-	//		// TranslateMessage will post auxilliary WM_CHAR messages from key msgs
-	//		TranslateMessage(&msg);
-	//		DispatchMessage(&msg);
-	//	}
-	//
-	//	// return empty optional when not quitting app
-	//	return {};
-	//}
-	//
+	
+	std::optional<int> Window::ProcessMessages() noexcept
+	{
+		MSG msg;
+		// while queue has messages, remove and dispatch them (but do not block on empty queue)
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			// check for quit because peekmessage does not signal this via return val
+			if (msg.message == WM_QUIT)
+			{
+				// return optional wrapping int (arg to PostQuitMessage is in wparam) signals quit
+				return (int)msg.wParam;
+			}
+	
+			// TranslateMessage will post auxilliary WM_CHAR messages from key msgs
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	
+		// return empty optional when not quitting app
+		return {};
+	}
+	
 	//Graphics& Window::Gfx()
 	//{
 	//	if (!pGfx)

@@ -55,7 +55,7 @@ namespace frt
 		//void EnableCursor() noexcept;
 		//void DisableCursor() noexcept;
 		//bool CursorEnabled() const noexcept;
-		//static std::optional<int> ProcessMessages() noexcept;
+		static std::optional<int> ProcessMessages() noexcept;
 		//Graphics& Gfx();
 	private:
 		//void ConfineCursor() noexcept;

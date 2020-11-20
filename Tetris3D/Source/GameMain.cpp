@@ -1,9 +1,6 @@
 #include "WindowsMinimal.h"
-#include <sstream>
-
-#include "Window.h"
 #include "Exception.h"
-#include "resource.h"
+#include "TetrisApp.h"
 
 
 using frt::Window;
@@ -16,34 +13,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     try
     {
 #endif // _DEBUG
-        Window wnd(1280, 720, "Yey",
-            LoadIcon(hInstance, MAKEINTRESOURCE(WIN_ICON))
-            );
+        
+        TetrisApp{ hInstance }.Start();
 
-        MSG message;
-        BOOL getMessageResult;
-        while ((getMessageResult = GetMessage(&message, nullptr, 0, 0)) > 0)
-        {
-            TranslateMessage(&message);
-            DispatchMessage(&message);
-            while (!wnd.mouse.IsEmpty())
-            {
-                const auto e = wnd.mouse.Read();
-                if (e.GetType() == Mouse::Event::Type::Move)
-                {
-                    std::ostringstream oss;
-                    oss << "Mouse position: " << e.GetPositionX() << ":" << e.GetPositionY() << std::endl;
-                    wnd.SetTitle(oss.str());
-                }
-           }
-        }
-
-        if (getMessageResult == -1)
-        {
-            return getMessageResult;
-        }
-
-        return message.wParam;
 #ifdef _DEBUG
     }
     catch (const Exception& e)

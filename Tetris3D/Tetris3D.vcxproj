@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameMain.cpp" />
+    <ClCompile Include="Source\TetrisApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FRTEngine\FRTEngine.vcxproj">
@@ -172,12 +173,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\TetrisApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\WinIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource.aps" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
