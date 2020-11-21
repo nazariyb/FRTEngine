@@ -11,29 +11,35 @@ namespace frt
 		WheelUp,
 		WheelDown,
 		Move,
-		Enter,
-		Leave
+		EnterWindow,
+		LeaveWindow
 	};
 
 	class MouseEvent : public InputEvent
 	{
+		friend class Mouse;
 
 	public:
 
 		MouseEvent() noexcept;
+		MouseEvent(MouseEventType type) noexcept;
 		MouseEvent(MouseEventType type, const MouseState& mouseState) noexcept;
 
-		inline bool IsPress() const noexcept override;
-		inline bool IsRelease() const noexcept override;
-		inline bool IsValid() const noexcept override;
-		inline MouseEventType GetType() const noexcept;
+		void Invoke() noexcept override;
+		void Invoke(const MouseState& mouseState) noexcept;
+		void Invoke(MouseEventType type, const MouseState& mouseState) noexcept;
 
-		inline POINT GetPosition() const noexcept;
-		inline int GetPositionX() const noexcept;
-		inline int GetPositionY() const noexcept;
+		bool IsPress() const noexcept override;
+		bool IsRelease() const noexcept override;
+		bool IsValid() const noexcept override;
+		MouseEventType GetType() const noexcept;
 
-		inline bool IsLeftPressed() const noexcept;
-		inline bool IsRightPressed() const noexcept;
+		POINTS GetPosition() const noexcept;
+		int GetPositionX() const noexcept;
+		int GetPositionY() const noexcept;
+
+		bool IsLeftPressed() const noexcept;
+		bool IsRightPressed() const noexcept;
 
 	private:
 

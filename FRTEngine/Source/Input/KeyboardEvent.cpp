@@ -7,6 +7,10 @@ namespace frt
 		: type(KeyboardEventType::Invalid), keyCode(0u), keyCharacter('\0')
 	{}
 
+	KeyboardEvent::KeyboardEvent(KeyboardEventType type) noexcept
+		: type(type), keyCode(0u), keyCharacter('\0')
+	{}
+
 	KeyboardEvent::KeyboardEvent(KeyboardEventType type, unsigned char keyCode) noexcept
 		: type(type), keyCode(keyCode), keyCharacter('\0')
 	{}
@@ -20,36 +24,46 @@ namespace frt
 		__super::Invoke();
 	}
 
+	void KeyboardEvent::Invoke(unsigned char keyCode) noexcept
+	{
+		this->keyCode = keyCode;
+		Invoke();
+	}
+
+	void KeyboardEvent::Invoke(char keyCharacter) noexcept
+	{
+		this->keyCharacter = keyCharacter;
+		Invoke();
+	}
+
 	void KeyboardEvent::Invoke(KeyboardEventType type, unsigned char keyCode) noexcept
 	{
 		this->type = type;
-		this->keyCode = keyCode;
-		__super::Invoke();
+		Invoke(keyCode);
 	}
 
 	void KeyboardEvent::Invoke(KeyboardEventType type, char keyCharacter) noexcept
 	{
 		this->type = type;
-		this->keyCharacter = keyCharacter;
-		__super::Invoke();
+		Invoke(keyCharacter);
 	}
 
-	inline bool KeyboardEvent::IsPress() const noexcept
+	bool KeyboardEvent::IsPress() const noexcept
 	{
 		return type == KeyboardEventType::Press;
 	}
 
-	inline bool KeyboardEvent::IsRelease() const noexcept
+	bool KeyboardEvent::IsRelease() const noexcept
 	{
 		return type == KeyboardEventType::Release;
 	}
 
-	inline bool KeyboardEvent::IsValid() const noexcept
+	bool KeyboardEvent::IsValid() const noexcept
 	{
 		return type != KeyboardEventType::Invalid;
 	}
 
-	inline KeyboardEventType KeyboardEvent::GetType() const noexcept
+	KeyboardEventType KeyboardEvent::GetType() const noexcept
 	{
 		return type;
 	}

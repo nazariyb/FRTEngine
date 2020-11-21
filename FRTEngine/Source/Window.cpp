@@ -278,7 +278,7 @@ namespace frt
 			case WM_MOUSEMOVE:
 			{
 				const POINTS pt = MAKEPOINTS(lParam);
-				mouse.OnMouseMove(pt.x, pt.y);
+				mouse.OnMouseMove(pt);
 				// cursorless exclusive gets first dibs
 				//if (!cursorEnabled)
 				//{
@@ -298,11 +298,11 @@ namespace frt
 				//// in client region -> log move, and log enter + capture mouse (if not previously in window)
 				if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
 				{
-					mouse.OnMouseMove(pt.x, pt.y);
+					mouse.OnMouseMove(pt);
 					if (!mouse.IsInWindow())
 					{
 						SetCapture(hWnd);
-						mouse.OnMouseEnter();
+						mouse.OnEnterWindow();
 					}
 				}
 				// not in client -> log move / maintain capture if button down
@@ -310,13 +310,13 @@ namespace frt
 				{
 					if (wParam & (MK_LBUTTON | MK_RBUTTON))
 					{
-						mouse.OnMouseMove(pt.x, pt.y);
+						mouse.OnMouseMove(pt);
 					}
 					// button up -> release capture / log event for leaving
 					else
 					{
 						ReleaseCapture();
-						mouse.OnMouseLeave();
+						mouse.OnLeaveWindow();
 					}
 				}
 				break;
@@ -335,7 +335,7 @@ namespace frt
 				//	break;
 				//}
 				const POINTS pt = MAKEPOINTS(lParam);
-				mouse.OnLeftPressed(pt.x, pt.y);
+				mouse.OnButtonPressed(pt, MouseButtonType::Left);
 				break;
 			}
 			case WM_RBUTTONDOWN:
@@ -346,7 +346,7 @@ namespace frt
 				//	break;
 				//}
 				const POINTS pt = MAKEPOINTS(lParam);
-				mouse.OnRightPressed(pt.x, pt.y);
+				mouse.OnButtonPressed(pt, MouseButtonType::Right);
 				break;
 			}
 			case WM_LBUTTONUP:
@@ -357,7 +357,7 @@ namespace frt
 				//	break;
 				//}
 				const POINTS pt = MAKEPOINTS(lParam);
-				mouse.OnLeftReleased(pt.x, pt.y);
+				mouse.OnButtonReleased(pt, MouseButtonType::Left);
 				//// release mouse if outside of window
 				//if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
 				//{
@@ -374,7 +374,7 @@ namespace frt
 				//	break;
 				//}
 				const POINTS pt = MAKEPOINTS(lParam);
-				mouse.OnRightReleased(pt.x, pt.y);
+				mouse.OnButtonReleased(pt, MouseButtonType::Right);
 				// release mouse if outside of window
 				//if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
 				//{
@@ -392,7 +392,7 @@ namespace frt
 				//}
 				const POINTS pt = MAKEPOINTS(lParam);
 				const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-				mouse.OnWheelDelta(pt.x, pt.y, delta);
+				mouse.OnWheelDelta(pt, delta);
 				break;
 			}
 			/************** END MOUSE MESSAGES **************/

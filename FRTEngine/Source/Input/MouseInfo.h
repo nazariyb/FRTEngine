@@ -6,7 +6,7 @@
 
 namespace frt
 {
-	enum MouseButtonType : uint8_t
+	enum class MouseButtonType : uint8_t
 	{
 		None,
 		Left,
@@ -21,12 +21,14 @@ namespace frt
 		friend class MouseEvent;
 
 	public:
+
 		MouseState() noexcept;
-		MouseState(uint8_t buttonNumber, POINT pointerPosition) noexcept;
+		MouseState(uint8_t buttonNumber, POINTS pointerPosition) noexcept;
 
 	private:
+
 		MouseButtonType buttonType;
 		uint8_t buttonNumber;
-		POINT pointerPosition;
+		POINTS pointerPosition;
 	};
 }

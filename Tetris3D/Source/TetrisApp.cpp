@@ -14,6 +14,7 @@ using frt::Exception;
 using frt::Mouse;
 using frt::Event;
 using frt::KeyboardEvent;
+using frt::MouseEvent;
 
 TetrisApp::TetrisApp(HINSTANCE hInstance)
 	: App(1280, 720, "Yey",
@@ -36,17 +37,38 @@ int TetrisApp::Start()
 		std::cout << "CODE is " << keyboardEvent->GetKeyCode() << "\n";
 	};
 
-    while (true)
-    {
-        if (const auto ecode = Window::ProcessMessages())
-        {
-            return *ecode;
-        }
+	window.mouse.onButtonPressedEvent += [this](Event* event) {
+		std::ostringstream oss;
+		oss << (static_cast<MouseEvent*>(event)->IsLeftPressed() ? "Left" : "Right");
+		oss << " clicked!";
+		window.SetTitle(oss.str());
+	};
 
-        Update();
-    }
+	window.mouse.onButtonReleasedEvent += [this](Event* event) {
+		std::ostringstream oss;
+		oss << "Released!";
+		window.SetTitle(oss.str());
+	};
 
-    return 0;
+	window.mouse.onMouseMoveEvent += [this](Event* event) {
+		auto mouseEvent = static_cast<MouseEvent*>(event);
+		std::ostringstream oss;
+		oss << "Move: " << mouseEvent->GetPositionX()
+			<< " : " << mouseEvent->GetPositionY();
+		window.SetTitle(oss.str());
+	};
+
+	while (true)
+	{
+		if (const auto ecode = Window::ProcessMessages())
+		{
+			return *ecode;
+		}
+
+		Update();
+	}
+
+	return 0;
 }
 
 void TetrisApp::Update()

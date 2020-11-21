@@ -13,6 +13,7 @@ namespace frt
 		friend class Window;
 
 	public:
+
 		KeyboardEvent onKeyPressedEvent;
 		KeyboardEvent onKeyReleasedEvent;
 		KeyboardEvent onCharEnteredEvent;
@@ -26,6 +27,7 @@ namespace frt
 		bool IsAutorepeatEnabled() const noexcept;
 
 	private:
+
 		void OnKeyPressed(unsigned char keycode) noexcept;
 		void OnKeyReleased(unsigned char keycode) noexcept;
 		void OnCharEntered(char character) noexcept;
@@ -33,6 +35,7 @@ namespace frt
 		void ClearKeyStates() noexcept;
 
 	private:
+
 		bool autorepeatEnabled = false;
 
 		static constexpr unsigned int maxKeysNumber = 256u;

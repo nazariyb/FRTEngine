@@ -3,8 +3,10 @@
 
 namespace frt
 {
-	Keyboard::Keyboard() noexcept
-		: onKeyPressedEvent(), onKeyReleasedEvent(), onCharEnteredEvent()
+	Keyboard::Keyboard() noexcept :
+		onKeyPressedEvent(KeyboardEventType::Press),
+		onKeyReleasedEvent(KeyboardEventType::Release),
+		onCharEnteredEvent(KeyboardEventType::Character)
 	{}
 
 	inline bool Keyboard::IsKeyPressed(unsigned char keycode) const noexcept
@@ -30,18 +32,18 @@ namespace frt
 	void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
 	{
 		keyStates[keycode] = true;
-		onKeyPressedEvent.Invoke(KeyboardEventType::Press, keycode);
+		onKeyPressedEvent.Invoke(keycode);
 	}
 
 	void Keyboard::OnKeyReleased(unsigned char keycode) noexcept
 	{
 		keyStates[keycode] = false;
-		onKeyReleasedEvent.Invoke(KeyboardEventType::Release, keycode);
+		onKeyReleasedEvent.Invoke(keycode);
 	}
 
 	void Keyboard::OnCharEntered(char character) noexcept
 	{
-		onCharEnteredEvent.Invoke(KeyboardEventType::Character, character);
+		onCharEnteredEvent.Invoke(character);
 	}
 
 	void Keyboard::ClearKeyStates() noexcept
