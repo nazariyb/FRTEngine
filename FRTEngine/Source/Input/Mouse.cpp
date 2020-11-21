@@ -6,17 +6,17 @@ namespace frt
 {
 	std::pair<int, int> Mouse::GetPosition() const noexcept
 	{
-		return { x, y };
+		return { mouseState.pointerPosition.x, mouseState.pointerPosition.y };
 	}
 
 	int Mouse::GetPositionX() const noexcept
 	{
-		return x;
+		return mouseState.pointerPosition.x;
 	}
 
 	int Mouse::GetPositionY() const noexcept
 	{
-		return y;
+		return mouseState.pointerPosition.y;
 	}
 
 	bool Mouse::IsInWindow() const noexcept
@@ -26,97 +26,97 @@ namespace frt
 
 	bool Mouse::IsLeftPressed() const noexcept
 	{
-		return isLeftPressed;
+		return mouseState.buttonType == MouseButtonType::Left;
 	}
 
 	bool Mouse::IsRightPressed() const noexcept
 	{
-		return isRightPressed;
+		return mouseState.buttonType == MouseButtonType::Right;
 	}
 
-	Mouse::Event Mouse::Read() noexcept
+	MouseEvent Mouse::Read() noexcept
 	{
 		if (buffer.size() > 0u)
 		{
-			Mouse::Event e = buffer.front();
+			MouseEvent e = buffer.front();
 			buffer.pop();
 			return e;
 		}
 		else
 		{
-			return Mouse::Event();
+			return MouseEvent();
 		}
 	}
 
 	void Mouse::Flush() noexcept
 	{
-		buffer = std::queue<Event>();
+		buffer = std::queue<MouseEvent>();
 	}
 
 	void Mouse::OnMouseMove(int newX, int newY) noexcept
 	{
-		x = newX;
-		y = newY;
+		mouseState.pointerPosition.x = newX;
+		mouseState.pointerPosition.y = newY;
 
-		buffer.push(Mouse::Event(Mouse::Event::Type::Move, *this));
+		buffer.push(MouseEvent(MouseEventType::Move, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnMouseEnter() noexcept
 	{
 		isInWindow = true;
-		buffer.push(Mouse::Event(Mouse::Event::Type::Enter, *this));
+		buffer.push(MouseEvent(MouseEventType::Enter, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnMouseLeave() noexcept
 	{
 		isInWindow = false;
-		buffer.push(Mouse::Event(Mouse::Event::Type::Leave, *this));
+		buffer.push(MouseEvent(MouseEventType::Leave, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnLeftPressed(int x, int y) noexcept
 	{
-		isLeftPressed = true;
+		mouseState.buttonType = MouseButtonType::Left;
 
-		buffer.push(Mouse::Event(Mouse::Event::Type::LPress, *this));
+		buffer.push(MouseEvent(MouseEventType::Press, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnLeftReleased(int x, int y) noexcept
 	{
-		isLeftPressed = false;
+		mouseState.buttonType = MouseButtonType::Left;
 
-		buffer.push(Mouse::Event(Mouse::Event::Type::LRelease, *this));
+		buffer.push(MouseEvent(MouseEventType::Release, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnRightPressed(int x, int y) noexcept
 	{
-		isRightPressed = true;
+		mouseState.buttonType = MouseButtonType::Right;
 
-		buffer.push(Mouse::Event(Mouse::Event::Type::RPress, *this));
+		buffer.push(MouseEvent(MouseEventType::Press, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnRightReleased(int x, int y) noexcept
 	{
-		isRightPressed = false;
+		mouseState.buttonType = MouseButtonType::Right;
 
-		buffer.push(Mouse::Event(Mouse::Event::Type::RRelease, *this));
+		buffer.push(MouseEvent(MouseEventType::Release, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnWheelUp(int x, int y) noexcept
 	{
-		buffer.push(Mouse::Event(Mouse::Event::Type::WheeleUp, *this));
+		buffer.push(MouseEvent(MouseEventType::WheelUp, mouseState));
 		TrimBuffer();
 	}
 
 	void Mouse::OnWheelDown(int x, int y) noexcept
 	{
-		buffer.push(Mouse::Event(Mouse::Event::Type::WheeleDown, *this));
+		buffer.push(MouseEvent(MouseEventType::WheelDown, mouseState));
 		TrimBuffer();
 	}
 

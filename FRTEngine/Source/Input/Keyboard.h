@@ -2,40 +2,23 @@
 #include <queue>
 #include <bitset>
 
+#include "Input/KeyboardEvent.h"
+
 
 namespace frt
 {
 	class Keyboard
 	{
 		friend class Window;
+
 	public:
-		class Event
-		{
-		public:
-			enum class Type
-			{
-				Press,
-				Release,
-				Invalid
-			};
-		private:
-			Type type;
-			unsigned char code;
-		public:
-			Event() noexcept : type(Type::Invalid), code(0u) {}
-			Event(Type type, unsigned char code) noexcept : type(type), code(code) {}
-			bool IsPress() const noexcept { return type == Type::Press; }
-			bool IsRelease() const noexcept { return type == Type::Release; }
-			bool IsValid() const noexcept { return type != Type::Invalid; }
-			unsigned char GetCode() const noexcept { return code; }
-		};
 
 		Keyboard() = default;
 		Keyboard(const Keyboard&) = delete;
 		Keyboard& operator=(const Keyboard&) = delete;
 
 		bool KeyIsPressed(unsigned char keycode) const noexcept;
-		Event ReadKey() noexcept;
+		KeyboardEvent ReadKey() noexcept;
 		bool KeyIsEmpty() const noexcept;
 		void FlushKey() noexcept;
 
@@ -60,7 +43,7 @@ namespace frt
 		static constexpr unsigned int bufferSize = 16u;
 		bool autorepeatEnabled = false;
 		std::bitset<nKeys> keyStates;
-		std::queue<Event> keyBuffer;
+		std::queue<KeyboardEvent> keyBuffer;
 		std::queue<char> charBuffer;
 	};
 }

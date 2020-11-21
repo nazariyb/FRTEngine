@@ -8,18 +8,18 @@ namespace frt
 		return keyStates[keycode];
 	}
 
-	Keyboard::Event Keyboard::ReadKey() noexcept
+	KeyboardEvent Keyboard::ReadKey() noexcept
 	{
 		// TODO: better return optional
 		if (keyBuffer.size() > 0u)
 		{
-			Keyboard::Event e = keyBuffer.front();
+			KeyboardEvent e = keyBuffer.front();
 			keyBuffer.pop();
 			return e;
 		}
 		else
 		{
-			return Keyboard::Event();
+			return KeyboardEvent();
 		}
 	}
 
@@ -50,7 +50,7 @@ namespace frt
 	void Keyboard::FlushKey() noexcept
 	{
 		// TODO: just clear
-		keyBuffer = std::queue<Event>();
+		keyBuffer = std::queue<KeyboardEvent>();
 	}
 
 	void Keyboard::FlushChar() noexcept
@@ -82,14 +82,14 @@ namespace frt
 	void Keyboard::OnKeyPressed(unsigned char keycode) noexcept
 	{
 		keyStates[keycode] = true;
-		keyBuffer.push(Keyboard::Event(Keyboard::Event::Type::Press, keycode));
+		keyBuffer.push(KeyboardEvent(KeyboardEventType::Press, keycode));
 		TrimBuffer(keyBuffer);
 	}
 
 	void Keyboard::OnKeyReleased(unsigned char keycode) noexcept
 	{
 		keyStates[keycode] = false;
-		keyBuffer.push(Keyboard::Event(Keyboard::Event::Type::Release, keycode));
+		keyBuffer.push(KeyboardEvent(KeyboardEventType::Release, keycode));
 		TrimBuffer(keyBuffer);
 	}
 

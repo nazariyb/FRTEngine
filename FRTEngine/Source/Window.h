@@ -1,8 +1,8 @@
 #pragma once
 #include "WindowsMinimal.h"
 #include "Exception.h"
-#include "Keyboard.h"
-#include "Mouse.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
 //#include "Graphics.h"
 #include <optional>
 #include <memory>

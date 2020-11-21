@@ -160,17 +160,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
+    <ClInclude Include="Source\Event.h" />
     <ClInclude Include="Source\Exception.h" />
-    <ClInclude Include="Source\Keyboard.h" />
-    <ClInclude Include="Source\Mouse.h" />
+    <ClInclude Include="Source\Input\InputEvent.h" />
+    <ClInclude Include="Source\Input\Keyboard.h" />
+    <ClInclude Include="Source\Input\KeyboardEvent.h" />
+    <ClInclude Include="Source\Input\Mouse.h" />
+    <ClInclude Include="Source\Input\MouseEvent.h" />
+    <ClInclude Include="Source\Input\MouseInfo.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\App.cpp" />
+    <ClCompile Include="Source\Event.cpp" />
     <ClCompile Include="Source\Exception.cpp" />
-    <ClCompile Include="Source\Keyboard.cpp" />
-    <ClCompile Include="Source\Mouse.cpp" />
+    <ClCompile Include="Source\Input\InputEvent.cpp" />
+    <ClCompile Include="Source\Input\Keyboard.cpp" />
+    <ClCompile Include="Source\Input\KeyboardEvent.cpp" />
+    <ClCompile Include="Source\Input\Mouse.cpp" />
+    <ClCompile Include="Source\Input\MouseEvent.cpp" />
+    <ClCompile Include="Source\Input\MouseInfo.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
