@@ -12,37 +12,6 @@ namespace frt
 	class Window
 	{
 	public:
-		class WinException : public frt::Exception
-		{
-		public:
-			static std::string TranslateErrorCode(HRESULT hr) noexcept;
-			WinException(int line, const char* file, HRESULT hr) noexcept;
-			const char* what() const noexcept override;
-			const char* GetType() const noexcept override;
-			HRESULT GetErrorCode() const noexcept;
-			std::string GetErrorDescription() const noexcept;
-		private:
-			HRESULT hr;
-		};
-		//class HrException : public Exception
-		//{
-		//public:
-		//	HrException(int line, const char* file, HRESULT hr) noexcept;
-		//	const char* what() const noexcept override;
-		//	const char* GetType() const noexcept override;
-		//	HRESULT GetErrorCode() const noexcept;
-		//	std::string GetErrorDescription() const noexcept;
-		//private:
-		//	HRESULT hr;
-		//};
-		//class NoGfxException : public Exception
-		//{
-		//public:
-		//	using Exception::Exception;
-		//	const char* GetType() const noexcept override;
-		//};
-
-	public:
 		Window(int width, int height, const char* name, HICON icon)
 	#ifndef _DEBUG
 			noexcept
@@ -86,7 +55,4 @@ namespace frt
 		void RegisterWinAPIClass(HICON winIcon) noexcept;
 
 	};
-
-	#define WINDOW_EXCEPT( hr ) Window::WinException(__LINE__, __FILE__, hr);
-	#define WINDOW_LAST_EXCEPT( ) Window::WinException(__LINE__, __FILE__, GetLastError());
 }

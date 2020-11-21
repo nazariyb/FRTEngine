@@ -47,7 +47,7 @@ namespace frt
 		if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX, FALSE) == 0)
 		{
 	#ifdef _DEBUG
-			throw WINDOW_LAST_EXCEPT();
+			throw LAST_EXCEPTION();
 	#endif // _DEBUG
 		}
 
@@ -61,7 +61,7 @@ namespace frt
 		if (hWnd == nullptr)
 		{
 	#ifdef _DEBUG
-			throw WINDOW_LAST_EXCEPT();
+			throw LAST_EXCEPTION();
 	#endif // _DEBUG
 		}
 
@@ -89,7 +89,7 @@ namespace frt
 	{
 		if (SetWindowText(hWnd, title.c_str()) == 0)
 		{
-			throw WINDOW_LAST_EXCEPT();
+			throw LAST_EXCEPTION();
 		}
 	}
 	
@@ -442,103 +442,4 @@ namespace frt
 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
-
-
-	 //Window Exception Stuff
-	std::string Window::WinException::TranslateErrorCode(HRESULT hr) noexcept
-	{
-		char* pMsgBuf = nullptr;
-		// windows will allocate memory for err string and make our pointer point to it
-		const DWORD nMsgLen = FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
-		);
-		// 0 string length returned indicates a failure
-		if (nMsgLen == 0)
-		{
-			return "Unidentified error code";
-		}
-		// copy error string from windows-allocated buffer to std::string
-		std::string errorString = pMsgBuf;
-		// free windows buffer
-		LocalFree(pMsgBuf);
-		return errorString;
-	}
-
-	Window::WinException::WinException(int line, const char* file, HRESULT hr) noexcept
-		: Exception(line, file), hr(hr)
-	{}
-
-	const char* Window::WinException::what() const noexcept
-	{
-		std::ostringstream oss;
-		oss << GetType() << std::endl
-			<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
-			<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
-			<< "[Description] " << GetErrorDescription() << std::endl
-			<< GetOriginString();
-		whatBuffer = oss.str();
-		return whatBuffer.c_str();
-	}
-
-	const char* Window::WinException::GetType() const noexcept
-	{
-		return "FRT Window Exception";
-	}
-
-	HRESULT Window::WinException::GetErrorCode() const noexcept
-	{
-		return hr;
-	}
-
-	std::string Window::WinException::GetErrorDescription() const noexcept
-	{
-		return WinException::TranslateErrorCode(hr);
-	}
-
-
-	//const char* Window::NoGfxException::GetType() const noexcept
-	//{
-	//	return "Chili Window Exception [No Graphics]";
-	//}
-
-	//Window::HrException::HrException(int line, const char* file, HRESULT hr) noexcept
-	//	:
-	//	Exception(line, file),
-	//	hr(hr)
-	//{}
-	//
-	//const char* Window::HrException::what() const noexcept
-	//{
-	//	std::ostringstream oss;
-	//	oss << GetType() << std::endl
-	//		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
-	//		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
-	//		<< "[Description] " << GetErrorDescription() << std::endl
-	//		<< GetOriginString();
-	//	whatBuffer = oss.str();
-	//	return whatBuffer.c_str();
-	//}
-	//
-	//const char* Window::HrException::GetType() const noexcept
-	//{
-	//	return "Chili Window Exception";
-	//}
-	//
-	//HRESULT Window::HrException::GetErrorCode() const noexcept
-	//{
-	//	return hr;
-	//}
-	//
-	//std::string Window::HrException::GetErrorDescription() const noexcept
-	//{
-	//	return Exception::TranslateErrorCode(hr);
-	//}
-	//
-	//
-	//const char* Window::NoGfxException::GetType() const noexcept
-	//{
-	//	return "Chili Window Exception [No Graphics]";
-	//}
 }
