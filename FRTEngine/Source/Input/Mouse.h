@@ -15,6 +15,7 @@ namespace frt
 		Mouse() = default;
 		Mouse(const Mouse&) = delete;
 		Mouse& operator=(const Mouse&) = delete;
+
 		std::pair<int, int> GetPosition() const noexcept;
 		int GetPositionX() const noexcept;
 		int GetPositionY() const noexcept;

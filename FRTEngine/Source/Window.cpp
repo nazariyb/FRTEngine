@@ -222,7 +222,7 @@ namespace frt
 			return 0;
 			//	// clear keystate when window loses focus to prevent input getting "stuck"
 			case WM_KILLFOCUS:
-				keyboard.ClearState();
+				keyboard.ClearKeyStates();
 				break;
 			//case WM_ACTIVATE:
 			//	// confine/free cursor on window to foreground/background if cursor disabled
@@ -270,7 +270,7 @@ namespace frt
 				//{
 				//	break;
 				//}
-				keyboard.OnChar(static_cast<unsigned char>(wParam));
+				keyboard.OnCharEntered(static_cast<unsigned char>(wParam));
 				break;
 				/*********** END KEYBOARD MESSAGES ***********/
 

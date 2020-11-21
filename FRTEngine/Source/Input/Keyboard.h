@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include <bitset>
+#include <optional>
 
 #include "Input/KeyboardEvent.h"
 
@@ -12,20 +13,13 @@ namespace frt
 		friend class Window;
 
 	public:
+		KeyboardEvent onKeyPressedEvent;
+		KeyboardEvent onKeyReleasedEvent;
+		KeyboardEvent onCharEnteredEvent;
 
-		Keyboard() = default;
-		Keyboard(const Keyboard&) = delete;
-		Keyboard& operator=(const Keyboard&) = delete;
+		Keyboard() noexcept;
 
-		bool KeyIsPressed(unsigned char keycode) const noexcept;
-		KeyboardEvent ReadKey() noexcept;
-		bool KeyIsEmpty() const noexcept;
-		void FlushKey() noexcept;
-
-		char ReadChar() noexcept;
-		bool CharIsEmpty() const noexcept;
-		void FlushChar() noexcept;
-		void Flush() noexcept;
+		inline bool IsKeyPressed(unsigned char keycode) const noexcept;
 
 		inline void EnableAutorepeat() noexcept;
 		inline void DisableAutorepeat() noexcept;
@@ -34,17 +28,15 @@ namespace frt
 	private:
 		void OnKeyPressed(unsigned char keycode) noexcept;
 		void OnKeyReleased(unsigned char keycode) noexcept;
-		void OnChar(char character) noexcept;
-		void ClearState() noexcept;
-		template<typename T>
-		static void TrimBuffer(std::queue<T>& buffer) noexcept;
+		void OnCharEntered(char character) noexcept;
+
+		void ClearKeyStates() noexcept;
+
 	private:
-		static constexpr unsigned int nKeys = 256u;
-		static constexpr unsigned int bufferSize = 16u;
 		bool autorepeatEnabled = false;
-		std::bitset<nKeys> keyStates;
-		std::queue<KeyboardEvent> keyBuffer;
-		std::queue<char> charBuffer;
+
+		static constexpr unsigned int maxKeysNumber = 256u;
+		std::bitset<maxKeysNumber> keyStates;
 	};
 }
 

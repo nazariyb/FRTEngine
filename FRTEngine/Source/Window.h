@@ -18,8 +18,7 @@ namespace frt
 	#endif // _DEBUG
 			;
 		~Window();
-		Window(const Window&) = delete;
-		Window& operator=(const Window&) = delete;
+
 		void SetTitle(const std::string& title);
 		//void EnableCursor() noexcept;
 		//void DisableCursor() noexcept;

@@ -4,7 +4,7 @@
 
 namespace frt
 {
-	class InputEvent : public virtual Event
+	class InputEvent : public Event
 	{
 	public:
 
