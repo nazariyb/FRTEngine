@@ -7,44 +7,44 @@
 
 namespace frt
 {
-	class Mouse
-	{
-		friend class Window;
+    class Mouse
+    {
+        friend class Window;
 
-	public:
+    public:
 
-		MouseEvent onButtonPressedEvent;
-		MouseEvent onButtonReleasedEvent;
-		MouseEvent onWheelUpEvent;
-		MouseEvent onWheelDownEvent;
-		MouseEvent onEnterWindowEvent;
-		MouseEvent onLeaveWindowEvent;
-		MouseEvent onMouseMoveEvent;
+        MouseEvent onButtonPressedEvent;
+        MouseEvent onButtonReleasedEvent;
+        MouseEvent onWheelUpEvent;
+        MouseEvent onWheelDownEvent;
+        MouseEvent onEnterWindowEvent;
+        MouseEvent onLeaveWindowEvent;
+        MouseEvent onMouseMoveEvent;
 
-		Mouse();
+        Mouse();
 
-		POINTS GetPosition() const noexcept;
-		int GetPositionX() const noexcept;
-		int GetPositionY() const noexcept;
-		bool IsInWindow() const noexcept;
-		bool IsLeftPressed() const noexcept;
-		bool IsRightPressed() const noexcept;
+        POINTS GetPosition() const noexcept;
+        int GetPositionX() const noexcept;
+        int GetPositionY() const noexcept;
+        bool IsInWindow() const noexcept;
+        bool IsLeftPressed() const noexcept;
+        bool IsRightPressed() const noexcept;
 
-	private:
+    private:
 
-		void OnButtonPressed(POINTS currentPosition, MouseButtonType button) noexcept;
-		void OnButtonReleased(POINTS currentPosition, MouseButtonType button) noexcept;
-		void OnMouseMove(POINTS currentPosition) noexcept;
-		void OnWheelUp(POINTS currentPosition) noexcept;
-		void OnWheelDown(POINTS currentPosition) noexcept;
-		void OnWheelDelta(POINTS currentPosition, int delta) noexcept;
-		void OnEnterWindow() noexcept;
-		void OnLeaveWindow() noexcept;
+        void OnButtonPressed(POINTS currentPosition, MouseButtonType button) noexcept;
+        void OnButtonReleased(POINTS currentPosition, MouseButtonType button) noexcept;
+        void OnMouseMove(POINTS currentPosition) noexcept;
+        void OnWheelUp(POINTS currentPosition) noexcept;
+        void OnWheelDown(POINTS currentPosition) noexcept;
+        void OnWheelDelta(POINTS currentPosition, int delta) noexcept;
+        void OnEnterWindow() noexcept;
+        void OnLeaveWindow() noexcept;
 
-	private:
+    private:
 
-		MouseState mouseState;
-		bool isInWindow = false;
-		int wheelDeltaCarry = 0;
-	};
+        MouseState mouseState;
+        bool isInWindow = false;
+        int wheelDeltaCarry = 0;
+    };
 }

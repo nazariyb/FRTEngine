@@ -8,38 +8,38 @@
 
 namespace frt
 {
-	class Keyboard
-	{
-		friend class Window;
+    class Keyboard
+    {
+        friend class Window;
 
-	public:
+    public:
 
-		KeyboardEvent onKeyPressedEvent;
-		KeyboardEvent onKeyReleasedEvent;
-		KeyboardEvent onCharEnteredEvent;
+        KeyboardEvent onKeyPressedEvent;
+        KeyboardEvent onKeyReleasedEvent;
+        KeyboardEvent onCharEnteredEvent;
 
-		Keyboard() noexcept;
+        Keyboard() noexcept;
 
-		inline bool IsKeyPressed(unsigned char keycode) const noexcept;
+        inline bool IsKeyPressed(unsigned char keycode) const noexcept;
 
-		inline void EnableAutorepeat() noexcept;
-		inline void DisableAutorepeat() noexcept;
-		bool IsAutorepeatEnabled() const noexcept;
+        inline void EnableAutorepeat() noexcept;
+        inline void DisableAutorepeat() noexcept;
+        bool IsAutorepeatEnabled() const noexcept;
 
-	private:
+    private:
 
-		void OnKeyPressed(unsigned char keycode) noexcept;
-		void OnKeyReleased(unsigned char keycode) noexcept;
-		void OnCharEntered(char character) noexcept;
+        void OnKeyPressed(unsigned char keycode) noexcept;
+        void OnKeyReleased(unsigned char keycode) noexcept;
+        void OnCharEntered(char character) noexcept;
 
-		void ClearKeyStates() noexcept;
+        void ClearKeyStates() noexcept;
 
-	private:
+    private:
 
-		bool autorepeatEnabled = false;
+        bool autorepeatEnabled = false;
 
-		static constexpr unsigned int maxKeysNumber = 256u;
-		std::bitset<maxKeysNumber> keyStates;
-	};
+        static constexpr unsigned int maxKeysNumber = 256u;
+        std::bitset<maxKeysNumber> keyStates;
+    };
 }
 
