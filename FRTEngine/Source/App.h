@@ -1,4 +1,5 @@
 #pragma once
+#include "FRTEngine.h"
 #include "Window.h"
 
 
@@ -6,10 +7,11 @@ using frt::Window;
 
 namespace frt
 {
-    class App
+    class FRTENGINE_API App
     {
     public:
         App() = default;
+        App(const App&) = delete;
         App(int width, int height, const char* name, HICON icon);
         virtual ~App() {};
 

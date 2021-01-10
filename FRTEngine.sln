@@ -4,12 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FRTEngine", "FRTEngine\FRTEngine.vcxproj", "{53C47242-269A-486C-9C3C-3715A7675E54}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B1B99E3-1BA6-490D-A19C-E63EA4FD1C86} = {5B1B99E3-1BA6-490D-A19C-E63EA4FD1C86}
+		{D88FD8EF-098C-4148-8469-99D5C21EB61E} = {D88FD8EF-098C-4148-8469-99D5C21EB61E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tetris3D", "Tetris3D\Tetris3D.vcxproj", "{14269506-5C8E-4266-AE8A-85A22052A724}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Threading", "Threading\Threading.vcxproj", "{5B1B99E3-1BA6-490D-A19C-E63EA4FD1C86}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math.vcxproj", "{D88FD8EF-098C-4148-8469-99D5C21EB61E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B1B99E3-1BA6-490D-A19C-E63EA4FD1C86} = {5B1B99E3-1BA6-490D-A19C-E63EA4FD1C86}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

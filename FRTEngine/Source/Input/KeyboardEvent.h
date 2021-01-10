@@ -1,16 +1,17 @@
 #pragma once
+#include "FRTEngine.h"
 #include "Input/InputEvent.h"
 
 
 namespace frt
 {
-    enum class KeyboardEventType : uint8_t
+    enum class FRTENGINE_API KeyboardEventType : uint8_t
     {
         INPUT_EVENT_TYPE_INIT()
         Character
     };
 
-    class KeyboardEvent : public InputEvent
+    class FRTENGINE_API KeyboardEvent : public InputEvent
     {
         friend class Keyboard;
 

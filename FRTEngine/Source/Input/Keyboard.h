@@ -1,4 +1,6 @@
 #pragma once
+#include "FRTEngine.h"
+
 #include <queue>
 #include <bitset>
 #include <optional>
@@ -8,7 +10,7 @@
 
 namespace frt
 {
-    class Keyboard
+    class FRTENGINE_API Keyboard
     {
         friend class Window;
 
@@ -19,6 +21,7 @@ namespace frt
         KeyboardEvent onCharEnteredEvent;
 
         Keyboard() noexcept;
+        ~Keyboard() = default;
 
         inline bool IsKeyPressed(unsigned char keycode) const noexcept;
 

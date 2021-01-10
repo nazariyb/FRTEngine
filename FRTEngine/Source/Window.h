@@ -1,4 +1,6 @@
 #pragma once
+#include "FRTEngine.h"
+
 #include "WindowsMinimal.h"
 #include "Exception.h"
 #include "Input/Keyboard.h"
@@ -9,7 +11,7 @@
 
 namespace frt
 {
-    class Window
+    class FRTENGINE_API Window
     {
     public:
         Window(int width, int height, const char* name, HICON icon)

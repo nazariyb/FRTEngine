@@ -1,4 +1,5 @@
 #pragma once
+#include "FRTEngine.h"
 #include "WindowsMinimal.h"
 
 #include <stdint.h>
@@ -6,7 +7,7 @@
 
 namespace frt
 {
-    enum class MouseButtonType : uint8_t
+    enum class FRTENGINE_API MouseButtonType : uint8_t
     {
         None,
         Left,
@@ -15,7 +16,7 @@ namespace frt
         Other
     };
 
-    class MouseState
+    class FRTENGINE_API MouseState
     {
         friend class Mouse;
         friend class MouseEvent;

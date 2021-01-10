@@ -1,4 +1,5 @@
 #pragma once
+#include "FRTEngine.h"
 #include "WindowsMinimal.h"
 
 #include <exception>
@@ -7,12 +8,14 @@
 
 namespace frt
 {
-    class Exception : public std::exception
+    class FRTENGINE_API Exception : public std::exception
     {
     public:
         Exception(int line, const char* file) noexcept;
         Exception(int line, const char* file, HRESULT hr) noexcept;
-        
+        Exception(const Exception&) = delete;
+        ~Exception() = default;
+
         const char* What() const noexcept;
         virtual const char* GetType() const noexcept;
         

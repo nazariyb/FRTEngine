@@ -1,11 +1,12 @@
 #pragma once
+#include "FRTEngine.h"
 #include "Input/InputEvent.h"
 #include "Input/MouseInfo.h"
 
 
 namespace frt
 {
-    enum class MouseEventType
+    enum class FRTENGINE_API MouseEventType
     {
         INPUT_EVENT_TYPE_INIT()
         WheelUp,
@@ -15,7 +16,7 @@ namespace frt
         LeaveWindow
     };
 
-    class MouseEvent : public InputEvent
+    class FRTENGINE_API MouseEvent : public InputEvent
     {
         friend class Mouse;
 

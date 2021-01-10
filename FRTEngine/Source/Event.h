@@ -1,4 +1,6 @@
 #pragma once
+#include "FRTEngine.h"
+
 #include <stdint.h>
 #include <vector>
 #include <functional>
@@ -6,7 +8,7 @@
 
 namespace frt
 {
-    class Event
+    class FRTENGINE_API Event
     {
     public:
         virtual void Invoke() noexcept;

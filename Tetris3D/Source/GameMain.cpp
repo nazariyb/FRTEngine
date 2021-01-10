@@ -1,11 +1,16 @@
 #include "WindowsMinimal.h"
 #include "Exception.h"
 #include "TetrisApp.h"
+//#include "d3dx12.h"
+//#include "FRTEngine.h"
 
 
 using frt::Window;
 using frt::Exception;
 using frt::Mouse;
+
+#include <iostream>
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {

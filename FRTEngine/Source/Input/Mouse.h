@@ -1,4 +1,6 @@
 #pragma once
+#include "FRTEngine.h"
+
 #include <queue>
 
 #include "Input/MouseInfo.h"
@@ -7,7 +9,7 @@
 
 namespace frt
 {
-    class Mouse
+    class FRTENGINE_API Mouse
     {
         friend class Window;
 
