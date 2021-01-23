@@ -51,6 +51,12 @@
     <ClInclude Include="Source\FRTEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Render\Graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tools\d3dx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Window.cpp">
@@ -83,5 +89,11 @@
     <ClCompile Include="Source\Input\MouseInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Render\Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders.hlsl" />
   </ItemGroup>
 </Project>

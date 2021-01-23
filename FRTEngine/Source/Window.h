@@ -5,7 +5,7 @@
 #include "Exception.h"
 #include "Input/Keyboard.h"
 #include "Input/Mouse.h"
-//#include "Graphics.h"
+#include "Render/Graphics.h"
 #include <optional>
 #include <memory>
 
@@ -26,7 +26,7 @@ namespace frt
         //void DisableCursor() noexcept;
         //bool CursorEnabled() const noexcept;
         static std::optional<int> ProcessMessages() noexcept;
-        //Graphics& Gfx();
+        Graphics& GetGraphics();
     private:
         //void ConfineCursor() noexcept;
         //void FreeCursor() noexcept;
@@ -34,18 +34,21 @@ namespace frt
         //void HideCursor() noexcept;
         //void EnableImGuiMouse() noexcept;
         //void DisableImGuiMouse() noexcept;
-        static LRESULT WINAPI HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
-        static LRESULT WINAPI HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
-        LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+        static LRESULT WINAPI HandleMsgSetup(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+        static LRESULT WINAPI HandleMsgThunk(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+        LRESULT HandleMsg(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+    
     public:
         Keyboard keyboard;
         Mouse mouse;
+
     private:
         //bool cursorEnabled = true;
-        int width;
-        int height;
-        HWND hWnd;
-        HINSTANCE hInst;
+        int _width;
+        int _height;
+        HWND _hWindow;
+        HINSTANCE _hInstance;
+        std::unique_ptr <Graphics> _graphics;
 
         const char* windowClassName = "FRT Window Base Class";
 

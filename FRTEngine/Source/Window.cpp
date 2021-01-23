@@ -13,7 +13,7 @@ namespace frt
         wc.lpfnWndProc = HandleMsgSetup;
         wc.cbClsExtra = 0;
         wc.cbWndExtra = 0;
-        wc.hInstance = hInst;
+        wc.hInstance = _hInstance;
         wc.hIcon = winIcon;
         wc.hCursor = nullptr;
         wc.hbrBackground = nullptr;
@@ -25,25 +25,24 @@ namespace frt
 
     Window::~Window()
     {
-        UnregisterClass(windowClassName, hInst);
+        UnregisterClass(windowClassName, _hInstance);
         //ImGui_ImplWin32_Shutdown();
-        DestroyWindow(hWnd);
+        DestroyWindow(_hWindow);
     }
 
-    // Window Stuff
     Window::Window(int width, int height, const char* name, HICON icon)
     #ifndef _DEBUG
     noexcept
     #endif // _DEBUG
-        : width(width), height(height), hInst(GetModuleHandle(nullptr))
+        : _width(width), _height(height), _hInstance(GetModuleHandle(nullptr))
     {
         RegisterWinAPIClass(icon);
 
         RECT wr;
         wr.left = 500;
-        wr.right = width + wr.left;
+        wr.right = _width + wr.left;
         wr.top = 500;
-        wr.bottom = height + wr.top;
+        wr.bottom = _height + wr.top;
         if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX, FALSE) == 0)
         {
     #ifdef _DEBUG
@@ -51,28 +50,26 @@ namespace frt
     #endif // _DEBUG
         }
 
-        hWnd = CreateWindow(
+        _hWindow = CreateWindow(
             windowClassName, name,
             WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
             CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
-            nullptr, nullptr, hInst, this
+            nullptr, nullptr, _hInstance, this
         );
 
-        if (hWnd == nullptr)
+        if (_hWindow == nullptr)
         {
     #ifdef _DEBUG
             throw LAST_EXCEPTION();
     #endif // _DEBUG
         }
 
-        ShowWindow(hWnd, SW_SHOWDEFAULT);
+        ShowWindow(_hWindow, SW_SHOWDEFAULT);
 
-        //// newly created windows start off as hidden
-        //ShowWindow(hWnd, SW_SHOWDEFAULT);
+        _graphics = std::make_unique<Graphics>(_hWindow);
+
         //// Init ImGui Win32 Impl
-        //ImGui_ImplWin32_Init(hWnd);
-        //// create graphics object
-        //pGfx = std::make_unique<Graphics>(hWnd, width, height);
+        //ImGui_ImplWin32_Init(_hWindow);
         //// register mouse raw input device
         //RAWINPUTDEVICE rid;
         //rid.usUsagePage = 0x01; // mouse page
@@ -87,7 +84,7 @@ namespace frt
 
     void Window::SetTitle(const std::string& title)
     {
-        if (SetWindowText(hWnd, title.c_str()) == 0)
+        if (SetWindowText(_hWindow, title.c_str()) == 0)
         {
             throw LAST_EXCEPTION();
         }
@@ -135,6 +132,11 @@ namespace frt
         // return empty optional when not quitting app
         return {};
     }
+
+    Graphics& Window::GetGraphics()
+    {
+        return *_graphics;
+    }
     
     //Graphics& Window::Gfx()
     //{
@@ -148,8 +150,8 @@ namespace frt
     //void Window::ConfineCursor() noexcept
     //{
     //	RECT rect;
-    //	GetClientRect(hWnd, &rect);
-    //	MapWindowPoints(hWnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+    //	GetClientRect(_hWindow, &rect);
+    //	MapWindowPoints(_hWindow, nullptr, reinterpret_cast<POINT*>(&rect), 2);
     //	ClipCursor(&rect);
     //}
     //
@@ -178,7 +180,7 @@ namespace frt
     //	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
     //}
 
-    LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+    LRESULT CALLBACK Window::HandleMsgSetup(HWND _hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
     {
         // use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
         if (msg == WM_NCCREATE)
@@ -187,27 +189,27 @@ namespace frt
             const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
             Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
             // set WinAPI-managed user data to store ptr to window instance
-            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
+            SetWindowLongPtr(_hWindow, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
             // set message proc to normal (non-setup) handler now that setup is finished
-            SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
+            SetWindowLongPtr(_hWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
             // forward message to window instance handler
-            return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
+            return pWnd->HandleMsg(_hWindow, msg, wParam, lParam);
         }
         // if we get a message before the WM_NCCREATE message, handle with default handler
-        return DefWindowProc(hWnd, msg, wParam, lParam);
+        return DefWindowProc(_hWindow, msg, wParam, lParam);
     }
 
-    LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+    LRESULT CALLBACK Window::HandleMsgThunk(HWND _hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
     {
         // retrieve ptr to window instance
-        Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+        Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(_hWindow, GWLP_USERDATA));
         // forward message to window instance handler
-        return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
+        return pWnd->HandleMsg(_hWindow, msg, wParam, lParam);
     }
 
-    LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+    LRESULT Window::HandleMsg(HWND _hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
     {
-        //if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        //if (ImGui_ImplWin32_WndProcHandler(_hWindow, msg, wParam, lParam))
         //{
         //	return true;
         //}
@@ -284,7 +286,7 @@ namespace frt
                 //{
                 //	if (!mouse.IsInWindow())
                 //	{
-                //		SetCapture(hWnd);
+                //		SetCapture(_hWindow);
                 //		mouse.OnMouseEnter();
                 //		HideCursor();
                 //	}
@@ -296,12 +298,12 @@ namespace frt
                 //	break;
                 //}
                 //// in client region -> log move, and log enter + capture mouse (if not previously in window)
-                if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
+                if (pt.x >= 0 && pt.x < _width && pt.y >= 0 && pt.y < _height)
                 {
                     mouse.OnMouseMove(pt);
                     if (!mouse.IsInWindow())
                     {
-                        SetCapture(hWnd);
+                        SetCapture(_hWindow);
                         mouse.OnEnterWindow();
                     }
                 }
@@ -323,7 +325,7 @@ namespace frt
             }
             case WM_LBUTTONDOWN:
             {
-                //SetForegroundWindow(hWnd);
+                //SetForegroundWindow(_hWindow);
                 //if (!cursorEnabled)
                 //{
                 //	ConfineCursor();
@@ -359,7 +361,7 @@ namespace frt
                 const POINTS pt = MAKEPOINTS(lParam);
                 mouse.OnButtonReleased(pt, MouseButtonType::Left);
                 //// release mouse if outside of window
-                //if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+                //if (pt.x < 0 || pt.x >= _width || pt.y < 0 || pt.y >= _height)
                 //{
                 //	ReleaseCapture();
                 //	mouse.OnMouseLeave();
@@ -376,7 +378,7 @@ namespace frt
                 const POINTS pt = MAKEPOINTS(lParam);
                 mouse.OnButtonReleased(pt, MouseButtonType::Right);
                 // release mouse if outside of window
-                //if (pt.x < 0 || pt.x >= width || pt.y < 0 || pt.y >= height)
+                //if (pt.x < 0 || pt.x >= _width || pt.y < 0 || pt.y >= _height)
                 //{
                 //	ReleaseCapture();
                 //	mouse.OnMouseLeave();
@@ -440,6 +442,6 @@ namespace frt
             /************** END RAW MOUSE MESSAGES **************/
         }
 
-        return DefWindowProc(hWnd, msg, wParam, lParam);
+        return DefWindowProc(_hWindow, msg, wParam, lParam);
     }
 }

@@ -73,4 +73,5 @@ int TetrisApp::Start()
 
 void TetrisApp::Update()
 {
+    App::Update();
 }

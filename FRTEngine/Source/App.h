@@ -18,7 +18,7 @@ namespace frt
         virtual int Start() { return 0; };
 
     protected:
-        virtual void Update() {};
+        virtual void Update();
 
         Window window;
     };
