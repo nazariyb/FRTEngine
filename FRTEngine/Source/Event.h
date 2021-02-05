@@ -8,17 +8,17 @@
 
 namespace frt
 {
-    class FRTENGINE_API Event
-    {
-    public:
-        virtual void Invoke() noexcept;
+class FRTENGINE_API Event
+{
+public:
+    virtual void Invoke() noexcept;
 
-        virtual Event& operator+=(std::function<void(Event*)>);
+    virtual Event& operator+=(std::function<void(Event*)>);
 
-        inline virtual bool IsValid() const noexcept = 0;
+    inline virtual bool IsValid() const noexcept = 0;
 
-    private:
-        std::vector<std::function<void(Event*)>> listeners;
-    };
+private:
+    std::vector<std::function<void(Event*)>> listeners;
+};
 }
 

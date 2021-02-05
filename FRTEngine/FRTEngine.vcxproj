@@ -106,7 +106,7 @@
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -125,7 +125,7 @@
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,7 +144,7 @@
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -163,7 +163,7 @@
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
+    <ClInclude Include="Source\Debug\Debug.h" />
     <ClInclude Include="Source\Event.h" />
     <ClInclude Include="Source\Exception.h" />
     <ClInclude Include="Source\FRTEngine.h" />
@@ -185,9 +186,11 @@
     <ClInclude Include="Source\Tools\d3dx12.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
+    <ClInclude Include="Source\Time\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\App.cpp" />
+    <ClCompile Include="Source\Debug\Debug.cpp" />
     <ClCompile Include="Source\Event.cpp" />
     <ClCompile Include="Source\Exception.cpp" />
     <ClCompile Include="Source\Input\InputEvent.cpp" />
@@ -198,6 +201,7 @@
     <ClCompile Include="Source\Input\MouseInfo.cpp" />
     <ClCompile Include="Source\Render\Graphics.cpp" />
     <ClCompile Include="Source\Window.cpp" />
+    <ClCompile Include="Source\Time\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl">

@@ -7,29 +7,29 @@
 
 namespace frt
 {
-    enum class FRTENGINE_API MouseButtonType : uint8_t
-    {
-        None,
-        Left,
-        Right,
-        Middle,
-        Other
-    };
+enum class FRTENGINE_API MouseButtonType : uint8_t
+{
+    None,
+    Left,
+    Right,
+    Middle,
+    Other
+};
 
-    class FRTENGINE_API MouseState
-    {
-        friend class Mouse;
-        friend class MouseEvent;
+class FRTENGINE_API MouseState
+{
+    friend class Mouse;
+    friend class MouseEvent;
 
-    public:
+public:
 
-        MouseState() noexcept;
-        MouseState(uint8_t buttonNumber, POINTS pointerPosition) noexcept;
+    MouseState() noexcept;
+    MouseState(uint8_t buttonNumber, POINTS pointerPosition) noexcept;
 
-    private:
+private:
 
-        MouseButtonType buttonType;
-        uint8_t buttonNumber;
-        POINTS pointerPosition;
-    };
+    MouseButtonType buttonType;
+    uint8_t buttonNumber;
+    POINTS pointerPosition;
+};
 }

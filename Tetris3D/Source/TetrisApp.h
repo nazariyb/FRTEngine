@@ -8,7 +8,7 @@ class TetrisApp :
     public App
 {
 public:
-    TetrisApp(HINSTANCE hInstance);
+    TetrisApp();
     int Start() override;
 
 protected:

@@ -33,10 +33,10 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\GameMain.cpp">
+    <ClCompile Include="Source\TetrisApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\TetrisApp.cpp">
+    <ClCompile Include="Source\GameMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
