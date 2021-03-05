@@ -1,5 +1,8 @@
 #include "Keyboard.h"
 
+#include <queue>
+#include <optional>
+
 
 namespace frt
 {

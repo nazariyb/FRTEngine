@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FRTENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
@@ -120,7 +120,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);FRTENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
@@ -139,7 +139,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FRTENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
@@ -158,7 +158,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);FRTENGINE_EXPORTS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(SolutionDir)Binaries\Intermediates\$(Platform)\$(Configuration)\$(ProjectName)\$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>

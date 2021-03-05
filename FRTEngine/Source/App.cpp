@@ -1,7 +1,6 @@
 #include "App.h"
 #include "Debug/Debug.h"
 
-
 namespace frt
 {
 App::App(int width, int height, const char* name)

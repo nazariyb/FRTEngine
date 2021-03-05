@@ -7,26 +7,24 @@
 #include <fstream>
 
 
-#define string std::string
-
 namespace frt
 {
 class FRTENGINE_API Debug
 {
 public:
-    static void LogInfo(const string& message);
-    static void LogWarning(const string& message);
-    static void LogError(const string& message);
+    static void LogInfo(const std::string& message);
+    static void LogWarning(const std::string& message);
+    static void LogError(const std::string& message);
 
     static void Flush();
 
 private:
-    static void Log(const string& message, const string& messageType);
+    static void Log(const std::string& message, const std::string& messageType);
+    static std::string FormatTwoDigits(WORD number);
 
 private:
-    static const string _logFileName;
+    static const std::string _logFileName;
     static std::ofstream _logBuffer;
 };
 }
 
-#undef string

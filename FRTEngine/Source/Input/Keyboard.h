@@ -1,11 +1,10 @@
 #pragma once
 #include "FRTEngine.h"
 
-#include <queue>
-#include <bitset>
-#include <optional>
 
 #include "Input/KeyboardEvent.h"
+
+#include <bitset>
 
 
 namespace frt

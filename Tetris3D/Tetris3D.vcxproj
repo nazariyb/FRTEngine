@@ -101,7 +101,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -112,10 +112,11 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
-</Command>
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,7 +128,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -140,10 +141,11 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
-</Command>
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -153,7 +155,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -164,10 +166,11 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
-</Command>
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,7 +182,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)FRTEngine\Source;$(SolutionDir)Math\Source</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -192,10 +195,11 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
-</Command>
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
-      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
+rem xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

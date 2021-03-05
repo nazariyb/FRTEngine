@@ -3,11 +3,13 @@
 #include <Winuser.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "window.h"
 #include "Exception.h"
 #include "Input/KeyboardEvent.h"
 #include "Debug/Debug.h"
+#include "MathLib.h"
 
 
 using frt::Window;
@@ -17,6 +19,8 @@ using frt::Event;
 using frt::KeyboardEvent;
 using frt::MouseEvent;
 using frt::Debug;
+using frt::Matrix;
+
 
 TetrisApp::TetrisApp()
     : App(1280, 720, "Yey")
@@ -58,6 +62,24 @@ int TetrisApp::Start()
             << " : " << mouseEvent->GetPositionY();
         window->SetTitle(oss.str());
     };
+
+    Matrix<int> m1 = Matrix<int>(3, 3,
+                              {
+                                  1, 2, 3,
+                                  4, 5, 6,
+                                  7, 8, 9
+                              });
+    Matrix<int> m2 = Matrix<int>(3,
+                               {
+                                   9, 8, 7,
+                                   6, 5, 4,
+                                   3, 2, 1
+                               });
+    Debug::LogInfo("\n" + m1.GetAsString());
+    Debug::LogInfo("\n" + operator+(m1, m2).GetAsString());
+    Debug::LogInfo("\n" + (m1 + m2).GetAsString());
+    Debug::LogInfo("\n" + (m1 - m2).GetAsString());
+    Debug::LogInfo("\n" + (m2 - m1).GetAsString());
 
     while (true)
     {

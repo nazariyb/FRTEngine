@@ -104,9 +104,6 @@
     <ClCompile Include="Source\Time\Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Main.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders.hlsl" />

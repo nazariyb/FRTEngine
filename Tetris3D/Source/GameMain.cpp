@@ -4,11 +4,12 @@
 //#include "d3dx12.h"
 //#include "FRTEngine.h"
 #include "resource.h"
-
+#include "Debug/Debug.h"
 
 using frt::Window;
 using frt::Exception;
 using frt::Mouse;
+using frt::Debug;
 
 #include <iostream>
 
@@ -30,14 +31,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     catch (const Exception& e)
     {
         // TODO: log
+        Debug::Flush();
         MessageBox(nullptr, e.What(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
     }
     catch (const std::exception& e)
     {
+        Debug::Flush();
         MessageBox(nullptr, e.what(), "Standrad Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     catch (...)
     {
+        Debug::Flush();
         MessageBox(nullptr, "No details available", "Unknown Eception", MB_OK | MB_ICONEXCLAMATION);
     }
 
@@ -46,5 +50,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (gameApp != nullptr)
         delete gameApp;
 
+    Debug::Flush();
     return -1;
 }
