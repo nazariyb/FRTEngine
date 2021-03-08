@@ -51,5 +51,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         delete gameApp;
 
     Debug::Flush();
-    return -1;
+    return 0;
 }

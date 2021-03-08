@@ -16,6 +16,6 @@ PSInput VShader(float4 position : POSITION, float4 color : COLOR)
 
 float4 PShader(PSInput input) : SV_TARGET
 {
-    //return input.color;
-    return float4(0.9f, 0.9f, 0.9f, 1.0f);
+    return input.color;
+    //return float4(0.9f, 0.9f, 0.9f, 1.0f);
 }

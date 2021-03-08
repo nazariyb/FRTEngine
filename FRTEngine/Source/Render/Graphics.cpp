@@ -186,6 +186,7 @@ void Graphics::LoadAssets()
         UINT compileFlags = 0;
 #endif
 
+        // FIXME: paths
         THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\shaders.hlsl", nullptr, nullptr, "VShader", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
         THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\shaders.hlsl", nullptr, nullptr, "PShader", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
@@ -227,8 +228,13 @@ void Graphics::LoadAssets()
         Vertex triangleVertices[] =
         {
             { { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-            { { 0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-            { { -0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+            { { 0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, .5f } },
+            { { -0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, .5f } },
+            //{ { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+
+            { { 0.25f * _aspectRatio, 1.f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+            { { 1.f, 0.25f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+            { { 0.25f * _aspectRatio, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
         };
 
         const UINT vertexBufferSize = sizeof(triangleVertices);
@@ -309,6 +315,7 @@ void Graphics::PopulateCommandList()
     _commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     _commandList->IASetVertexBuffers(0, 1, &_vertexBufferView);
     _commandList->DrawInstanced(3, 1, 0, 0);
+    //_commandList->DrawIndexedInstanced(3, )
 
     // Indicate that the back buffer will now be used to present.
     barrier = CD3DX12_RESOURCE_BARRIER::Transition(_renderTargets[_frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
