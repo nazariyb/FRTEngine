@@ -9,11 +9,14 @@ namespace PROJECT_NAMESPACE
 
 class MATHLIB_API Vector2Int
 {
+    friend class Vector2;
+
     friend class Vector3Int;
     friend class Vector4Int;
 
 public:
     Vector2Int();
+    Vector2Int(const class Vector2& Other, bool bRound=false);
     Vector2Int(const Vector2Int& Other);
     Vector2Int(const class Vector3Int& Other);
     Vector2Int& operator=(const Vector2Int& Other);
