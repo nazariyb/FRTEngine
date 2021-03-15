@@ -100,7 +100,7 @@ float Vector2::DotProduct(const Vector2& Other) const
 
 Vector2 Vector2::GetPseudoCrossProduct() const
 {
-
+    return {};
 }
 
 Vector2 Vector2::GetNormalized() const
@@ -137,12 +137,14 @@ float Vector2::GetAngleInRadiansWith(const Vector2& Other) const
 
 float Vector2::GetMagnitude() const
 {
-    return std::sqrt(*this * *this);
+    return {};
+    //return std::sqrt(*this * *this);
 }
 
 float Vector2::GetMagnitudeSquared() const
 {
-    return *this * *this;
+    return {};
+    //return *this * *this;
 }
 
 float Vector2::GetMagnitudeEstimated() const
@@ -152,7 +154,8 @@ float Vector2::GetMagnitudeEstimated() const
 
 float Vector2::DotProduct(const Vector2& lhs, const Vector2& rhs)
 {
-    return lhs * rhs;
+    return {};
+    //return lhs * rhs;
 }
 
 //Vector2 Vector2::GetPseudoCrossProduct(const Vector2& lhs, const Vector2& rhs)

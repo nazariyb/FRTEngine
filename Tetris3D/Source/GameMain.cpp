@@ -31,18 +31,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     catch (const Exception& e)
     {
         // TODO: log
+        Debug::LogError(e.GetType());
+        Debug::LogError(e.What());
         Debug::Flush();
         MessageBox(nullptr, e.What(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
     }
     catch (const std::exception& e)
     {
+        Debug::LogError(e.what());
         Debug::Flush();
-        MessageBox(nullptr, e.what(), "Standrad Exception", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     catch (...)
     {
         Debug::Flush();
-        MessageBox(nullptr, "No details available", "Unknown Eception", MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
 
 #endif // _DEBUG

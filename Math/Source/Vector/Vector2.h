@@ -67,39 +67,39 @@ public:
 
     static float DotProduct(const Vector2& lhs, const Vector2& rhs);
 
-    static Vector2 GetPseudoCrossProduct(const Vector2& lhs, const Vector2& rhs);
+    //static Vector2 GetPseudoCrossProduct(const Vector2& lhs, const Vector2& rhs);
 
     static float GetAngleInDegreesBetween(const Vector2& lhs, const Vector2& rhs);
 
     static float GetAngleInRadiansBetween(const Vector2& lhs, const Vector2& rhs);
 
-    friend Vector2 MATHLIB_API operator+(const Vector2& lhs, const Vector2& rhs);
+    //friend Vector2 MATHLIB_API operator+(const Vector2& lhs, const Vector2& rhs);
 
-    friend Vector2 MATHLIB_API operator+(float Scalar, const Vector2& Vector);
+    //friend Vector2 MATHLIB_API operator+(float Scalar, const Vector2& Vector);
 
-    friend Vector2 MATHLIB_API operator+(const Vector2& Vector, float Scalar);
+    //friend Vector2 MATHLIB_API operator+(const Vector2& Vector, float Scalar);
 
-    friend Vector2 MATHLIB_API operator-(const Vector2& lhs, const Vector2& rhs);
+    //friend Vector2 MATHLIB_API operator-(const Vector2& lhs, const Vector2& rhs);
 
-    friend Vector2 MATHLIB_API operator-(const Vector2& Vector, float Scalar);
+    //friend Vector2 MATHLIB_API operator-(const Vector2& Vector, float Scalar);
 
-    friend float MATHLIB_API operator*(const Vector2& lhs, const Vector2& rhs);
+    //friend float MATHLIB_API operator*(const Vector2& lhs, const Vector2& rhs);
 
-    friend Vector2 MATHLIB_API operator*(float Scalar, const Vector2& Vector);
+    //friend Vector2 MATHLIB_API operator*(float Scalar, const Vector2& Vector);
 
-    friend Vector2 MATHLIB_API operator*(const Vector2& Vector, float Scalar);
+    //friend Vector2 MATHLIB_API operator*(const Vector2& Vector, float Scalar);
 
-    friend bool MATHLIB_API operator==(const Vector2& lhs, const Vector2& rhs);
+    //friend bool MATHLIB_API operator==(const Vector2& lhs, const Vector2& rhs);
 
-    friend bool MATHLIB_API operator==(float Scalar, const Vector2& Vector);
+    //friend bool MATHLIB_API operator==(float Scalar, const Vector2& Vector);
 
-    friend bool MATHLIB_API operator==(const Vector2& Vector, float Scalar);
+    //friend bool MATHLIB_API operator==(const Vector2& Vector, float Scalar);
 
-    friend bool MATHLIB_API operator!=(const Vector2& lhs, const Vector2& rhs);
+    //friend bool MATHLIB_API operator!=(const Vector2& lhs, const Vector2& rhs);
 
-    friend bool MATHLIB_API operator!=(float Scalar, const Vector2& Vector);
+    //friend bool MATHLIB_API operator!=(float Scalar, const Vector2& Vector);
 
-    friend bool MATHLIB_API operator!=(const Vector2& Vector, float Scalar);
+    //friend bool MATHLIB_API operator!=(const Vector2& Vector, float Scalar);
 
 protected:
     DirectX::XMVECTOR _data;
