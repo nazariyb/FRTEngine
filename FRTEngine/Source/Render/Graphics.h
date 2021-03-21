@@ -8,6 +8,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <wrl.h>
+#include <bitset>
 
 #include "Tools/d3dx12.h"
 
@@ -15,19 +16,33 @@
 namespace frt
 {
 using Microsoft::WRL::ComPtr;
+class Window;
 
 class FRTENGINE_API Graphics
 {
 public:
-    Graphics(HWND hWindow);
+    Graphics(Window* owner, HWND hWindow);
 
     virtual void Init(HWND hWindow);
     virtual void Update();
     virtual void Render();
     virtual void Destroy();
 
+    // TMP: start
+    void MoveForwardY();
+    void MoveBackwardX();
+    void MoveBackwardY();
+    void MoveForwardX();
+
+    std::bitset<4> moveDirections;
+    const float translationSpeed = 0.04f;
+    const float offsetBoundsX = 1.25f;
+    const float offsetBoundsY = 1.42f;
+    // TMP: end
 
 private:
+    Window* _owner;
+
     static const UINT FrameCount = 2;
     static const UINT TextureWidth = 256;
     static const UINT TextureHeight = 256;
@@ -39,6 +54,13 @@ private:
         DirectX::XMFLOAT2 uv;
         //DirectX::XMFLOAT4 color;
     };
+
+    struct SceneConstantBuffer
+    {
+        DirectX::XMFLOAT4 offset;
+        float padding[60]; // Padding so the constant buffer is 256-byte aligned.
+    };
+    static_assert((sizeof(SceneConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 
     // Pipeline objects.
     CD3DX12_VIEWPORT _viewport;
@@ -52,15 +74,20 @@ private:
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
     ComPtr<ID3D12DescriptorHeap> _srvHeap;
+    //ComPtr<ID3D12DescriptorHeap> _cbvHeap;
     ComPtr<ID3D12PipelineState> _pipelineState;
     ComPtr<ID3D12GraphicsCommandList> _commandList;
     ComPtr<ID3D12GraphicsCommandList> _bundle;
     UINT _rtvDescriptorSize;
+    UINT _cbvSrvDescriptorSize;
 
     // App resources.
     ComPtr<ID3D12Resource> _vertexBuffer;
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
     ComPtr<ID3D12Resource> _texture;
+    ComPtr<ID3D12Resource> _constantBuffer;
+    SceneConstantBuffer _constantBufferData;
+    UINT8* _pCbvDataBegin;
 
     // Synchronization objects.
     UINT _frameIndex;

@@ -16,15 +16,12 @@ using frt::Debug;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    App* gameApp = nullptr;
 #ifdef _DEBUG
     try
     {
 #endif // _DEBUG
         
-        gameApp = App::CreateGameApp<TetrisApp>();
-        gameApp->Init(hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(WIN_ICON)));
-        gameApp->Start();
+        App::Launch<TetrisApp>(hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(WIN_ICON)));
 
 #ifdef _DEBUG
     }
@@ -50,8 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #endif // _DEBUG
 
-    if (gameApp != nullptr)
-        delete gameApp;
+    App::Close();
 
     Debug::Flush();
     return 0;

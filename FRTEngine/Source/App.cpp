@@ -3,6 +3,9 @@
 
 namespace frt
 {
+
+App* App::_instance = nullptr;
+
 App::App(int width, int height, const char* name)
     : _windowName(name), _windowWidth(width), _windowHeight(height)
 {
@@ -12,6 +15,21 @@ App::App(int width, int height, const char* name)
 App::~App()
 {
     delete window;
+}
+
+App* App::GetInstance()
+{
+    return _instance;
+}
+
+void App::Close()
+{
+    delete _instance;
+}
+
+Window* App::GetWindow()
+{
+    return window;
 }
 
 void App::Update()

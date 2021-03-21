@@ -120,6 +120,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" 
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>$(RebuildDependsOn)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -151,6 +154,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" 
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>$(RebuildDependsOn)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -178,6 +184,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" 
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>$(RebuildDependsOn)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -209,6 +218,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" 
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.lib" "$(SolutionDir)Dependencies\FRTEngine\"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" "$(SolutionDir)Dependencies\FRTEngine\"</Command>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>$(RebuildDependsOn)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameMain.cpp" />

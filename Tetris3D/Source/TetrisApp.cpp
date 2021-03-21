@@ -10,7 +10,7 @@
 #include "Input/KeyboardEvent.h"
 #include "Debug/Debug.h"
 #include "MathLib.h"
-
+#include "Render/Graphics.h"
 
 using frt::Window;
 using frt::Exception;
@@ -24,6 +24,7 @@ using frt::Debug;
 using frt::Vector2Int;
 using frt::Vector3Int;
 //using frt::Vector3Float;
+using frt::Graphics;
 
 //using namespace frt;
 
@@ -33,7 +34,8 @@ TetrisApp::TetrisApp()
 
 int TetrisApp::Start()
 {
-    window->keyboard.onKeyReleasedEvent += [this] (Event* event) {
+    window->keyboard.onKeyReleasedEvent += [this] (Event* event)
+    {
         auto keyboardEvent = static_cast<KeyboardEvent*>(event);
         if (keyboardEvent->GetKeyCode() == VK_SPACE)
         {
@@ -47,20 +49,49 @@ int TetrisApp::Start()
         Debug::LogInfo("CODE is " + std::to_string(keyboardEvent->GetKeyCode()));
     };
 
-    window->mouse.onButtonPressedEvent += [this] (Event* event) {
+    window->keyboard.onKeyPressedEvent += [this] (Event* event)
+    {
+        if (window->keyboard.IsKeyPressed('W'))
+            window->GetGraphics().moveDirections[0] = true;
+        if (window->keyboard.IsKeyPressed('A'))
+            window->GetGraphics().moveDirections[1] = true;
+        if (window->keyboard.IsKeyPressed('S'))
+            window->GetGraphics().moveDirections[2] = true;
+        if (window->keyboard.IsKeyPressed('D'))
+            window->GetGraphics().moveDirections[3] = true;
+
+    };
+
+    window->keyboard.onKeyReleasedEvent += [this] (Event* event)
+    {
+        if (!window->keyboard.IsKeyPressed('W'))
+            window->GetGraphics().moveDirections[0] = false;
+        if (!window->keyboard.IsKeyPressed('A'))
+            window->GetGraphics().moveDirections[1] = false;
+        if (!window->keyboard.IsKeyPressed('S'))
+            window->GetGraphics().moveDirections[2] = false;
+        if (!window->keyboard.IsKeyPressed('D'))
+            window->GetGraphics().moveDirections[3] = false;
+
+    };
+
+    window->mouse.onButtonPressedEvent += [this] (Event* event)
+    {
         std::ostringstream oss;
         oss << (static_cast<MouseEvent*>(event)->IsLeftPressed() ? "Left" : "Right");
         oss << " clicked!";
         window->SetTitle(oss.str());
     };
 
-    window->mouse.onButtonReleasedEvent += [this] (Event* event) {
+    window->mouse.onButtonReleasedEvent += [this] (Event* event)
+    {
         std::ostringstream oss;
         oss << "Released!";
         window->SetTitle(oss.str());
     };
 
-    window->mouse.onMouseMoveEvent += [this] (Event* event) {
+    window->mouse.onMouseMoveEvent += [this] (Event* event)
+    {
         auto mouseEvent = static_cast<MouseEvent*>(event);
         std::ostringstream oss;
         oss << "Move: " << mouseEvent->GetPositionX()

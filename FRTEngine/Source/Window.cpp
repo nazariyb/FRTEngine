@@ -2,6 +2,7 @@
 #include <sstream>
 //#include "WindowsThrowMacros.h"
 //#include "imgui/imgui_impl_win32.h"
+#include "Debug/Debug.h"
 
 namespace frt
 {
@@ -66,7 +67,7 @@ noexcept
 
     ShowWindow(_hWindow, SW_SHOWDEFAULT);
 
-    _graphics = std::make_unique<Graphics>(_hWindow);
+    _graphics = std::make_unique<Graphics>(this, _hWindow);
 
     //// Init ImGui Win32 Impl
     //ImGui_ImplWin32_Init(_hWindow);
