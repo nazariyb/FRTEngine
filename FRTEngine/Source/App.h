@@ -21,7 +21,7 @@ public:
     
     template<class T>
     static frt::App* Launch(HINSTANCE hInstance, HICON icon);
-    static void Close();
+    static void Shutdown();
 
     Window* GetWindow();
 

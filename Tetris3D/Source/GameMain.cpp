@@ -2,14 +2,13 @@
 #include "Exception.h"
 #include "TetrisApp.h"
 //#include "d3dx12.h"
-//#include "FRTEngine.h"
+#include "FRTEngine.h"
 #include "resource.h"
-#include "Debug/Debug.h"
 
 using frt::Window;
 using frt::Exception;
 using frt::Mouse;
-using frt::Debug;
+using frt::Logger;
 
 #include <iostream>
 
@@ -28,27 +27,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     catch (const Exception& e)
     {
         // TODO: log
-        Debug::LogError(e.GetType());
-        Debug::LogError(e.What());
-        Debug::Flush();
+        Logger::DebugLogError(e.GetType());
+        Logger::DebugLogError(e.What());
+        Logger::Flush();
         MessageBox(nullptr, e.What(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
     }
     catch (const std::exception& e)
     {
-        Debug::LogError(e.what());
-        Debug::Flush();
+        Logger::DebugLogError(e.what());
+        Logger::Flush();
         MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     catch (...)
     {
-        Debug::Flush();
+        Logger::Flush();
         MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
 
 #endif // _DEBUG
 
-    App::Close();
+    App::Shutdown();
 
-    Debug::Flush();
+    Logger::Flush();
     return 0;
 }

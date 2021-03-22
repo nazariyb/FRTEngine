@@ -1,5 +1,5 @@
 #include "App.h"
-#include "Debug/Debug.h"
+#include "Utils/Logger/Logger.h"
 
 namespace frt
 {
@@ -9,7 +9,7 @@ App* App::_instance = nullptr;
 App::App(int width, int height, const char* name)
     : _windowName(name), _windowWidth(width), _windowHeight(height)
 {
-    Debug::LogInfo("Create App");
+    Logger::DebugLogInfo("Create App");
 }
 
 App::~App()
@@ -22,7 +22,7 @@ App* App::GetInstance()
     return _instance;
 }
 
-void App::Close()
+void App::Shutdown()
 {
     delete _instance;
 }
@@ -40,7 +40,7 @@ void App::Update()
 
 void App::Init(HINSTANCE hInstance, HICON icon)
 {
-    Debug::LogInfo("Initing game app");
+    Logger::LogInfo("Initing game app");
     window = new Window(_windowWidth, _windowHeight, _windowName, icon);
 }
 

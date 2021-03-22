@@ -184,6 +184,7 @@
     <ClInclude Include="Source\Event.h" />
     <ClInclude Include="Source\Exception.h" />
     <ClInclude Include="Source\FRTEngine.h" />
+    <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\InputEvent.h" />
     <ClInclude Include="Source\Input\Keyboard.h" />
     <ClInclude Include="Source\Input\KeyboardEvent.h" />
@@ -191,7 +192,9 @@
     <ClInclude Include="Source\Input\MouseEvent.h" />
     <ClInclude Include="Source\Input\MouseInfo.h" />
     <ClInclude Include="Source\Render\Graphics.h" />
+    <ClInclude Include="Source\Render\Mesh.h" />
     <ClInclude Include="Source\Tools\d3dx12.h" />
+    <ClInclude Include="Source\Utils\Logger\Logger.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
     <ClInclude Include="Source\Time\Time.h" />
@@ -208,6 +211,8 @@
     <ClCompile Include="Source\Input\MouseEvent.cpp" />
     <ClCompile Include="Source\Input\MouseInfo.cpp" />
     <ClCompile Include="Source\Render\Graphics.cpp" />
+    <ClCompile Include="Source\Render\Mesh.cpp" />
+    <ClCompile Include="Source\Utils\Logger\Logger.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Time\Time.cpp" />
   </ItemGroup>

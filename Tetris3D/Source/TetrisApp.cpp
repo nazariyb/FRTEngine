@@ -25,6 +25,7 @@ using frt::Vector2Int;
 using frt::Vector3Int;
 //using frt::Vector3Float;
 using frt::Graphics;
+using frt::Logger;
 
 //using namespace frt;
 
@@ -46,7 +47,7 @@ int TetrisApp::Start()
             window->SetTitle("It's NOT space!");
         }
         // fcking visual studio doesn't support std::format yet!?
-        Debug::LogInfo("CODE is " + std::to_string(keyboardEvent->GetKeyCode()));
+        //Logger::DebugLogInfo("CODE is " + std::to_string(keyboardEvent->GetKeyCode()));
     };
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
@@ -111,11 +112,11 @@ int TetrisApp::Start()
     //                               6, 5, 4,
     //                               3, 2, 1
     //                           });
-    //Debug::LogInfo("\n" + m1.GetAsString());
-    //Debug::LogInfo("\n" + operator+(m1, m2).GetAsString());
-    //Debug::LogInfo("\n" + (m1 + m2).GetAsString());
-    //Debug::LogInfo("\n" + (m1 - m2).GetAsString());
-    //Debug::LogInfo("\n" + (m2 - m1).GetAsString());
+    //Logger::DebugLogInfo("\n" + m1.GetAsString());
+    //Logger::DebugLogInfo("\n" + operator+(m1, m2).GetAsString());
+    //Logger::DebugLogInfo("\n" + (m1 + m2).GetAsString());
+    //Logger::DebugLogInfo("\n" + (m1 - m2).GetAsString());
+    //Logger::DebugLogInfo("\n" + (m2 - m1).GetAsString());
 
     Vector2Int v1{ 1, 0 };
     Vector2Int v2{ 1, 2 };
@@ -123,31 +124,31 @@ int TetrisApp::Start()
     Vector3Int v4{ -2, 1, 5 };
     Vector3Int v5{ 0, 7, 2 };
 
-    Debug::LogInfo("v1: " + v1.GetAsString());
-    Debug::LogInfo("v2: " + v2.GetAsString());
-    Debug::LogInfo("v3: " + v3.GetAsString());
-    Debug::LogInfo("v4: " + v4.GetAsString());
-    Debug::LogInfo("v5: " + v5.GetAsString());
+    Logger::DebugLogInfo("v1: " + v1.GetAsString());
+    Logger::DebugLogInfo("v2: " + v2.GetAsString());
+    Logger::DebugLogInfo("v3: " + v3.GetAsString());
+    Logger::DebugLogInfo("v4: " + v4.GetAsString());
+    Logger::DebugLogInfo("v5: " + v5.GetAsString());
     
-    Debug::LogInfo("");
-    Debug::LogInfo("v1 + v2: " + operator+(v1, v2).GetAsString());
-    //Debug::LogInfo("v1 + v2: " + (v1 + v2).GetAsString());
-    Debug::LogInfo("v1 - v2: " + (v1 - v2).GetAsString());
-    Debug::LogInfo("v1 * v2: " + std::to_string(v1 * v2));
-    Debug::LogInfo("v1 * v3: " + std::to_string(v1 * v3));
-    Debug::LogInfo("v1 * v1: " + std::to_string(v1 * v1));
-    Debug::LogInfo("v1 length: " + std::to_string(v1.GetMagnitude()));
-    //Debug::LogInfo("v1 normalized: " + v1.GetNormalized().GetAsString());
-    //Debug::LogInfo("v2 normalized: " + v2.GetNormalized().GetAsString());
-    Debug::LogInfo("v3 * 2: " + (v3 * 2).GetAsString());
+    Logger::DebugLogInfo("");
+    Logger::DebugLogInfo("v1 + v2: " + operator+(v1, v2).GetAsString());
+    //Logger::DebugLogInfo("v1 + v2: " + (v1 + v2).GetAsString());
+    Logger::DebugLogInfo("v1 - v2: " + (v1 - v2).GetAsString());
+    Logger::DebugLogInfo("v1 * v2: " + std::to_string(v1 * v2));
+    Logger::DebugLogInfo("v1 * v3: " + std::to_string(v1 * v3));
+    Logger::DebugLogInfo("v1 * v1: " + std::to_string(v1 * v1));
+    Logger::DebugLogInfo("v1 length: " + std::to_string(v1.GetMagnitude()));
+    //Logger::DebugLogInfo("v1 normalized: " + v1.GetNormalized().GetAsString());
+    //Logger::DebugLogInfo("v2 normalized: " + v2.GetNormalized().GetAsString());
+    Logger::DebugLogInfo("v3 * 2: " + (v3 * 2).GetAsString());
     //Vector<int>(10);
 
-    Debug::LogInfo("");
-    Debug::LogInfo("v4 + v5: " + (v4 + v5).GetAsString());
-    Debug::LogInfo("v4 - v5: " + (v4 - v5).GetAsString());
-    Debug::LogInfo("v4 * v5: " + std::to_string(v4 * v5));
-    Debug::LogInfo("v4 == v5: " + std::to_string(v4 == v5));
-    Debug::LogInfo("v4 != v5: " + std::to_string(v4 != v5));
+    Logger::DebugLogInfo("");
+    Logger::DebugLogInfo("v4 + v5: " + (v4 + v5).GetAsString());
+    Logger::DebugLogInfo("v4 - v5: " + (v4 - v5).GetAsString());
+    Logger::DebugLogInfo("v4 * v5: " + std::to_string(v4 * v5));
+    Logger::DebugLogInfo("v4 == v5: " + std::to_string(v4 == v5));
+    Logger::DebugLogInfo("v4 != v5: " + std::to_string(v4 != v5));
 
     //Vector2Int v1, v2;
     //v1 + v2;
@@ -166,31 +167,31 @@ int TetrisApp::Start()
 
     //frt::Vector3Int::GetZeroVector();
 
-    //Debug::LogInfo("Vector3: " + std::to_string(v3.GetX()));
+    //Logger::DebugLogInfo("Vector3: " + std::to_string(v3.GetX()));
 
-    //Debug::LogInfo("v3 : " + v3.GetAsString());
-    //Debug::LogInfo("v4 : " + v4.GetAsString());
-    //Debug::LogInfo("v5 : " + v5.GetAsString());
-    //Debug::LogInfo("v6 : " + v6.GetAsString());
-    //Debug::LogInfo("v7 : " + v7.GetAsString());
-    //Debug::LogInfo("v8 : " + v8.GetAsString());
-    //Debug::LogInfo("v9 : " + v9.GetAsString());
-    //Debug::LogInfo("v10: " + v10.GetAsString());
-    //Debug::LogInfo("v11: " + v11.GetAsString());
-    //Debug::LogInfo("v12: " + v12.GetAsString());
+    //Logger::DebugLogInfo("v3 : " + v3.GetAsString());
+    //Logger::DebugLogInfo("v4 : " + v4.GetAsString());
+    //Logger::DebugLogInfo("v5 : " + v5.GetAsString());
+    //Logger::DebugLogInfo("v6 : " + v6.GetAsString());
+    //Logger::DebugLogInfo("v7 : " + v7.GetAsString());
+    //Logger::DebugLogInfo("v8 : " + v8.GetAsString());
+    //Logger::DebugLogInfo("v9 : " + v9.GetAsString());
+    //Logger::DebugLogInfo("v10: " + v10.GetAsString());
+    //Logger::DebugLogInfo("v11: " + v11.GetAsString());
+    //Logger::DebugLogInfo("v12: " + v12.GetAsString());
 
     while (true)
     {
         if (const auto ecode = Window::ProcessMessages())
         {
-            Debug::LogWarning("\nExit from App with: " + std::to_string(*ecode));
+            Logger::LogInfo("\nExit from App with: " + std::to_string(*ecode));
             return *ecode;
         }
 
         Update();
     }
 
-    Debug::LogInfo("Exit from App");
+    Logger::LogInfo("Exit from App");
     return 0;
 }
 
