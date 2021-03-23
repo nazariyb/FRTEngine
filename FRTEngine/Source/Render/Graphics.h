@@ -68,8 +68,8 @@ private:
     ComPtr<IDXGISwapChain3> _swapChain;
     ComPtr<ID3D12Device> _device;
     ComPtr<ID3D12Resource> _renderTargets[FrameCount];
-    ComPtr<ID3D12CommandAllocator> _commandAllocator;
-    ComPtr<ID3D12CommandAllocator> _bundleAllocator;
+    ComPtr<ID3D12CommandAllocator> _commandAllocators[FrameCount];
+    ComPtr<ID3D12CommandAllocator> _bundleAllocators[FrameCount];
     ComPtr<ID3D12CommandQueue> _commandQueue;
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
@@ -93,7 +93,7 @@ private:
     UINT _frameIndex;
     HANDLE _fenceEvent;
     ComPtr<ID3D12Fence> _fence;
-    UINT64 _fenceValue;
+    UINT64 _fenceValues[FrameCount];
 
     float _aspectRatio = 1280. / 720.;
 

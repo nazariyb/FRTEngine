@@ -37,7 +37,7 @@ int TetrisApp::Start()
 {
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
-        auto keyboardEvent = static_cast<KeyboardEvent*>(event);
+        KeyboardEvent* keyboardEvent = static_cast<KeyboardEvent*>(event);
         if (keyboardEvent->GetKeyCode() == VK_SPACE)
         {
             window->SetTitle("It's space!");

@@ -40,6 +40,7 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _pCbvDataBegin(nullptr),
     _viewport(0.0f, 0.0f, static_cast<float>(1280), static_cast<float>(720)),
     _scissorRect(static_cast<LONG>(0), static_cast<LONG>(0), static_cast<LONG>(1280), static_cast<LONG>(720)),
+    _fenceValues{},
     _rtvDescriptorSize(0),
     _cbvSrvDescriptorSize(0),
     _constantBufferData{}
@@ -244,12 +245,11 @@ void Graphics::LoadPipeline(HWND hWindow)
             THROW_IF_FAILED(_swapChain->GetBuffer(n, IID_PPV_ARGS(&_renderTargets[n])));
             _device->CreateRenderTargetView(_renderTargets[n].Get(), nullptr, rtvHandle);
             rtvHandle.Offset(1, _rtvDescriptorSize);
+
+            THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocators[n])));
+            THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&_bundleAllocators[n])));
         }
     }
-
-    THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocator)));
-    THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_BUNDLE, IID_PPV_ARGS(&_bundleAllocator)));
-
 }
 
 void Graphics::LoadAssets()
@@ -403,7 +403,7 @@ void Graphics::LoadAssets()
     CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle(_srvHeap->GetCPUDescriptorHandleForHeapStart(), 0, _cbvSrvDescriptorSize);
 
     // Create the command list.
-    THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator.Get(), _pipelineState.Get(), IID_PPV_ARGS(&_commandList)));
+    THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocators[_frameIndex].Get(), _pipelineState.Get(), IID_PPV_ARGS(&_commandList)));
 
     // Note: ComPtr's are CPU objects but this resource needs to stay in scope until
     // the command list that references it has finished executing on the GPU.
@@ -506,7 +506,7 @@ void Graphics::LoadAssets()
 
     // Create and record the bundle.
     {
-        THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_BUNDLE, _bundleAllocator.Get(), _pipelineState.Get(), IID_PPV_ARGS(&_bundle)));
+        THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_BUNDLE, _bundleAllocators[_frameIndex].Get(), _pipelineState.Get(), IID_PPV_ARGS(&_bundle)));
         _bundle->SetGraphicsRootSignature(_rootSignature.Get());
         _bundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         _bundle->IASetVertexBuffers(0, 1, &_vertexBufferView);
@@ -521,7 +521,7 @@ void Graphics::LoadAssets()
     // Create synchronization objects and wait until assets have been uploaded to the GPU.
     {
         THROW_IF_FAILED(_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence)));
-        _fenceValue = 1;
+        _fenceValues[_frameIndex]++;
 
         // Create an event handle to use for frame synchronization.
         _fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -578,12 +578,12 @@ void Graphics::PopulateCommandList()
     // Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
     // fences to determine GPU execution progress.
-    THROW_IF_FAILED(_commandAllocator->Reset());
+    THROW_IF_FAILED(_commandAllocators[_frameIndex]->Reset());
 
     // However, when ExecuteCommandList() is called on a particular command 
     // list, that command list can then be reset at any time and must be before 
     // re-recording.
-    THROW_IF_FAILED(_commandList->Reset(_commandAllocator.Get(), _pipelineState.Get()));
+    THROW_IF_FAILED(_commandList->Reset(_commandAllocators[_frameIndex].Get(), _pipelineState.Get()));
 
     // Set necessary state.
     _commandList->SetGraphicsRootSignature(_rootSignature.Get());
@@ -633,9 +633,8 @@ void Graphics::WaitForPreviousFrame()
     // illustrate how to use fences for efficient resource usage.
 
     // Signal and increment the fence value.
-    const UINT64 fence = _fenceValue;
+    const UINT64 fence = _fenceValues[_frameIndex];
     THROW_IF_FAILED(_commandQueue->Signal(_fence.Get(), fence));
-    _fenceValue++;
 
     // Wait until the previous frame is finished.
     if (_fence->GetCompletedValue() < fence)
@@ -645,6 +644,7 @@ void Graphics::WaitForPreviousFrame()
     }
 
     _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+    _fenceValues[_frameIndex] = fence + 1;
 }
 
 }
