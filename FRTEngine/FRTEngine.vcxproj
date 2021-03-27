@@ -191,6 +191,7 @@
     <ClInclude Include="Source\Input\Mouse.h" />
     <ClInclude Include="Source\Input\MouseEvent.h" />
     <ClInclude Include="Source\Input\MouseInfo.h" />
+    <ClInclude Include="Source\Render\DeviceResources.h" />
     <ClInclude Include="Source\Render\Graphics.h" />
     <ClInclude Include="Source\Render\Mesh.h" />
     <ClInclude Include="Source\Tools\d3dx12.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Source\Input\Mouse.cpp" />
     <ClCompile Include="Source\Input\MouseEvent.cpp" />
     <ClCompile Include="Source\Input\MouseInfo.cpp" />
+    <ClCompile Include="Source\Render\DeviceResources.cpp" />
     <ClCompile Include="Source\Render\Graphics.cpp" />
     <ClCompile Include="Source\Render\Mesh.cpp" />
     <ClCompile Include="Source\Utils\Logger\Logger.cpp" />

@@ -1,4 +1,4 @@
-#include "Graphics.h"
+﻿#include "Graphics.h"
 #include "Exception.h"
 #include "Debug/Debug.h"
 #include "Event.h"
@@ -6,6 +6,7 @@
 #include "Window.h"
 
 #include <string>
+#include "Utils/Logger/Logger.h"
 
 
 void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
@@ -342,7 +343,7 @@ void Graphics::LoadAssets()
         psoDesc.DepthStencilState.StencilEnable = FALSE;
         psoDesc.SampleMask = UINT_MAX;
         psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-        psoDesc.NumRenderTargets = 1;
+        psoDesc.NumRenderTargets = 2;
         psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
         psoDesc.SampleDesc.Count = 1;
         THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineState)));
@@ -353,25 +354,92 @@ void Graphics::LoadAssets()
         // Define the geometry for a triangle.
         Vertex triangleVertices[] =
         {
-            { { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 0.5f, 0.0f } },
-            { { 0.25f, -0.25f * _aspectRatio, 0.0f }, { 1.0f, 1.0f } },
-            { { -0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 1.0f } }
+            // front side
+            { { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 0
+            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 1.0f } },  //  Γ  // 1
+            { { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 2
+            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 1.0f } },  //  ┐  // 3
 
-            //{ { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-            //{ { 0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-            //{ { -0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+            // right side
+            { { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 4
+            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 1.0f } },  //  Γ  // 5
+            //{ { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
+            //{ { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
 
-            //{ { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-            //{ { 0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 1.0f, 0.0f, .5f } },
-            //{ { -0.25f, -0.25f * _aspectRatio, 0.0f }, { 0.0f, 0.0f, 1.0f, .5f } },
-            ////{ { 0.0f, 0.25f * _aspectRatio, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+            { { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
+            { { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
 
-            //{ { 0.25f * _aspectRatio, 1.f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-            //{ { 1.f, 0.25f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-            //{ { 0.25f * _aspectRatio, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+            // left side
+            { { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
+            { { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
+
+            //{ { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
+            //{ { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
+            { { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 10
+            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 1.0f } },  //  ┐  // 11
+
+            // back side (mirrored)
+            { { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 12
+            { { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 13
+            { { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 14
+            { { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 15
+
+            // top side
+            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 16
+            
+            //{ { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
+            { { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
+            
+            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 18
+
+            //{ { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
+            { { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
+
+            // bottom side (mirrored)
+            //{ { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
+            { { -0.05f, -0.05f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
+
+            { { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
+            //{ { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
+
+            //{ { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
+            { { 0.3f, -0.05f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
+
+            { { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
+            //{ { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
         };
 
+        const unsigned char indices[] =
+        {
+            // front
+            0, 1, 2,
+            2, 1, 3,
+
+            // right
+            4, 5, 6,
+            6, 5, 7,
+
+            // left
+            8, 9, 10,
+            10, 9, 11,
+
+            // back
+            12, 13, 14,
+            14, 13, 15,
+
+            // top
+            16, 17, 18,
+            18, 17, 19,
+
+            // bottom
+            20, 21, 22,
+            22, 21, 23,
+        };
+
+
         const UINT vertexBufferSize = sizeof(triangleVertices);
+        const UINT indexBufferSize = sizeof(indices);
+        Logger::DebugLogInfo("Index buffer size: " + std::to_string(indexBufferSize));
 
         // Note: using upload heaps to transfer static data like vert buffers is not 
         // recommended. Every time the GPU needs it, the upload heap will be marshalled 
@@ -398,6 +466,48 @@ void Graphics::LoadAssets()
         _vertexBufferView.BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
         _vertexBufferView.StrideInBytes = sizeof(Vertex);
         _vertexBufferView.SizeInBytes = vertexBufferSize;
+
+        // index buffer
+        CD3DX12_HEAP_PROPERTIES heapProps_(D3D12_HEAP_TYPE_UPLOAD);
+        auto desc_ = CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize);
+        THROW_IF_FAILED(_device->CreateCommittedResource(
+            &heapProps_,
+            D3D12_HEAP_FLAG_NONE,
+            &desc_,
+            D3D12_RESOURCE_STATE_GENERIC_READ,
+            nullptr,
+            IID_PPV_ARGS(&_indexBuffer)));
+
+        // Copy the triangle data to the vertex buffer.
+        UINT8* pIndexDataBegin;
+        CD3DX12_RANGE readRangeIndex(0, 0);        // We do not intend to read from this resource on the CPU.
+        THROW_IF_FAILED(_indexBuffer->Map(0, &readRangeIndex, reinterpret_cast<void**>(&pIndexDataBegin)));
+        memcpy(pIndexDataBegin, indices, sizeof(indices));
+        _indexBuffer->Unmap(0, nullptr);
+
+        // Initialize the vertex buffer view.
+        _indexBufferView.BufferLocation = _indexBuffer->GetGPUVirtualAddress();
+        //_indexBufferView.StrideInBytes = sizeof(Vertex);
+        _indexBufferView.SizeInBytes = indexBufferSize;
+    }
+
+    // Create and record the bundle.
+    {
+        THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_BUNDLE, _bundleAllocators[_frameIndex].Get(), _pipelineState.Get(), IID_PPV_ARGS(&_bundle)));
+        _bundle->SetGraphicsRootSignature(_rootSignature.Get());
+        _bundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        _bundle->IASetVertexBuffers(0, 1, &_vertexBufferView);
+        _bundle->IASetIndexBuffer(&_indexBufferView);
+        for (UINT i = 0; i < _indexBufferView.SizeInBytes / (3 * sizeof(unsigned char)); i++)
+        {
+            Logger::DebugLogInfo("Draw triagnle #" + std::to_string(i));
+            _bundle->DrawIndexedInstanced(3, 1, i * 3, 0, 0);
+        }
+        //_bundle->DrawIndexedInstanced(3, 1, 0, 0, 0);
+        //_bundle->DrawIndexedInstanced(3, 1, 3, 0, 0);
+        //_bundle->DrawInstanced(3, 1, 0, 0);
+        //_bundle->DrawInstanced(3, 1, 3, 3);
+        THROW_IF_FAILED(_bundle->Close());
     }
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle(_srvHeap->GetCPUDescriptorHandleForHeapStart(), 0, _cbvSrvDescriptorSize);
@@ -503,16 +613,6 @@ void Graphics::LoadAssets()
     //Command lists are created in the recording state, but there is nothing
     //to record yet. The main loop expects it to be closed, so close it now.
     THROW_IF_FAILED(_commandList->Close());
-
-    // Create and record the bundle.
-    {
-        THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_BUNDLE, _bundleAllocators[_frameIndex].Get(), _pipelineState.Get(), IID_PPV_ARGS(&_bundle)));
-        _bundle->SetGraphicsRootSignature(_rootSignature.Get());
-        _bundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        _bundle->IASetVertexBuffers(0, 1, &_vertexBufferView);
-        _bundle->DrawInstanced(3, 1, 0, 0);
-        THROW_IF_FAILED(_bundle->Close());
-    }
 
     // Close the command list and execute it to begin the initial GPU setup.
     ID3D12CommandList* ppCommandLists[] = { _commandList.Get() };
