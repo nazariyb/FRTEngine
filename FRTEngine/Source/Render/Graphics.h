@@ -38,6 +38,18 @@ public:
     const float translationSpeed = 0.04f;
     const float offsetBoundsX = 1.25f;
     const float offsetBoundsY = 1.42f;
+    float currentOffsetX = 0;
+    float currentOffsetY = 0;
+    DirectX::XMMATRIX currentRotation;
+    DirectX::XMMATRIX bufferTranslation;
+    DirectX::XMMATRIX bufferTranslation2;
+    DirectX::XMMATRIX baseTrasform;
+    bool bRotate = true;
+    bool bMove = true;
+    const float zOffset = .25f;
+    const float fovDegrees = 120.f;
+    const float perspectiveNearZ = .05f;
+    const float perspectiveFarZ = 10.f;
     // TMP: end
 
 private:
@@ -58,7 +70,8 @@ private:
     struct SceneConstantBuffer
     {
         DirectX::XMFLOAT4 offset;
-        float padding[60]; // Padding so the constant buffer is 256-byte aligned.
+        DirectX::XMMATRIX transform;
+        float padding[44]; // Padding so the constant buffer is 256-byte aligned.
     };
     static_assert((sizeof(SceneConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 

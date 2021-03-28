@@ -1,7 +1,8 @@
 cbuffer SceneConstantBuffer : register(b0)
 {
     float4 offset;
-    float4 padding[15];
+    matrix transform;
+    float4 padding[11];
 }
 
 struct PSInput
@@ -18,7 +19,9 @@ PSInput VShader(float4 position : POSITION, float2 uv : TEXCOORD)
 {
     PSInput result;
 
-    result.position = position + offset;
+    //result.position = position + offset;
+    position.w = 1;
+    result.position = mul(position, transform) + offset;
     result.uv = uv;
     //result.color = color;
 

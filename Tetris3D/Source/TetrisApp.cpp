@@ -61,6 +61,17 @@ int TetrisApp::Start()
         if (window->keyboard.IsKeyPressed('D'))
             window->GetGraphics().moveDirections[3] = true;
 
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        if (ev->GetKeyCode() == VK_CONTROL)
+        {
+            Logger::DebugLogInfo("Rotation disabled");
+            window->GetGraphics().bRotate = false;
+        }
+        if (ev->GetKeyCode() == VK_MENU)
+        {
+            Logger::DebugLogInfo("Moving disabled");
+            window->GetGraphics().bMove = false;
+        }
     };
 
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
@@ -74,6 +85,17 @@ int TetrisApp::Start()
         if (!window->keyboard.IsKeyPressed('D'))
             window->GetGraphics().moveDirections[3] = false;
 
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        if (ev->GetKeyCode() == VK_CONTROL)
+        {
+            Logger::DebugLogInfo("Rotation disabled");
+            window->GetGraphics().bRotate = true;
+        }
+        if (ev->GetKeyCode() == VK_MENU)
+        {
+            Logger::DebugLogInfo("Moving disabled");
+            window->GetGraphics().bMove = true;
+        }
     };
 
     window->mouse.onButtonPressedEvent += [this] (Event* event)
@@ -180,7 +202,18 @@ int TetrisApp::Start()
     //Logger::DebugLogInfo("v11: " + v11.GetAsString());
     //Logger::DebugLogInfo("v12: " + v12.GetAsString());
 
-    while (true)
+    bool running = true;
+
+    window->mouse.onButtonPressedEvent += [this, &running] (Event* event)
+    {
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        if (ev->GetKeyCode() == VK_ESCAPE)
+        {
+            running = false;
+        }
+    };
+
+    while (true && running)
     {
         if (const auto ecode = Window::ProcessMessages())
         {

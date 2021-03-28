@@ -4,6 +4,7 @@
 #include "Event.h"
 #include "App.h"
 #include "Window.h"
+#include "MathLib.h"
 
 #include <string>
 #include "Utils/Logger/Logger.h"
@@ -44,10 +45,19 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _fenceValues{},
     _rtvDescriptorSize(0),
     _cbvSrvDescriptorSize(0),
-    _constantBufferData{}
+    _constantBufferData{},
+    currentRotation{ DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) },
+    baseTrasform{
+        DirectX::XMMatrixTranslation(0, 0, zOffset) //*
+        //DirectX::XMMatrixPerspectiveLH(1, 1. / _aspectRatio, .05, 1)
+    }
 {
     //_hWindow = hWindow;
-    Init(hWindow);    
+    Init(hWindow);
+    _constantBufferData.transform = DirectX::XMMatrixTranspose(
+        currentRotation *
+        baseTrasform
+    );
 }
 
 void Graphics::Init(HWND hWindow)
@@ -96,49 +106,125 @@ void Graphics::Destroy()
 
 }
 
+#pragma region transformations
+
 void Graphics::MoveForwardY()
 {
-    _constantBufferData.offset.y += translationSpeed;
-    if (_constantBufferData.offset.y > offsetBoundsY)
+    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
+
+    if (bRotate)
     {
-        _constantBufferData.offset.y = -offsetBoundsY;
+        currentRotation *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(2));
+    }
+    if (bMove)
+    {
+        currentOffsetY += translationSpeed;
+        if (currentOffsetY > offsetBoundsY)
+        {
+            currentOffsetY = -offsetBoundsY;
+        }
     }
 
-    memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
-}
-
-void Graphics::MoveBackwardX()
-{
-    _constantBufferData.offset.x -= translationSpeed;
-    if (_constantBufferData.offset.x < -offsetBoundsX)
-    {
-        _constantBufferData.offset.x = offsetBoundsX;
-    }
+    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    _constantBufferData.transform = DirectX::XMMatrixTranspose(
+        bufferTranslation *
+        currentRotation *
+        bufferTranslation2 *
+        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
+        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+    );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
 }
 
 void Graphics::MoveBackwardY()
 {
-    _constantBufferData.offset.y -= translationSpeed;
-    if (_constantBufferData.offset.y < -offsetBoundsY)
+    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
+
+    if (bRotate)
     {
-        _constantBufferData.offset.y = offsetBoundsY;
+        currentRotation *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-2));
     }
+    if (bMove)
+    {
+        currentOffsetY -= translationSpeed;
+        if (currentOffsetY < -offsetBoundsY)
+        {
+            currentOffsetY = offsetBoundsY;
+        }
+    }
+    
+    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    _constantBufferData.transform = DirectX::XMMatrixTranspose(
+        bufferTranslation *
+        currentRotation *
+        bufferTranslation2 *
+        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
+        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+    );
+
+    memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
+}
+
+void Graphics::MoveBackwardX()
+{
+    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
+
+    if (bRotate)
+    {
+        currentRotation *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(2));
+    }
+    if (bMove)
+    {
+        currentOffsetX -= translationSpeed;
+        if (currentOffsetX < -offsetBoundsX)
+        {
+            currentOffsetX = offsetBoundsX;
+        }
+    }
+
+    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    _constantBufferData.transform = DirectX::XMMatrixTranspose(
+        bufferTranslation *
+        currentRotation *
+        bufferTranslation2 *
+        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
+        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+    );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
 }
 
 void Graphics::MoveForwardX()
 {
-    _constantBufferData.offset.x += translationSpeed;
-    if (_constantBufferData.offset.x > offsetBoundsX)
+    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
+    
+    if (bRotate)
     {
-        _constantBufferData.offset.x = -offsetBoundsX;
+        currentRotation *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(-2));
     }
+    if (bMove)
+    {
+        currentOffsetX += translationSpeed;
+        if (currentOffsetX > offsetBoundsX)
+        {
+            currentOffsetX = -offsetBoundsX;
+        }
+    }
+    
+    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    _constantBufferData.transform = DirectX::XMMatrixTranspose(
+        bufferTranslation *
+        currentRotation *
+        bufferTranslation2 *
+        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
+        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+    );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
 }
+
+#pragma endregion
 
 void Graphics::LoadPipeline(HWND hWindow)
 {
@@ -355,57 +441,57 @@ void Graphics::LoadAssets()
         Vertex triangleVertices[] =
         {
             // front side
-            { { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 0
-            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 1.0f } },  //  Γ  // 1
-            { { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 2
-            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 1.0f } },  //  ┐  // 3
+            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 0
+            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 1
+            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 2
+            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 3
 
             // right side
-            { { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 4
-            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 1.0f } },  //  Γ  // 5
-            //{ { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
-            //{ { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
+            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 4
+            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 5
+            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 0.0f } },  //  ┘  // 6
+            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 7
 
-            { { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
-            { { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
+            //{ { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
+            //{ { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
 
             // left side
-            { { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
-            { { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
+            //{ { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
+            //{ { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
 
-            //{ { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
-            //{ { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
-            { { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 10
-            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 1.0f } },  //  ┐  // 11
+            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 0.0f } },  //  ∟  // 8
+            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 9
+            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 10
+            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 11
 
-            // back side (mirrored)
-            { { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 12
-            { { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 13
-            { { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 14
-            { { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 15
+            // back side
+            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 0.0f } },  //  ∟  // 12
+            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 13
+            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 0.0f } },  //  ┘  // 14
+            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 15
 
             // top side
-            { { 0.00f, 0.25f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 16
+            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 16
             
-            //{ { 0.00f, 0.25f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
-            { { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
+            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 17
+            //{ { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
             
-            { { 0.25f, 0.25f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 18
+            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 18
 
-            //{ { 0.25f, 0.25f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
-            { { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
+            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 19
+            //{ { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
 
             // bottom side (mirrored)
-            //{ { 0.00f, 0.00f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
-            { { -0.05f, -0.05f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
+            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 20
+            //{ { -0.05f, -0.05f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
 
-            { { 0.00f, 0.00f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
+            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 21
             //{ { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
 
-            //{ { 0.25f, 0.00f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
-            { { 0.3f, -0.05f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
+            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 22
+            //{ { 0.3f, -0.05f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
 
-            { { 0.25f, 0.00f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
+            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 23
             //{ { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
         };
 
@@ -500,7 +586,7 @@ void Graphics::LoadAssets()
         _bundle->IASetIndexBuffer(&_indexBufferView);
         for (UINT i = 0; i < _indexBufferView.SizeInBytes / (3 * sizeof(unsigned char)); i++)
         {
-            Logger::DebugLogInfo("Draw triagnle #" + std::to_string(i));
+            Logger::DebugLogInfo("Draw triangle #" + std::to_string(i));
             _bundle->DrawIndexedInstanced(3, 1, i * 3, 0, 0);
         }
         //_bundle->DrawIndexedInstanced(3, 1, 0, 0, 0);
@@ -606,7 +692,7 @@ void Graphics::LoadAssets()
         // Map and initialize the constant buffer. We don't unmap this until the
         // app closes. Keeping things mapped for the lifetime of the resource is okay.
         CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-        THROW_IF_FAILED(_constantBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_pCbvDataBegin)));
+        THROW_IF_FAILED(_constantBuffer->Map(0, &readRange, reinterpret_cast<void**>(&_pCbvDataBegin)))
         memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
     }
 
