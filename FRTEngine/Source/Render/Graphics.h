@@ -35,21 +35,19 @@ public:
     void MoveForwardX();
 
     std::bitset<4> moveDirections;
-    const float translationSpeed = 0.04f;
+    const float translationSpeed = 0.06f;
     const float offsetBoundsX = 1.25f;
     const float offsetBoundsY = 1.42f;
     float currentOffsetX = 0;
     float currentOffsetY = 0;
     DirectX::XMMATRIX currentRotation;
-    DirectX::XMMATRIX bufferTranslation;
-    DirectX::XMMATRIX bufferTranslation2;
-    DirectX::XMMATRIX baseTrasform;
+    DirectX::XMMATRIX currentTranslation;
     bool bRotate = true;
     bool bMove = true;
-    const float zOffset = .25f;
-    const float fovDegrees = 120.f;
-    const float perspectiveNearZ = .05f;
-    const float perspectiveFarZ = 10.f;
+    const float zOffset = 4.f;
+    const float fovDegrees = 90.f;
+    const float perspectiveNearZ = 1.f;
+    const float perspectiveFarZ = 1000.f;
     // TMP: end
 
 private:

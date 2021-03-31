@@ -47,16 +47,13 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _cbvSrvDescriptorSize(0),
     _constantBufferData{},
     currentRotation{ DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) },
-    baseTrasform{
-        DirectX::XMMatrixTranslation(0, 0, zOffset) //*
-        //DirectX::XMMatrixPerspectiveLH(1, 1. / _aspectRatio, .05, 1)
-    }
+    currentTranslation{ DirectX::XMMatrixTranslation(0.f, 0.f, 0.f) }
 {
     //_hWindow = hWindow;
     Init(hWindow);
     _constantBufferData.transform = DirectX::XMMatrixTranspose(
         currentRotation *
-        baseTrasform
+        currentTranslation
     );
 }
 
@@ -110,8 +107,6 @@ void Graphics::Destroy()
 
 void Graphics::MoveForwardY()
 {
-    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
-
     if (bRotate)
     {
         currentRotation *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(2));
@@ -125,13 +120,12 @@ void Graphics::MoveForwardY()
         }
     }
 
-    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    currentTranslation = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset));
+
     _constantBufferData.transform = DirectX::XMMatrixTranspose(
-        bufferTranslation *
         currentRotation *
-        bufferTranslation2 *
-        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
-        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+        currentTranslation *
+        DirectX::XMMatrixPerspectiveLH(_aspectRatio, 1, perspectiveNearZ, perspectiveFarZ)
     );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
@@ -139,8 +133,6 @@ void Graphics::MoveForwardY()
 
 void Graphics::MoveBackwardY()
 {
-    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
-
     if (bRotate)
     {
         currentRotation *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(-2));
@@ -154,13 +146,12 @@ void Graphics::MoveBackwardY()
         }
     }
     
-    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    currentTranslation = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset));
+
     _constantBufferData.transform = DirectX::XMMatrixTranspose(
-        bufferTranslation *
         currentRotation *
-        bufferTranslation2 *
-        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
-        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+        currentTranslation *
+        DirectX::XMMatrixPerspectiveLH(_aspectRatio, 1, perspectiveNearZ, perspectiveFarZ)
     );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
@@ -168,8 +159,6 @@ void Graphics::MoveBackwardY()
 
 void Graphics::MoveBackwardX()
 {
-    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
-
     if (bRotate)
     {
         currentRotation *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(2));
@@ -183,13 +172,12 @@ void Graphics::MoveBackwardX()
         }
     }
 
-    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    currentTranslation = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset));
+
     _constantBufferData.transform = DirectX::XMMatrixTranspose(
-        bufferTranslation *
         currentRotation *
-        bufferTranslation2 *
-        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
-        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+        currentTranslation *
+        DirectX::XMMatrixPerspectiveLH(_aspectRatio, 1, perspectiveNearZ, perspectiveFarZ)
     );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
@@ -197,8 +185,6 @@ void Graphics::MoveBackwardX()
 
 void Graphics::MoveForwardX()
 {
-    bufferTranslation = DirectX::XMMatrixTranslation(0, 0, -(zOffset + .125));
-    
     if (bRotate)
     {
         currentRotation *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(-2));
@@ -212,13 +198,12 @@ void Graphics::MoveForwardX()
         }
     }
     
-    bufferTranslation2 = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset + .125));
+    currentTranslation = DirectX::XMMatrixTranslation(currentOffsetX, currentOffsetY, (zOffset));
+
     _constantBufferData.transform = DirectX::XMMatrixTranspose(
-        bufferTranslation *
         currentRotation *
-        bufferTranslation2 *
-        DirectX::XMMatrixPerspectiveLH(1, 1, perspectiveNearZ, perspectiveFarZ)
-        //DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(fovDegrees), 1., perspectiveNearZ, perspectiveFarZ)
+        currentTranslation *
+        DirectX::XMMatrixPerspectiveLH(_aspectRatio, 1, perspectiveNearZ, perspectiveFarZ)
     );
 
     memcpy(_pCbvDataBegin, &_constantBufferData, sizeof(_constantBufferData));
@@ -441,58 +426,40 @@ void Graphics::LoadAssets()
         Vertex triangleVertices[] =
         {
             // front side
-            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 0
-            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 1
-            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 2
-            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 3
+            { { -.25f, -.25f, -.25f }, { 0.0f, 0.0f } },  //  ∟  // 0
+            { { -.25f, 0.25f, -.25f }, { 0.0f, 1.0f } },  //  Γ  // 1
+            { { 0.25f, -.25f, -.25f }, { 1.0f, 0.0f } },  //  ┘  // 2
+            { { 0.25f, 0.25f, -.25f }, { 1.0f, 1.0f } },  //  ┐  // 3
 
             // right side
-            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 4
-            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 5
-            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 0.0f } },  //  ┘  // 6
-            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 7
-
-            //{ { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
-            //{ { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
+            { { 0.25f, -.25f, -.25f }, { 0.0f, 0.0f } },  //  ∟  // 4
+            { { 0.25f, 0.25f, -.25f }, { 0.0f, 1.0f } },  //  Γ  // 5
+            { { 0.25f, -.25f, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 6
+            { { 0.25f, 0.25f, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 7
 
             // left side
-            //{ { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
-            //{ { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
-
-            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 0.0f } },  //  ∟  // 8
-            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 9
-            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 10
-            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 11
+            { { -.25f, -.25f, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 8
+            { { -.25f, 0.25f, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 9
+            { { -.25f, -.25f, -.25f }, { 1.0f, 0.0f } },  //  ┘  // 10
+            { { -.25f, 0.25f, -.25f }, { 1.0f, 1.0f } },  //  ┐  // 11
 
             // back side
-            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 0.0f } },  //  ∟  // 12
-            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 13
-            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 0.0f } },  //  ┘  // 14
-            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 15
+            { { 0.25f, -.25f, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 12
+            { { 0.25f, 0.25f, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 13
+            { { -.25f, -.25f, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 14
+            { { -.25f, 0.25f, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 15
 
             // top side
-            { { -.125f, 0.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 16
-            
-            { { -.125f, 0.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 17
-            //{ { -0.05f, 0.3f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
-            
-            { { 0.125f, 0.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 18
+            { { -.25f, 0.25f, -.25f }, { 0.0f, 0.0f } },  //  ∟  // 16
+            { { -.25f, 0.25f, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 17
+            { { 0.25f, 0.25f, -.25f }, { 1.0f, 0.0f } },  //  ┘  // 18
+            { { 0.25f, 0.25f, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
 
-            { { 0.125f, 0.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 19
-            //{ { 0.3f, 0.3f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 19
-
-            // bottom side (mirrored)
-            { { 0.125f, -.125f * _aspectRatio, 0.25f }, { 0.0f, 0.0f } },  //  ∟  // 20
-            //{ { -0.05f, -0.05f * _aspectRatio, 0.00f }, { 0.0f, 0.0f } },  //  ∟  // 20
-
-            { { 0.125f, -.125f * _aspectRatio, 0.50f }, { 0.0f, 1.0f } },  //  Γ  // 21
-            //{ { -0.05f, -0.05f * _aspectRatio, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
-
-            { { -.125f, -.125f * _aspectRatio, 0.25f }, { 1.0f, 0.0f } },  //  ┘  // 22
-            //{ { 0.3f, -0.05f * _aspectRatio, 0.00f }, { 1.0f, 0.0f } },  //  ┘  // 22
-
-            { { -.125f, -.125f * _aspectRatio, 0.50f }, { 1.0f, 1.0f } },  //  ┐  // 23
-            //{ { 0.3f, -0.05f * _aspectRatio, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
+            // bottom side
+            { { 0.25f, -.25f, -.25f }, { 0.0f, 0.0f } },  //  ∟  // 20
+            { { 0.25f, -.25f, 0.25f }, { 0.0f, 1.0f } },  //  Γ  // 21
+            { { -.25f, -.25f, -.25f }, { 1.0f, 0.0f } },  //  ┘  // 22
+            { { -.25f, -.25f, 0.25f }, { 1.0f, 1.0f } },  //  ┐  // 23
         };
 
         const unsigned char indices[] =
