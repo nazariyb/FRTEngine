@@ -52,6 +52,10 @@ int TetrisApp::Start()
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
+#if NEW_FEATURES
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        window->GetGraphics().OnKeyDown(ev->GetKeyCode()); 
+#else
         if (window->keyboard.IsKeyPressed('W'))
             window->GetGraphics().moveDirections[0] = true;
         if (window->keyboard.IsKeyPressed('A'))
@@ -72,10 +76,15 @@ int TetrisApp::Start()
             Logger::DebugLogInfo("Moving disabled");
             window->GetGraphics().bMove = false;
         }
+#endif
     };
 
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
+#if NEW_FEATURES
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        window->GetGraphics().OnKeyUp(ev->GetKeyCode());
+#else
         if (!window->keyboard.IsKeyPressed('W'))
             window->GetGraphics().moveDirections[0] = false;
         if (!window->keyboard.IsKeyPressed('A'))
@@ -96,6 +105,7 @@ int TetrisApp::Start()
             Logger::DebugLogInfo("Moving disabled");
             window->GetGraphics().bMove = true;
         }
+#endif
     };
 
     window->mouse.onButtonPressedEvent += [this] (Event* event)
