@@ -16,9 +16,6 @@
 #include "FrameResource.h"
 
 
-//TMP:
-#define NEW_FEATURES 1
-
 namespace frt
 {
 using Microsoft::WRL::ComPtr;
@@ -36,17 +33,17 @@ public:
     virtual void Destroy();
 
     // TMP: start
-    void MoveForwardY();
-    void MoveBackwardX();
-    void MoveBackwardY();
-    void MoveForwardX();
+    std::bitset<6> moveDirections;
+    int currentCubeIndex = 0;
 
-    std::bitset<4> moveDirections;
     const float translationSpeed = 0.06f;
     const float offsetBoundsX = 1.25f;
     const float offsetBoundsY = 1.42f;
     float currentOffsetX = 0;
     float currentOffsetY = 0;
+    float Roll = 0.f;
+    float Pitch = 0.f;
+    float Yaw = 0.f;
     DirectX::XMMATRIX currentRotation;
     DirectX::XMMATRIX currentTranslation;
     bool bRotate = true;
@@ -56,14 +53,22 @@ public:
     const float perspectiveNearZ = 1.f;
     const float perspectiveFarZ = 1000.f;
 
-    void OnKeyDown(UINT8 key)
+    inline void OnKeyDown(UINT8 key)
     {
         _camera.OnKeyDown(key);
     }
 
-    void OnKeyUp(UINT8 key)
+    inline void OnKeyUp(UINT8 key)
     {
         _camera.OnKeyUp(key);
+    }
+
+    inline void SetCubeIndex(int NewIndex)
+    {
+        Roll = 0.f;
+        Pitch = 0.f;
+        Yaw = 0.f;
+        currentCubeIndex = (NewIndex - 1) % MaterialCount;
     }
     // TMP: end
 
@@ -71,17 +76,12 @@ private:
     Window* _owner;
 
     static const UINT FrameCount = 2;
-    static const UINT TextureWidth = 256;
-    static const UINT TextureHeight = 256;
-    static const UINT TexturePixelSize = 4;    // The number of bytes used to represent a pixel in the texture.;
 
-#if NEW_FEATURES
     static const UINT RowCount = 3;
     static const UINT ColumnCount = 2;
     static const UINT MaterialCount = RowCount * ColumnCount;
     static const bool bUseBundles = false; // TODO:
     static const float SpacingInterval;
-#endif
 
     struct Vertex
     {
@@ -104,25 +104,18 @@ private:
     ComPtr<IDXGISwapChain3> _swapChain;
     ComPtr<ID3D12Device> _device;
     ComPtr<ID3D12Resource> _renderTargets[FrameCount];
-#if NEW_FEATURES
     ComPtr<ID3D12CommandAllocator> _commandAllocator;
-#else
-    ComPtr<ID3D12CommandAllocator> _commandAllocators[FrameCount];
-    ComPtr<ID3D12CommandAllocator> _bundleAllocators[FrameCount];
-#endif
     ComPtr<ID3D12CommandQueue> _commandQueue;
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
-    ComPtr<ID3D12DescriptorHeap> _srvHeap;
+    ComPtr<ID3D12DescriptorHeap> _cbvSrvHeap;
     ComPtr<ID3D12PipelineState> _pipelineState;
     ComPtr<ID3D12GraphicsCommandList> _commandList;
     ComPtr<ID3D12GraphicsCommandList> _bundle;
 
-#if NEW_FEATURES
-    ComPtr<ID3D12Resource> _depthStencil; // TOOD:
+    ComPtr<ID3D12Resource> _depthStencil;
     ComPtr<ID3D12DescriptorHeap> _dsvHeap;
     ComPtr<ID3D12DescriptorHeap> _samplerHeap;
-#endif
 
 
     UINT _rtvDescriptorSize;
@@ -139,44 +132,27 @@ private:
     SceneConstantBuffer _constantBufferData;
     UINT8* _pCbvDataBegin;
 
-#if NEW_FEATURES
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];
     Camera _camera;
-#else
-    ComPtr<ID3D12Resource> _texture;
-#endif
 
-#if NEW_FEATURES
     // Frame resources.
     std::vector<FrameResource*> _frameResources;
     FrameResource* _currentFrameResource;
     UINT _currentFrameResourceIndex;
-#endif
 
     // Synchronization objects.
     UINT _frameIndex;
-#if NEW_FEATURES
     UINT _frameCounter;
-#endif
     HANDLE _fenceEvent;
     ComPtr<ID3D12Fence> _fence;
-#if NEW_FEATURES
     UINT64 _fenceValue;
-#else
-    UINT64 _fenceValues[FrameCount];
-#endif
 
     float _aspectRatio = 1280. / 720.;
 
     void LoadPipeline(HWND hWindow);
     void LoadAssets();
-    std::vector<UINT8> GenerateTextureData();
-#if NEW_FEATURES
     void PopulateCommandList(FrameResource* pFrameResource);
-#else
-    void PopulateCommandList();
-#endif
     void WaitForPreviousFrame();
     void CreateFrameResources();
 

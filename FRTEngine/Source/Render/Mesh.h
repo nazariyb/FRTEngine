@@ -5,6 +5,7 @@
 #include <vector>
 #include <wrl.h>
 #include <d3d12.h>
+#include "WindowsMinimal.h"
 
 
 namespace frt
@@ -17,19 +18,25 @@ public:
     Mesh(float radius, DirectX::XMFLOAT3 initialPosition);
 
 public:
-    void Update(ComPtr<ID3D12Device> device, D3D12_VERTEX_BUFFER_VIEW* vertexBufferView, D3D12_INDEX_BUFFER_VIEW* indexBufferView);
-
-    void InitializeTextureData(uint32_t color1, uint32_t color2);
-
-private:
-    unsigned int _radius;
-    DirectX::XMFLOAT3 _initialPosition;
-
     struct Vertex
     {
         DirectX::XMFLOAT3 position;
         DirectX::XMFLOAT2 uv;
     };
+
+    void Update(ComPtr<ID3D12Device> device, D3D12_VERTEX_BUFFER_VIEW* vertexBufferView, D3D12_INDEX_BUFFER_VIEW* indexBufferView);
+
+    Vertex* GetVertices();
+    UINT8* GetIndices();
+
+    inline unsigned int GetVertexDataSize() const { return _vertexBufferSize; };
+    inline unsigned int GetIndexDataSize() const { return _indexBufferSize; };
+
+    static std::vector<UINT8> GenerateTextureData(uint32_t color1, uint32_t color2);
+
+private:
+    unsigned int _radius;
+    DirectX::XMFLOAT3 _initialPosition;
 
     static const unsigned int _vertexBufferSize = 24;
     Vertex _vertices[_vertexBufferSize];
@@ -63,10 +70,11 @@ private:
     const unsigned int _indexBufferSize = _indices.size();
 
     std::vector<unsigned char> _texture;
-    const unsigned int TextureWidth = 256;
-    const unsigned int TextureHeight = 256;
-    const unsigned int TexturePixelSize = 4;    // The number of bytes used to represent a pixel in the texture.;
-
+public:
+    static const unsigned int TextureWidth = 256;
+    static const unsigned int TextureHeight = 256;
+    static const unsigned int TexturePixelSize = 4;    // The number of bytes used to represent a pixel in the texture.;
+private:
     ComPtr<ID3D12Resource> _vertexBuffer;
     ComPtr<ID3D12Resource> _indexBuffer;
 };

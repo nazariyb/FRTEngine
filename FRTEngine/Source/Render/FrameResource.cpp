@@ -12,6 +12,7 @@ FrameResource::FrameResource(ID3D12Device* device, UINT rowCount, UINT columnCou
     , _rowCount(rowCount)
     , _columnCount(columnCount)
     , _materialCount(materialCount)
+    , _spacingInterval(spacingInterval)
 {
     _modelMatrices.resize(_rowCount * _columnCount);
 
@@ -122,6 +123,36 @@ void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, D
             memcpy(&_constantBuffers[i * _columnCount + j], &mvp, sizeof(mvp));
         }
     }
+}
+
+void FrameResource::RotateCube(UINT Index, float Roll, float Pitch, float Yaw)
+{
+    for (UINT i = 0; i < _rowCount; i++)
+    {
+        FLOAT offsetZ = i * -_spacingInterval;
+        for (UINT j = 0; j < _columnCount; j++)
+        {
+            FLOAT offsetX = j * _spacingInterval;
+
+            int index = i * _columnCount + j;
+            if (index != Index)
+            {
+                // The y position is based off of the city's row and column 
+                // position to prevent z-fighting.
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixTranslation(offsetX, 0.02f * (i * _columnCount + j), offsetZ));
+            }
+            else
+            {
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll),
+                                                                   DirectX::XMMatrixTranslation(offsetX, 0.02f * (i * _columnCount + j), offsetZ)));
+
+            }
+        }
+    }
+    //DirectX::XMStoreFloat4x4(&_modelMatrices[Index],
+    //                         DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&_modelMatrices[Index]), DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll)));
 }
 
 void FrameResource::SetPositions(FLOAT intervalX, FLOAT intervalZ)

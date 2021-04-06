@@ -27,6 +27,8 @@ public:
 
     void XM_CALLCONV UpdateConstantBuffers(DirectX::FXMMATRIX view, DirectX::CXMMATRIX projection);
 
+    void RotateCube(UINT Index, float Roll, float Pitch, float Yaw);
+
 public:
     struct SceneConstantBuffer
     {
@@ -45,6 +47,7 @@ public:
     UINT _rowCount;
     UINT _columnCount;
     UINT _materialCount;
+    float _spacingInterval;
 
 private:
     void SetPositions(FLOAT intervalX, FLOAT intervalZ);

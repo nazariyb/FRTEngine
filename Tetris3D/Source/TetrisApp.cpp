@@ -52,20 +52,24 @@ int TetrisApp::Start()
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
-#if NEW_FEATURES
+#if 1
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         window->GetGraphics().OnKeyDown(ev->GetKeyCode()); 
-#else
-        if (window->keyboard.IsKeyPressed('W'))
+     
+        if (window->keyboard.IsKeyPressed('T'))
             window->GetGraphics().moveDirections[0] = true;
-        if (window->keyboard.IsKeyPressed('A'))
+        if (window->keyboard.IsKeyPressed('F'))
             window->GetGraphics().moveDirections[1] = true;
-        if (window->keyboard.IsKeyPressed('S'))
+        if (window->keyboard.IsKeyPressed('G'))
             window->GetGraphics().moveDirections[2] = true;
-        if (window->keyboard.IsKeyPressed('D'))
+        if (window->keyboard.IsKeyPressed('H'))
             window->GetGraphics().moveDirections[3] = true;
+        if (window->keyboard.IsKeyPressed('R'))
+            window->GetGraphics().moveDirections[4] = true;
+        if (window->keyboard.IsKeyPressed('Y'))
+            window->GetGraphics().moveDirections[5] = true;
 
-        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+#else
         if (ev->GetKeyCode() == VK_CONTROL)
         {
             Logger::DebugLogInfo("Rotation disabled");
@@ -81,19 +85,30 @@ int TetrisApp::Start()
 
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
-#if NEW_FEATURES
+#if 1
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         window->GetGraphics().OnKeyUp(ev->GetKeyCode());
-#else
-        if (!window->keyboard.IsKeyPressed('W'))
-            window->GetGraphics().moveDirections[0] = false;
-        if (!window->keyboard.IsKeyPressed('A'))
-            window->GetGraphics().moveDirections[1] = false;
-        if (!window->keyboard.IsKeyPressed('S'))
-            window->GetGraphics().moveDirections[2] = false;
-        if (!window->keyboard.IsKeyPressed('D'))
-            window->GetGraphics().moveDirections[3] = false;
 
+        if (!window->keyboard.IsKeyPressed('T'))
+            window->GetGraphics().moveDirections[0] = false;
+        if (!window->keyboard.IsKeyPressed('F'))
+            window->GetGraphics().moveDirections[1] = false;
+        if (!window->keyboard.IsKeyPressed('G'))
+            window->GetGraphics().moveDirections[2] = false;
+        if (!window->keyboard.IsKeyPressed('H'))
+            window->GetGraphics().moveDirections[3] = false;
+        if (!window->keyboard.IsKeyPressed('R'))
+            window->GetGraphics().moveDirections[4] = false;
+        if (!window->keyboard.IsKeyPressed('Y'))
+            window->GetGraphics().moveDirections[5] = false;
+
+        if (48 <= ev->GetKeyCode() && ev->GetKeyCode() <= 57)
+        {
+            Logger::DebugLogInfo("Now work with cube #" + std::to_string(ev->GetKeyCode()));
+            window->GetGraphics().SetCubeIndex(ev->GetKeyCode());
+        }
+
+#else
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         if (ev->GetKeyCode() == VK_CONTROL)
         {
