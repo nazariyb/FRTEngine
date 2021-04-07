@@ -11,7 +11,7 @@
 #include "Utils/Logger/Logger.h"
 #include <Tools\DXHelper.h>
 
-const float frt::Graphics::SpacingInterval = 6.0f;
+const float frt::Graphics::SpacingInterval = 1.1f;
 
 
 void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
@@ -44,7 +44,6 @@ using DirectX::XMFLOAT3;
 Graphics::Graphics(Window* owner, HWND hWindow) :
     _owner(owner),
     _frameIndex(0),
-    _pCbvDataBegin(nullptr),
     _viewport(0.0f, 0.0f, static_cast<float>(1280), static_cast<float>(720)),
     _scissorRect(static_cast<LONG>(0), static_cast<LONG>(0), static_cast<LONG>(1280), static_cast<LONG>(720)),
     _fenceValue(0),
@@ -53,7 +52,6 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _currentFrameResource(nullptr),
     _rtvDescriptorSize(0),
     _cbvSrvDescriptorSize(0),
-    _constantBufferData{},
     currentRotation{ DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) },
     currentTranslation{ DirectX::XMMatrixTranslation(0.f, 0.f, 0.f) }
 {
@@ -73,7 +71,7 @@ Graphics::~Graphics()
 
 void Graphics::Init(HWND hWindow)
 {
-    _camera.Init({ (ColumnCount / 2.f) * SpacingInterval - (SpacingInterval / 2.f), 5, 50 });
+    _camera.Init({ (ColumnCount / 2.f) * SpacingInterval - (SpacingInterval / 2.f), 3, 25 });
     _camera.SetMoveSpeed(SpacingInterval * 2.f);
 
     LoadPipeline(hWindow);
@@ -88,7 +86,6 @@ void Graphics::Update()
     //const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
     //_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 
-#if 1
     if (_frameCounter == 500)
     {
         // Update window text with FPS value.
@@ -134,9 +131,7 @@ void Graphics::Update()
 
     _currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
     _currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio));
-#else
 
-#endif
 }
 
 void Graphics::Render()
@@ -373,23 +368,26 @@ void Graphics::LoadAssets()
             //{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
         };
 
+        CD3DX12_RASTERIZER_DESC rasterizerStateDesc(D3D12_DEFAULT);
+        rasterizerStateDesc.CullMode = D3D12_CULL_MODE_NONE;
+
         // Describe and create the graphics pipeline state object (PSO).
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
         psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
         psoDesc.pRootSignature = _rootSignature.Get();
         psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
         psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader.Get());
-        psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+        psoDesc.RasterizerState = rasterizerStateDesc;
         psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-        psoDesc.DepthStencilState.DepthEnable = FALSE;
-        psoDesc.DepthStencilState.StencilEnable = FALSE;
+        psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
         psoDesc.SampleMask = UINT_MAX;
         psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-        psoDesc.NumRenderTargets = 2;
+        psoDesc.NumRenderTargets = 1;
         psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+        psoDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
         psoDesc.SampleDesc.Count = 1;
-        THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineState)));
 
+        THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineState)));
         NAME_D3D12_OBJECT(_pipelineState);
     }
 
@@ -502,7 +500,7 @@ void Graphics::LoadAssets()
 
     // Create the texture.
     {
-        // Describe and create a Texture2D.
+        // All of these materials use the same texture desc.
         D3D12_RESOURCE_DESC textureDesc = {};
         textureDesc.MipLevels = 1;
         textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -594,59 +592,38 @@ void Graphics::LoadAssets()
             srvHandle.Offset(_cbvSrvDescriptorSize);
         }
 
-        // Create the depth stencil view.
-        {
-            D3D12_DEPTH_STENCIL_VIEW_DESC depthStencilDesc = {};
-            depthStencilDesc.Format = DXGI_FORMAT_D32_FLOAT;
-            depthStencilDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-            depthStencilDesc.Flags = D3D12_DSV_FLAG_NONE;
-
-            const CD3DX12_HEAP_PROPERTIES dsvHeapProps(D3D12_HEAP_TYPE_DEFAULT);
-            // Performance tip: Deny shader resource access to resources that don't need shader resource views.
-            const CD3DX12_RESOURCE_DESC dsvUploadDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, 
-                                                                                     1280, 720, 1, 0, 1, 0, 
-                                                                                     D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
-            const CD3DX12_CLEAR_VALUE clearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.f, 0); // Performance tip: Tell the runtime at resource creation the desired clear value.
-            THROW_IF_FAILED(_device->CreateCommittedResource(
-                &dsvHeapProps,
-                D3D12_HEAP_FLAG_NONE,
-                &dsvUploadDesc,
-                D3D12_RESOURCE_STATE_DEPTH_WRITE,
-                &clearValue,
-                IID_PPV_ARGS(&_depthStencil)
-            ));
-
-            NAME_D3D12_OBJECT(_depthStencil);
-
-            _device->CreateDepthStencilView(_depthStencil.Get(), &depthStencilDesc, _dsvHeap->GetCPUDescriptorHandleForHeapStart());
-        }
     }
 
     // Create the depth stencil view.
     {
-    D3D12_DEPTH_STENCIL_VIEW_DESC depthStencilDesc = {};
-    depthStencilDesc.Format = DXGI_FORMAT_D32_FLOAT;
-    depthStencilDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-    depthStencilDesc.Flags = D3D12_DSV_FLAG_NONE;
+        D3D12_DEPTH_STENCIL_VIEW_DESC depthStencilDesc = {};
+        depthStencilDesc.Format = DXGI_FORMAT_D32_FLOAT;
+        depthStencilDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+        depthStencilDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-    const auto dsDesc = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-    // Performance tip: Deny shader resource access to resources that don't need shader resource views.
-    const auto ds = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT,
-                                           1280, 720, 1, 0, 1, 0,
-                                           D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
-    const auto dsClearValue = CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0); // Performance tip: Tell the runtime at resource creation the desired clear value.
-    THROW_IF_FAILED(_device->CreateCommittedResource(
-        &dsDesc,
-        D3D12_HEAP_FLAG_NONE,
-        &ds,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        &dsClearValue,
-        IID_PPV_ARGS(&_depthStencil)
-    ));
+        D3D12_CLEAR_VALUE depthOptimizedClearValue = {};
+        depthOptimizedClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+        depthOptimizedClearValue.DepthStencil.Depth = 1.0f;
+        depthOptimizedClearValue.DepthStencil.Stencil = 0;
 
-    NAME_D3D12_OBJECT(_depthStencil);
+        const CD3DX12_HEAP_PROPERTIES dsvHeapProps(D3D12_HEAP_TYPE_DEFAULT);
+        // Performance tip: Deny shader resource access to resources that don't need shader resource views.
+        const CD3DX12_RESOURCE_DESC dsvUploadDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT,
+                                                                                 1280, 720, 1, 0, 1, 0,
+                                                                                 D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
 
-    _device->CreateDepthStencilView(_depthStencil.Get(), &depthStencilDesc, _dsvHeap->GetCPUDescriptorHandleForHeapStart());
+        THROW_IF_FAILED(_device->CreateCommittedResource(
+            &dsvHeapProps,
+            D3D12_HEAP_FLAG_NONE,
+            &dsvUploadDesc,
+            D3D12_RESOURCE_STATE_DEPTH_WRITE,
+            &depthOptimizedClearValue,
+            IID_PPV_ARGS(&_depthStencil)
+        ));
+
+        NAME_D3D12_OBJECT(_depthStencil);
+
+        _device->CreateDepthStencilView(_depthStencil.Get(), &depthStencilDesc, _dsvHeap->GetCPUDescriptorHandleForHeapStart());
     }
 
     // Close the command list and execute it to begin the initial GPU setup.
@@ -737,11 +714,6 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     _commandList->ResourceBarrier(1, &bar4);
 
     THROW_IF_FAILED(_commandList->Close());
-}
-
-void Graphics::WaitForPreviousFrame()
-{
-
 }
 
 void Graphics::CreateFrameResources()

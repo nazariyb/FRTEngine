@@ -77,8 +77,8 @@ private:
 
     static const UINT FrameCount = 2;
 
-    static const UINT RowCount = 3;
-    static const UINT ColumnCount = 2;
+    static const UINT RowCount = 1;
+    static const UINT ColumnCount = 10;
     static const UINT MaterialCount = RowCount * ColumnCount;
     static const bool bUseBundles = false; // TODO:
     static const float SpacingInterval;
@@ -128,10 +128,6 @@ private:
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
     D3D12_INDEX_BUFFER_VIEW _indexBufferView;
 
-    ComPtr<ID3D12Resource> _constantBuffer;
-    SceneConstantBuffer _constantBufferData;
-    UINT8* _pCbvDataBegin;
-
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];
     Camera _camera;
@@ -153,7 +149,6 @@ private:
     void LoadPipeline(HWND hWindow);
     void LoadAssets();
     void PopulateCommandList(FrameResource* pFrameResource);
-    void WaitForPreviousFrame();
     void CreateFrameResources();
 
     Mesh* _mesh;

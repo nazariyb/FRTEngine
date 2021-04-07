@@ -140,13 +140,13 @@ void FrameResource::RotateCube(UINT Index, float Roll, float Pitch, float Yaw)
                 // The y position is based off of the city's row and column 
                 // position to prevent z-fighting.
                 DirectX::XMStoreFloat4x4(&_modelMatrices[index],
-                                         DirectX::XMMatrixTranslation(offsetX, 0.02f * (i * _columnCount + j), offsetZ));
+                                         DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ));
             }
             else
             {
                 DirectX::XMStoreFloat4x4(&_modelMatrices[index],
                                          DirectX::XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll),
-                                                                   DirectX::XMMatrixTranslation(offsetX, 0.02f * (i * _columnCount + j), offsetZ)));
+                                                                   DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
 
             }
         }
@@ -167,7 +167,7 @@ void FrameResource::SetPositions(FLOAT intervalX, FLOAT intervalZ)
             // The y position is based off of the city's row and column 
             // position to prevent z-fighting.
             DirectX::XMStoreFloat4x4(&_modelMatrices[i * _columnCount + j],
-                                     DirectX::XMMatrixTranslation(offsetX, 0.02f * (i * _columnCount + j), offsetZ));
+                                     DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ));
         }
     }
 }
