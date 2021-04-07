@@ -2,6 +2,7 @@
 #include "FRTEngine.h"
 #include "WindowsMinimal.h"
 #include "Window.h"
+#include "GameWorld.h"
 
 #include <cassert>
 
@@ -24,6 +25,7 @@ public:
     static void Shutdown();
 
     Window* GetWindow();
+    GameWorld* GetWorld();
 
 protected:
     virtual int Start() { return 0; };
@@ -33,8 +35,8 @@ protected:
     virtual void Update();
 
     Window* window;
+    GameWorld* world;
 
-private:
     static App* _instance;
 
     int _windowWidth, _windowHeight;

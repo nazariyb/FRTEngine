@@ -7,14 +7,18 @@ namespace frt
 App* App::_instance = nullptr;
 
 App::App(int width, int height, const char* name)
-    : _windowName(name), _windowWidth(width), _windowHeight(height)
+    : _windowName(name)
+    , _windowWidth(width)
+    , _windowHeight(height)
 {
     Logger::DebugLogInfo("Create App");
+    world = new GameWorld();
 }
 
 App::~App()
 {
     delete window;
+    delete world;
 }
 
 App* App::GetInstance()
@@ -32,6 +36,11 @@ Window* App::GetWindow()
     return window;
 }
 
+GameWorld* App::GetWorld()
+{
+    return world;
+}
+
 void App::Update()
 {
     window->GetGraphics().Update();
@@ -40,7 +49,7 @@ void App::Update()
 
 void App::Init(HINSTANCE hInstance, HICON icon)
 {
-    Logger::LogInfo("Initing game app");
+    Logger::LogInfo("Initting game app");
     window = new Window(_windowWidth, _windowHeight, _windowName, icon);
 }
 

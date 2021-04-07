@@ -59,6 +59,8 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _mesh = new Mesh({ .5f, {0.f, 0.f, 0.f}, });
     //_mesh->InitializeTextureData(0x000000, 0xffffff);
 
+    App::GetInstance()->GetWorld()->Reserve(MaterialCount);
+
     //_hWindow = hWindow;
     Init(hWindow);
 }
@@ -129,7 +131,8 @@ void Graphics::Update()
     if (moveDirections[5]) // Y
         Yaw += DirectX::XMConvertToRadians(2);
 
-    _currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
+    //_currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
+    App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
     _currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio));
 
 }

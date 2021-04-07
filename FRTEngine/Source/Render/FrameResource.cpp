@@ -1,5 +1,6 @@
 #include "FrameResource.h"
 #include "Exception.h"
+#include "App.h"
 
 #include "Tools/d3dx12.h"
 #include "Tools/DXHelper.h"
@@ -107,6 +108,23 @@ void FrameResource::PopulateCommandList(ID3D12GraphicsCommandList* commandList,
 
 void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, DirectX::CXMMATRIX projection)
 {
+    const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
+    
+    for (UINT i = 0; i < _rowCount; i++)
+    {
+        FLOAT offsetZ = i * -_spacingInterval;
+        for (UINT j = 0; j < _columnCount; j++)
+        {
+            FLOAT offsetX = j * _spacingInterval;
+            int index = i * _columnCount + j;
+
+            DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                     DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
+                                                               DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
+
+        }
+    }
+
     DirectX::XMMATRIX model;
     DirectX::XMFLOAT4X4 mvp;
 

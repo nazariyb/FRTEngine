@@ -188,6 +188,7 @@
     <ClInclude Include="Source\Event.h" />
     <ClInclude Include="Source\Exception.h" />
     <ClInclude Include="Source\FRTEngine.h" />
+    <ClInclude Include="Source\GameWorld.h" />
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Input\InputEvent.h" />
     <ClInclude Include="Source\Input\Keyboard.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Source\Time\Time.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameWorld.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
     <ClCompile Include="Source\Render\FrameResource.cpp" />
     <ClCompile Include="Source\App.cpp" />
