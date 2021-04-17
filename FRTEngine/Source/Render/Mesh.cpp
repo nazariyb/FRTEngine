@@ -1,6 +1,7 @@
 ﻿#include "Mesh.h"
 #include <Tools\d3dx12.h>
 #include <Exception.h>
+#include "Utils\Logger\Logger.h"
 
 namespace frt
 {
@@ -13,40 +14,63 @@ Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
     const float z = initialPosition.x;
 
     // front side
-    _vertices[ 0] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 1] = { { x + radius, y + radius, z - radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[ 2] = { { x - radius, y - radius, z - radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[ 3] = { { x - radius, y + radius, z - radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[ 0] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[ 1] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[ 2] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[ 3] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
     
     // right side
-    _vertices[ 4] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 5] = { { x + radius, y - radius, z - radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[ 6] = { { x + radius, y + radius, z + radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[ 7] = { { x + radius, y - radius, z + radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[ 4] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[ 5] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[ 6] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[ 7] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
     
     // left side
-    _vertices[ 8] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 9] = { { x - radius, y - radius, z + radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[10] = { { x - radius, y + radius, z - radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[11] = { { x - radius, y - radius, z - radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[ 8] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[ 9] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[10] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[11] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // back side
-    _vertices[12] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[13] = { { x - radius, y + radius, z + radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[14] = { { x + radius, y - radius, z + radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[15] = { { x + radius, y + radius, z + radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[12] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[13] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[14] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[15] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // top side
-    _vertices[16] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[17] = { { x + radius, y + radius, z + radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[18] = { { x - radius, y + radius, z - radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[19] = { { x - radius, y + radius, z + radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[16] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[17] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[18] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[19] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // bottom side
-    _vertices[20] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[21] = { { x - radius, y - radius, z + radius }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[22] = { { x + radius, y - radius, z - radius }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[23] = { { x + radius, y - radius, z + radius }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[20] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[21] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[22] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[23] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+    using namespace DirectX;
+
+    for (size_t i = 0; i < _indices.size(); i += 3)
+    {
+        Vertex& v0 = _vertices[_indices[i]];
+        Vertex& v1 = _vertices[_indices[i + 1]];
+        Vertex& v2 = _vertices[_indices[i + 2]];
+        const XMVECTOR pos0 = XMLoadFloat3(&v0.position);
+        const XMVECTOR pos1 = XMLoadFloat3(&v1.position);
+        const XMVECTOR pos2 = XMLoadFloat3(&v2.position);
+
+        const auto normal = XMVector3Normalize(XMVector3Cross((pos2 - pos0), (pos1 - pos0)));
+
+        XMStoreFloat3(&v0.normal, normal);
+        XMStoreFloat3(&v1.normal, normal);
+        XMStoreFloat3(&v2.normal, normal);
+
+        Logger::DebugLogInfo(
+            "normal for # " + std::to_string(_indices[i]) + "," + std::to_string(_indices[i + 1]) + "," + std::to_string(_indices[i + 2])
+            + " : <" + std::to_string(normal.m128_f32[0]) + ", " + std::to_string(normal.m128_f32[1]) + ", " + std::to_string(normal.m128_f32[2]) + ">"
+        );
+    }
 
 }
 

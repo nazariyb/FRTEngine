@@ -37,7 +37,9 @@ private:
     };
 
     DirectX::XMFLOAT3 _initialPosition;
+public:
     DirectX::XMFLOAT3 _position;
+private:
     float _yaw;                  // Relative to the +z axis.
     float _pitch;                // Relative to the xz plane.
     DirectX::XMFLOAT3 _lookDirection;

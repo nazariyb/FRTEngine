@@ -6,12 +6,15 @@
 #include "Window.h"
 #include "MathLib.h"
 #include "pix3.h"
+#include "Utils/Logger/Logger.h"
 
 #include <string>
 #include "Utils/Logger/Logger.h"
 #include <Tools\DXHelper.h>
+#include <filesystem>
+#include <string>
 
-const float frt::Graphics::SpacingInterval = 1.1f;
+const float frt::Graphics::SpacingInterval = 1.f;
 
 
 void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
@@ -35,6 +38,52 @@ void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
         }
         pAdapter->Release();
     }
+}
+
+inline HRESULT ReadDataFromFile(LPCWSTR filename, byte** data, UINT* size)
+{
+    using namespace Microsoft::WRL;
+
+#if WINVER >= _WIN32_WINNT_WIN8
+    CREATEFILE2_EXTENDED_PARAMETERS extendedParams = {};
+    extendedParams.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
+    extendedParams.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+    extendedParams.dwFileFlags = FILE_FLAG_SEQUENTIAL_SCAN;
+    extendedParams.dwSecurityQosFlags = SECURITY_ANONYMOUS;
+    extendedParams.lpSecurityAttributes = nullptr;
+    extendedParams.hTemplateFile = nullptr;
+
+    frt::Logger::DebugLogInfo("Current dir: " + std::string( (char*)(std::filesystem::current_path().c_str()) ));
+
+    Wrappers::FileHandle file(CreateFile2(filename, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, &extendedParams));
+#else
+    Wrappers::FileHandle file(CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN | SECURITY_SQOS_PRESENT | SECURITY_ANONYMOUS, nullptr));
+#endif
+    if (file.Get() == INVALID_HANDLE_VALUE)
+    {
+        throw std::exception();
+    }
+
+    FILE_STANDARD_INFO fileInfo = {};
+    if (!GetFileInformationByHandleEx(file.Get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
+    {
+        throw std::exception();
+    }
+
+    if (fileInfo.EndOfFile.HighPart != 0)
+    {
+        throw std::exception();
+    }
+
+    *data = reinterpret_cast<byte*>(malloc(fileInfo.EndOfFile.LowPart));
+    *size = fileInfo.EndOfFile.LowPart;
+
+    if (!ReadFile(file.Get(), *data, fileInfo.EndOfFile.LowPart, nullptr, nullptr))
+    {
+        throw std::exception();
+    }
+
+    return S_OK;
 }
 
 namespace frt
@@ -133,7 +182,7 @@ void Graphics::Update()
 
     //_currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
     App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
-    _currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio));
+    _currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio), &_camera);
 
 }
 
@@ -349,8 +398,8 @@ void Graphics::LoadAssets()
 
     // Create the pipeline state, which includes compiling and loading shaders.
     {
-        ComPtr<ID3DBlob> vertexShader;
-        ComPtr<ID3DBlob> pixelShader;
+        //ComPtr<ID3DBlob> vertexShader;
+        //ComPtr<ID3DBlob> pixelShader;
 
 #if defined(_DEBUG)
         // Enable better shader debugging with the graphics debugging tools.
@@ -359,15 +408,23 @@ void Graphics::LoadAssets()
         UINT compileFlags = 0;
 #endif
 
+        UINT8* pVertexShaderData;
+        UINT8* pPixelShaderData;
+        UINT vertexShaderDataLength;
+        UINT pixelShaderDataLength;
+
         // FIXME: paths
-        THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\shaders.hlsl", nullptr, nullptr, "VShader", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
-        THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\shaders.hlsl", nullptr, nullptr, "PShader", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
+        THROW_IF_FAILED(ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\VertexShader.cso", &pVertexShaderData, &vertexShaderDataLength));
+        THROW_IF_FAILED(ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\PixelShader.cso", &pPixelShaderData, &pixelShaderDataLength));
+        //THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\Assets\\Shaders\\shaders.hlsl", nullptr, nullptr, "VShader", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
+        //THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\Assets\\Shaders\\shaders.hlsl", nullptr, nullptr, "PShader", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
         // Define the vertex input layout.
         D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
             //{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
         };
 
@@ -378,8 +435,10 @@ void Graphics::LoadAssets()
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
         psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
         psoDesc.pRootSignature = _rootSignature.Get();
-        psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
-        psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader.Get());
+        //psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
+        //psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader.Get());
+        psoDesc.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderData, vertexShaderDataLength);
+        psoDesc.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderData, pixelShaderDataLength);
         psoDesc.RasterizerState = rasterizerStateDesc;
         psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
         psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
@@ -392,6 +451,9 @@ void Graphics::LoadAssets()
 
         THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineState)));
         NAME_D3D12_OBJECT(_pipelineState);
+
+        delete pVertexShaderData;
+        delete pPixelShaderData;
     }
 
     THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator.Get(), nullptr, IID_PPV_ARGS(&_commandList)));
@@ -410,7 +472,7 @@ void Graphics::LoadAssets()
 
     // Create the vertex buffer.
     {
-        const UINT vertexBufferSize = _mesh->GetVertexDataSize() * sizeof(Vertex);
+        const UINT vertexBufferSize = _mesh->GetVertexDataSize() * sizeof(Mesh::Vertex);
         const UINT indexBufferSize = _mesh->GetIndexDataSize();
         Logger::DebugLogInfo("Index buffer size: " + std::to_string(indexBufferSize));
 
@@ -454,7 +516,7 @@ void Graphics::LoadAssets()
 
         // Initialize the vertex buffer view.
         _vertexBufferView.BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
-        _vertexBufferView.StrideInBytes = sizeof(Vertex);
+        _vertexBufferView.StrideInBytes = sizeof(Mesh::Vertex);
         _vertexBufferView.SizeInBytes = vertexBufferSize;
 
         // index buffer

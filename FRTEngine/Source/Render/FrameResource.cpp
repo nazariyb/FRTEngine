@@ -4,6 +4,7 @@
 
 #include "Tools/d3dx12.h"
 #include "Tools/DXHelper.h"
+#include "Camera.h"
 
 namespace frt
 {
@@ -52,6 +53,9 @@ FrameResource::~FrameResource()
 {
     _cbvUploadHeap->Unmap(0, nullptr);
     _constantBuffers = nullptr;
+
+    //_constantBuffersForObjects = nullptr;
+    //_cbvUploadHeapForObjects->Unmap(0, nullptr);
 }
 
 void FrameResource::InitBundle(ID3D12Device* device, ID3D12PipelineState* pipelineState,
@@ -106,10 +110,11 @@ void FrameResource::PopulateCommandList(ID3D12GraphicsCommandList* commandList,
     }
 }
 
-void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, DirectX::CXMMATRIX projection)
+void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, DirectX::CXMMATRIX projection, class Camera* camera)
 {
     const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
-    
+
+    float x, z;
     for (UINT i = 0; i < _rowCount; i++)
     {
         FLOAT offsetZ = i * -_spacingInterval;
@@ -118,9 +123,33 @@ void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, D
             FLOAT offsetX = j * _spacingInterval;
             int index = i * _columnCount + j;
 
-            DirectX::XMStoreFloat4x4(&_modelMatrices[index],
-                                     DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
-                                                               DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
+            x = offsetX;
+            z = offsetZ;
+
+            if (index == 0)
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, 0.5f),
+                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
+                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
+            else if (index == 1)
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, 0.5f),
+                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ - 0.5f))));
+            else if (index == 4)
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, -.5f),
+                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ + 0.5f))));
+            else if (index == 5)
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, -.5f),
+                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ + 0.5f))));
+            else
+                DirectX::XMStoreFloat4x4(&_modelMatrices[index],
+                                         DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
+                                                                   DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
 
         }
     }
@@ -132,13 +161,25 @@ void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, D
     {
         for (UINT j = 0; j < _columnCount; j++)
         {
-            model = DirectX::XMLoadFloat4x4(&_modelMatrices[i * _columnCount + j]);
+            const UINT index = i * _columnCount + j;
+            model = DirectX::XMLoadFloat4x4(&_modelMatrices[index]);
 
             // Compute the model-view-projection matrix.
             XMStoreFloat4x4(&mvp, XMMatrixTranspose(model * view * projection));
-
+            
             // Copy this matrix into the appropriate location in the upload heap subresource.
-            memcpy(&_constantBuffers[i * _columnCount + j], &mvp, sizeof(mvp));
+            memcpy(&_constantBuffers[index], &mvp, sizeof(mvp));
+
+            DirectX::XMStoreFloat4x4(&_constantBuffers[index].modelView, XMMatrixTranspose(model * view));
+            DirectX::XMStoreFloat4(&_constantBuffers[index].lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), view));
+            DirectX::XMStoreFloat4(&_constantBuffers[index].diffuseColor,  DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
+            DirectX::XMStoreFloat4(&_constantBuffers[index].ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+            _constantBuffers[index].diffuseIntensity = 1.0f;
+            _constantBuffers[index].attenuationConst = 1.0f;
+            _constantBuffers[index].attenuationLinear = 0.045;
+            _constantBuffers[index].attenuationQuad = 0.0075f;
+            _constantBuffers[index].specularIntesity = 1.f;
+            _constantBuffers[index].specularPower = 30.f;
         }
     }
 }

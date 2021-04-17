@@ -148,9 +148,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders.hlsl" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <FxCompile Include="Assets\Shaders\shaders.hlsl" />
+    <FxCompile Include="Assets\Shaders\PixelShader.hlsl" />
+    <FxCompile Include="Assets\Shaders\VertexShader.hlsl" />
   </ItemGroup>
 </Project>

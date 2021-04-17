@@ -65,10 +65,10 @@ public:
 
     inline void SetCubeIndex(int NewIndex)
     {
-        Roll = 0.f;
-        Pitch = 0.f;
-        Yaw = 0.f;
-        currentCubeIndex = (NewIndex - 1) % MaterialCount;
+        //Roll = 0.f;
+        //Pitch = 0.f;
+        //Yaw = 0.f;
+        //currentCubeIndex = (NewIndex - 1) % MaterialCount;
     }
     // TMP: end
 
@@ -77,26 +77,26 @@ private:
 
     static const UINT FrameCount = 2;
 
-    static const UINT RowCount = 1;
-    static const UINT ColumnCount = 10;
+    static const UINT RowCount = 2;
+    static const UINT ColumnCount = 4;
     static const UINT MaterialCount = RowCount * ColumnCount;
     static const bool bUseBundles = false; // TODO:
     static const float SpacingInterval;
 
-    struct Vertex
-    {
-        DirectX::XMFLOAT3 position;
-        DirectX::XMFLOAT2 uv;
-        //DirectX::XMFLOAT4 color;
-    };
+    //struct Vertex
+    //{
+    //    DirectX::XMFLOAT3 position;
+    //    DirectX::XMFLOAT2 uv;
+    //    //DirectX::XMFLOAT4 color;
+    //};
 
-    struct SceneConstantBuffer
-    {
-        DirectX::XMFLOAT4 offset;
-        DirectX::XMMATRIX transform;
-        float padding[44]; // Padding so the constant buffer is 256-byte aligned.
-    };
-    static_assert((sizeof(SceneConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
+    //struct SceneConstantBuffer
+    //{
+    //    DirectX::XMFLOAT4 offset;
+    //    DirectX::XMMATRIX transform;
+    //    float padding[44]; // Padding so the constant buffer is 256-byte aligned.
+    //};
+    //static_assert((sizeof(SceneConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 
     // Pipeline objects.
     CD3DX12_VIEWPORT _viewport;
@@ -130,6 +130,7 @@ private:
 
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];
+
     Camera _camera;
 
     // Frame resources.
