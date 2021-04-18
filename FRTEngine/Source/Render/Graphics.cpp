@@ -7,12 +7,13 @@
 #include "MathLib.h"
 #include "pix3.h"
 #include "Utils/Logger/Logger.h"
+#include "Render/VertexBuffer.h"
 
 #include <string>
-#include "Utils/Logger/Logger.h"
 #include <Tools\DXHelper.h>
 #include <filesystem>
 #include <string>
+#include "IndexBuffer.h"
 
 const float frt::Graphics::SpacingInterval = 1.f;
 
@@ -350,7 +351,6 @@ void Graphics::LoadAssets()
     // the command list that references them has finished executing on the GPU.
     // We will flush the GPU at the end of this method to ensure the resources are not
     // prematurely destroyed.
-    ComPtr<ID3D12Resource> vertexBufferUploadHeap;
     ComPtr<ID3D12Resource> indexBufferUploadHeap;
     ComPtr<ID3D12Resource> textureUploadHeap;
     ComPtr<ID3D12Resource> materialsUploadHeap;
@@ -472,93 +472,14 @@ void Graphics::LoadAssets()
 
     // Create the vertex buffer.
     {
-        const UINT vertexBufferSize = _mesh->GetVertexDataSize() * sizeof(Mesh::Vertex);
-        const UINT indexBufferSize = _mesh->GetIndexDataSize();
-        Logger::DebugLogInfo("Index buffer size: " + std::to_string(indexBufferSize));
+        _myVertexBuffer = new VertexBuffer(this, _mesh->GetVertices(), _mesh->GetVertexDataSize());
+    }
+    
+    // index buffer
+    {
+        _myIndexBuffer = new IndexBuffer(this, _mesh->GetIndices(), _mesh->GetIndexDataSize());
 
-        // Note: using upload heaps to transfer static data like vert buffers is not 
-        // recommended. Every time the GPU needs it, the upload heap will be marshalled 
-        // over. Please read up on Default Heap usage. An upload heap is used here for 
-        // code simplicity and because there are very few verts to actually transfer.
-        CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
-        auto desc = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-        THROW_IF_FAILED(_device->CreateCommittedResource(
-            &heapProps,
-            D3D12_HEAP_FLAG_NONE,
-            &desc,
-            D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
-            IID_PPV_ARGS(&_vertexBuffer)));
-
-        CD3DX12_HEAP_PROPERTIES heapProps2(D3D12_HEAP_TYPE_UPLOAD);
-        auto desc2 = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-        THROW_IF_FAILED(_device->CreateCommittedResource(
-            &heapProps2,
-            D3D12_HEAP_FLAG_NONE,
-            &desc2,
-            D3D12_RESOURCE_STATE_GENERIC_READ,
-            nullptr,
-            IID_PPV_ARGS(&vertexBufferUploadHeap)));
-
-        NAME_D3D12_OBJECT(_vertexBuffer);
-
-
-        // Copy data to the intermediate upload heap and then schedule a copy
-        // from the upload heap to the vertex buffer.
-        D3D12_SUBRESOURCE_DATA vertexData = {};
-        vertexData.pData = _mesh->GetVertices();
-        vertexData.RowPitch = vertexBufferSize;
-        vertexData.SlicePitch = vertexData.RowPitch;
-
-        auto bar = CD3DX12_RESOURCE_BARRIER::Transition(_vertexBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-        UpdateSubresources<1>(_commandList.Get(), _vertexBuffer.Get(), vertexBufferUploadHeap.Get(), 0, 0, 1, &vertexData);
-        _commandList->ResourceBarrier(1, &bar);
-
-        // Initialize the vertex buffer view.
-        _vertexBufferView.BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
-        _vertexBufferView.StrideInBytes = sizeof(Mesh::Vertex);
-        _vertexBufferView.SizeInBytes = vertexBufferSize;
-
-        // index buffer
-        CD3DX12_HEAP_PROPERTIES heapProps_(D3D12_HEAP_TYPE_DEFAULT);
-        auto desc_ = CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize);
-        THROW_IF_FAILED(_device->CreateCommittedResource(
-            &heapProps_,
-            D3D12_HEAP_FLAG_NONE,
-            &desc_,
-            D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
-            IID_PPV_ARGS(&_indexBuffer)));
-        
-        CD3DX12_HEAP_PROPERTIES heapProps_2(D3D12_HEAP_TYPE_UPLOAD);
-        auto desc_2 = CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize);
-        THROW_IF_FAILED(_device->CreateCommittedResource(
-            &heapProps_2,
-            D3D12_HEAP_FLAG_NONE,
-            &desc_2,
-            D3D12_RESOURCE_STATE_GENERIC_READ,
-            nullptr,
-            IID_PPV_ARGS(&indexBufferUploadHeap)));
-
-        NAME_D3D12_OBJECT(_indexBuffer);
-
-        // Copy data to the intermediate upload heap and then schedule a copy 
-        // from the upload heap to the index buffer.
-        D3D12_SUBRESOURCE_DATA indexData = {};
-        indexData.pData = _mesh->GetIndices();
-        indexData.RowPitch = indexBufferSize;
-        indexData.SlicePitch = indexData.RowPitch;
-
-        auto bar1 = CD3DX12_RESOURCE_BARRIER::Transition(_indexBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER);
-        UpdateSubresources<1>(_commandList.Get(), _indexBuffer.Get(), indexBufferUploadHeap.Get(), 0, 0, 1, &indexData);
-        _commandList->ResourceBarrier(1, &bar1);
-
-        // Initialize the vertex buffer view.
-        _indexBufferView.BufferLocation = _indexBuffer->GetGPUVirtualAddress();
-        _indexBufferView.Format = DXGI_FORMAT_R8_UINT;
-        _indexBufferView.SizeInBytes = indexBufferSize;
-
-        _indicesNum = indexBufferSize;
+        _indicesNum = _mesh->GetIndexDataSize();
     }
 
     //_mesh->Update(_device, &_vertexBufferView, &_indexBufferView);
@@ -760,7 +681,7 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     _commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
     _commandList->ClearDepthStencilView(_dsvHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-    PIXBeginEvent(_commandList.Get(), 0, L"Draw cities");
+    PIXBeginEvent(_commandList.Get(), 0, L"Draw");
     if (bUseBundles)
     {
         // Execute the prebuilt bundle.
@@ -769,6 +690,13 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     else
     {
         // Populate a new command list.
+        _commandList->SetGraphicsRootSignature(_rootSignature.Get());
+
+        ID3D12DescriptorHeap* ppHeaps[] = { _cbvSrvHeap.Get(), _samplerHeap.Get() };
+        _commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+        _commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        _myIndexBuffer->PopulateCommandList();
+        _myVertexBuffer->PopulateCommandList();
         pFrameResource->PopulateCommandList(_commandList.Get(), _currentFrameResourceIndex, _indicesNum, &_indexBufferView,
                                             &_vertexBufferView, _cbvSrvHeap.Get(), _cbvSrvDescriptorSize, _samplerHeap.Get(), _rootSignature.Get());
     }

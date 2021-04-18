@@ -23,6 +23,8 @@ class Window;
 
 class FRTENGINE_API Graphics
 {
+    friend class GraphicsResource;
+
 public:
     Graphics(Window* owner, HWND hWindow);
     virtual ~Graphics();
@@ -127,6 +129,9 @@ private:
 
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
     D3D12_INDEX_BUFFER_VIEW _indexBufferView;
+
+    class VertexBuffer* _myVertexBuffer;
+    class IndexBuffer* _myIndexBuffer;
 
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];

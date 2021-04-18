@@ -79,13 +79,13 @@ void FrameResource::PopulateCommandList(ID3D12GraphicsCommandList* commandList,
 {
     // If the root signature matches the root signature of the caller, then
     // bindings are inherited, otherwise the bind space is reset.
-    commandList->SetGraphicsRootSignature(rootSignature);
+    //commandList->SetGraphicsRootSignature(rootSignature);
 
-    ID3D12DescriptorHeap* ppHeaps[] = { cbvSrvDescriptorHeap, samplerDescriptorHeap };
-    commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-    commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    commandList->IASetIndexBuffer(indexBufferViewDesc);
-    commandList->IASetVertexBuffers(0, 1, vertexBufferViewDesc);
+    //ID3D12DescriptorHeap* ppHeaps[] = { cbvSrvDescriptorHeap, samplerDescriptorHeap };
+    //commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+    //commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //commandList->IASetIndexBuffer(indexBufferViewDesc);
+    //commandList->IASetVertexBuffers(0, 1, vertexBufferViewDesc);
     commandList->SetGraphicsRootDescriptorTable(0, cbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
     commandList->SetGraphicsRootDescriptorTable(1, samplerDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 

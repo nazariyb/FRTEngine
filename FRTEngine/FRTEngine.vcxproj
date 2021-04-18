@@ -212,6 +212,8 @@
     <ClInclude Include="Source\Render\DeviceResources.h" />
     <ClInclude Include="Source\Render\FrameResource.h" />
     <ClInclude Include="Source\Render\Graphics.h" />
+    <ClInclude Include="Source\Render\GraphicsResource.h" />
+    <ClInclude Include="Source\Render\IndexBuffer.h" />
     <ClInclude Include="Source\Render\Mesh.h" />
     <ClInclude Include="Source\Tools\d3dx12.h" />
     <ClInclude Include="Source\Tools\DXHelper.h" />
@@ -219,6 +221,7 @@
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
     <ClInclude Include="Source\Time\Time.h" />
+    <ClInclude Include="Source\Render\VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameWorld.cpp" />
@@ -236,10 +239,13 @@
     <ClCompile Include="Source\Input\MouseInfo.cpp" />
     <ClCompile Include="Source\Render\DeviceResources.cpp" />
     <ClCompile Include="Source\Render\Graphics.cpp" />
+    <ClCompile Include="Source\Render\GraphicsResource.cpp" />
+    <ClCompile Include="Source\Render\IndexBuffer.cpp" />
     <ClCompile Include="Source\Render\Mesh.cpp" />
     <ClCompile Include="Source\Utils\Logger\Logger.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Time\Time.cpp" />
+    <ClCompile Include="Source\Render\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Shaders\PixelShader.hlsl">
