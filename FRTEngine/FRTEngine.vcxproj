@@ -209,6 +209,7 @@
     <ClInclude Include="Source\Input\MouseEvent.h" />
     <ClInclude Include="Source\Input\MouseInfo.h" />
     <ClInclude Include="Source\Render\Camera.h" />
+    <ClInclude Include="Source\Render\ConstantBuffer.h" />
     <ClInclude Include="Source\Render\DeviceResources.h" />
     <ClInclude Include="Source\Render\FrameResource.h" />
     <ClInclude Include="Source\Render\Graphics.h" />
@@ -226,6 +227,7 @@
   <ItemGroup>
     <ClCompile Include="Source\GameWorld.cpp" />
     <ClCompile Include="Source\Render\Camera.cpp" />
+    <ClCompile Include="Source\Render\ConstantBuffer.cpp" />
     <ClCompile Include="Source\Render\FrameResource.cpp" />
     <ClCompile Include="Source\App.cpp" />
     <ClCompile Include="Source\Debug\Debug.cpp" />

@@ -8,6 +8,7 @@ GraphicsResource::GraphicsResource(Graphics* graphics)
 
 GraphicsResource::~GraphicsResource()
 {
-    delete _owner;
+    _owner = nullptr;
 }
+
 }

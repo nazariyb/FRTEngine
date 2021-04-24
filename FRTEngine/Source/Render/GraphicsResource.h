@@ -32,6 +32,26 @@ protected:
     {
         return _owner->_pipelineState.Get();
     };
+
+    inline UINT PostIncConstBuffersNum()
+    {
+        return _owner->_constBuffersNum++;
+    };
+
+    inline UINT GetCbvSrvDescriptorSize()
+    {
+        return _owner->_cbvSrvDescriptorSize;
+    };
+
+    inline ID3D12DescriptorHeap* GetCbvSrvHeap()
+    {
+        return _owner->_cbvSrvHeap.Get();
+    }
+
+    inline D3D12_CPU_DESCRIPTOR_HANDLE GetCbvSrvCPUDescriptorHandleForHeapStart()
+    {
+        return _owner->_cbvSrvHeap->GetCPUDescriptorHandleForHeapStart();
+    }
 };
 }
 

@@ -8,6 +8,7 @@
 #include "pix3.h"
 #include "Utils/Logger/Logger.h"
 #include "Render/VertexBuffer.h"
+#include "Render/ConstantBuffer.h"
 
 #include <string>
 #include <Tools\DXHelper.h>
@@ -110,7 +111,7 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     //_mesh->InitializeTextureData(0x000000, 0xffffff);
 
     App::GetInstance()->GetWorld()->Reserve(MaterialCount);
-
+    _fenceValues.resize(FrameCount * MaterialCount);
     //_hWindow = hWindow;
     Init(hWindow);
 }
@@ -155,13 +156,14 @@ void Graphics::Update()
 
     // Move to the next frame resource.
     _currentFrameResourceIndex = (_currentFrameResourceIndex + 1) % FrameCount;
-    _currentFrameResource = _frameResources[_currentFrameResourceIndex];
+    //_currentFrameResource = _frameResources[_currentFrameResourceIndex];
 
     // Make sure that this frame resource isn't still in use by the GPU.
     // If it is, wait for it to complete.
-    if (_currentFrameResource->_fenceValue != 0 && _currentFrameResource->_fenceValue > lastCompletedFence)
+    //if (_currentFrameResource->_fenceValue != 0 && _currentFrameResource->_fenceValue > lastCompletedFence)
+    if (_fenceValues[_currentFrameResourceIndex] != 0 && _fenceValues[_currentFrameResourceIndex] > lastCompletedFence)
     {
-        THROW_IF_FAILED(_fence->SetEventOnCompletion(_currentFrameResource->_fenceValue, _fenceEvent));
+        THROW_IF_FAILED(_fence->SetEventOnCompletion(_fenceValues[_currentFrameResourceIndex], _fenceEvent));
         WaitForSingleObject(_fenceEvent, INFINITE);
     }
 
@@ -183,8 +185,79 @@ void Graphics::Update()
 
     //_currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
     App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
-    _currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio), &_camera);
+    //_currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio), &_camera);
 
+
+    using namespace DirectX;
+    const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
+
+    for (UINT i = 0; i < FrameCount; i++)
+    {
+        for (UINT j = 0; j < RowCount; j++)
+        {
+            FLOAT offsetZ = j * -SpacingInterval;
+
+            for (UINT k = 0; k < ColumnCount; k++)
+            {
+                FLOAT offsetX = k * SpacingInterval;
+                FrameResource::SceneConstantBuffer buffer{};
+
+                XMFLOAT4X4 model, view, projection, mvp;
+
+                const UINT indexOffset = i * RowCount * ColumnCount;
+                const UINT index = j * ColumnCount + k;
+
+                if (index == 0)
+                    DirectX::XMStoreFloat4x4(&model,
+                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, 0.5f),
+                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                                 DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
+                else if (index == 1)
+                    DirectX::XMStoreFloat4x4(&model,
+                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, 0.5f),
+                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                                 DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ - 0.5f))));
+                else if (index == 4)
+                    DirectX::XMStoreFloat4x4(&model,
+                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, -.5f),
+                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                                 DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ + 0.5f))));
+                else if (index == 5)
+                    DirectX::XMStoreFloat4x4(&model,
+                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, -.5f),
+                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+                                                                                                 DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ + 0.5f))));
+                else
+                    DirectX::XMStoreFloat4x4(&model,
+                                             DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
+                                                                       DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
+
+
+
+                //XMStoreFloat4x4(&model, XMMatrixTranslation(offsetX, 0.f, offsetZ));
+                XMStoreFloat4x4(&view, _camera.GetViewMatrix());
+                XMStoreFloat4x4(&projection, _camera.GetProjectionMatrix(0.8f, _aspectRatio));
+
+                XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+                //memcpy(&_myConstantBuffers[index], &mvp, sizeof(mvp));
+                XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+                XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+                XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
+                XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
+                XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+                buffer.diffuseIntensity = 1.0f;
+                buffer.attenuationConst = 1.0f;
+                buffer.attenuationLinear = 0.045;
+                buffer.attenuationQuad = 0.0075f;
+                buffer.specularIntesity = 1.f;
+                buffer.specularPower = 30.f;
+
+                _myConstantBuffers[indexOffset + index]->Update(buffer);
+
+            }
+        }
+    }
 }
 
 void Graphics::Render()
@@ -205,7 +278,8 @@ void Graphics::Render()
     _frameIndex = _swapChain->GetCurrentBackBufferIndex();
 
     // Signal and increment the fence value.
-    _currentFrameResource->_fenceValue = _fenceValue;
+    //_currentFrameResource->_fenceValue = _fenceValue;
+    _fenceValues[_currentFrameResourceIndex] = _fenceValue;
     THROW_IF_FAILED(_commandQueue->Signal(_fence.Get(), _fenceValue));
     _fenceValue++;
 }
@@ -216,6 +290,7 @@ void Graphics::Destroy()
     // cleaned up by the destructor.
     {
         const UINT64 fence = _fenceValue;
+        //const UINT64 fence = _fenceValues[_currentFrameResourceIndex];
         const UINT64 lastCompletedFence = _fence->GetCompletedValue();
 
         // Signal and increment the fence value.
@@ -234,6 +309,16 @@ void Graphics::Destroy()
     {
         delete _frameResources.at(i);
     }
+
+    for (UINT i = 0; i < _myConstantBuffers.size(); i++)
+    {
+        delete _myConstantBuffers.at(i);
+    }
+
+    delete _myIndexBuffer;
+    delete _myVertexBuffer;
+    //free(_myConstantBuffers);
+    //delete _myConstantBuffers;
 }
 
 void Graphics::LoadPipeline(HWND hWindow)
@@ -301,7 +386,6 @@ void Graphics::LoadPipeline(HWND hWindow)
     ));
 
     THROW_IF_FAILED(swapChain.As(&_swapChain));
-
     _frameIndex = _swapChain->GetCurrentBackBufferIndex();
 
     // Create descriptor heaps.
@@ -457,6 +541,7 @@ void Graphics::LoadAssets()
     }
 
     THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator.Get(), nullptr, IID_PPV_ARGS(&_commandList)));
+    //THROW_IF_FAILED(_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _commandAllocator.Get(), nullptr, IID_PPV_ARGS(&_commandList)));
     NAME_D3D12_OBJECT(_commandList);
 
     // Create render target views (RTVs).
@@ -644,7 +729,10 @@ void Graphics::LoadAssets()
     }
 
     CreateFrameResources();
-
+    for (UINT i = 0; i < FrameCount; i++)
+    {
+        THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocators[i])));
+    }
 }
 
 void Graphics::PopulateCommandList(FrameResource* pFrameResource)
@@ -652,12 +740,14 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     // Command list allocators can only be reset when the associated
     // command lists have finished execution on the GPU; apps should use
     // fences to determine GPU execution progress.
-    THROW_IF_FAILED(_currentFrameResource->_commandAllocator->Reset());
+    //THROW_IF_FAILED(_currentFrameResource->_commandAllocator->Reset());
+    THROW_IF_FAILED(_commandAllocators[_currentFrameResourceIndex]->Reset());
 
     // However, when ExecuteCommandList() is called on a particular command
     // list, that command list can then be reset at any time and must be before
     // re-recording.
-    THROW_IF_FAILED(_commandList->Reset(_currentFrameResource->_commandAllocator.Get(), _pipelineState.Get()));
+    //THROW_IF_FAILED(_commandList->Reset(_currentFrameResource->_commandAllocator.Get(), _pipelineState.Get()));
+    THROW_IF_FAILED(_commandList->Reset(_commandAllocators[_currentFrameResourceIndex].Get(), _pipelineState.Get()));
 
     // Set necessary state.
     _commandList->SetGraphicsRootSignature(_rootSignature.Get());
@@ -697,8 +787,31 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
         _commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         _myIndexBuffer->PopulateCommandList();
         _myVertexBuffer->PopulateCommandList();
-        pFrameResource->PopulateCommandList(_commandList.Get(), _currentFrameResourceIndex, _indicesNum, &_indexBufferView,
-                                            &_vertexBufferView, _cbvSrvHeap.Get(), _cbvSrvDescriptorSize, _samplerHeap.Get(), _rootSignature.Get());
+
+        _commandList->SetGraphicsRootDescriptorTable(0, _cbvSrvHeap->GetGPUDescriptorHandleForHeapStart());
+        _commandList->SetGraphicsRootDescriptorTable(1, _samplerHeap->GetGPUDescriptorHandleForHeapStart());
+
+        // Calculate the descriptor offset due to multiple frame resources.
+        // (_materialCount + 1) SRVs + how many CBVs we have currently.
+        UINT frameResourceDescriptorOffset = (MaterialCount + 1) + (_currentFrameResourceIndex * RowCount * ColumnCount);
+        CD3DX12_GPU_DESCRIPTOR_HANDLE cbvSrvHandle(_cbvSrvHeap->GetGPUDescriptorHandleForHeapStart(), frameResourceDescriptorOffset, _cbvSrvDescriptorSize);
+
+        for (UINT i = 0; i < RowCount; i++)
+        {
+            for (UINT j = 0; j < ColumnCount; j++)
+            {
+                // Set the cube's root constant for dynamically indexing into the material array.
+                _commandList->SetGraphicsRoot32BitConstant(3, (i * ColumnCount) + j, 0);
+
+                // Set this cube's CBV table and move to the next descriptor.
+                _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);
+                cbvSrvHandle.Offset(_cbvSrvDescriptorSize);
+
+                _commandList->DrawIndexedInstanced(_indicesNum, 1, 0, 0, 0);
+            }
+        }
+        //pFrameResource->PopulateCommandList(_commandList.Get(), _currentFrameResourceIndex, _indicesNum, &_indexBufferView,
+                                            //&_vertexBufferView, _cbvSrvHeap.Get(), _cbvSrvDescriptorSize, _samplerHeap.Get(), _rootSignature.Get());
     }
     PIXEndEvent(_commandList.Get());
 
@@ -711,32 +824,24 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
 
 void Graphics::CreateFrameResources()
 {
-    // Initialize each frame resource.
-    CD3DX12_CPU_DESCRIPTOR_HANDLE cbvSrvHandle(_cbvSrvHeap->GetCPUDescriptorHandleForHeapStart(), MaterialCount + 1, _cbvSrvDescriptorSize);    // Move past the SRVs.
+    using namespace DirectX;
+
     for (UINT i = 0; i < FrameCount; i++)
     {
-        FrameResource* pFrameResource = new FrameResource(_device.Get(), RowCount, ColumnCount, MaterialCount, SpacingInterval);
-
-        UINT64 cbOffset = 0;
         for (UINT j = 0; j < RowCount; j++)
         {
+            FLOAT offsetZ = i * -SpacingInterval;
             for (UINT k = 0; k < ColumnCount; k++)
             {
-                // Describe and create a constant buffer view (CBV).
-                D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-                cbvDesc.BufferLocation = pFrameResource->_cbvUploadHeap->GetGPUVirtualAddress() + cbOffset;
-                cbvDesc.SizeInBytes = sizeof(FrameResource::SceneConstantBuffer);
-                cbOffset += cbvDesc.SizeInBytes;
-                _device->CreateConstantBufferView(&cbvDesc, cbvSrvHandle);
-                cbvSrvHandle.Offset(_cbvSrvDescriptorSize);
+                FLOAT offsetX = j * SpacingInterval;
+                FrameResource::SceneConstantBuffer buffer{};
+
+                ConstantBuffer<FrameResource::SceneConstantBuffer>* myBuffer = new ConstantBuffer(this, buffer);
+                _myConstantBuffers.push_back(myBuffer);
             }
         }
-
-        pFrameResource->InitBundle(_device.Get(), _pipelineState.Get(), i, _indicesNum, &_indexBufferView,
-                                   &_vertexBufferView, _cbvSrvHeap.Get(), _cbvSrvDescriptorSize, _samplerHeap.Get(), _rootSignature.Get());
-
-        _frameResources.push_back(pFrameResource);
     }
+
 }
 
 }

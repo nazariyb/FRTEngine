@@ -21,6 +21,9 @@ namespace frt
 using Microsoft::WRL::ComPtr;
 class Window;
 
+template<typename C>
+class ConstantBuffer;
+
 class FRTENGINE_API Graphics
 {
     friend class GraphicsResource;
@@ -77,14 +80,17 @@ public:
 private:
     Window* _owner;
 
-    static const UINT FrameCount = 2;
+    static const UINT FrameCount = 4;
 
     static const UINT RowCount = 2;
     static const UINT ColumnCount = 4;
+public:
     static const UINT MaterialCount = RowCount * ColumnCount;
+private:
     static const bool bUseBundles = false; // TODO:
     static const float SpacingInterval;
 
+    UINT _constBuffersNum = 0;
     //struct Vertex
     //{
     //    DirectX::XMFLOAT3 position;
@@ -107,6 +113,7 @@ private:
     ComPtr<ID3D12Device> _device;
     ComPtr<ID3D12Resource> _renderTargets[FrameCount];
     ComPtr<ID3D12CommandAllocator> _commandAllocator;
+    ComPtr<ID3D12CommandAllocator> _commandAllocators[FrameCount];
     ComPtr<ID3D12CommandQueue> _commandQueue;
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
@@ -132,6 +139,8 @@ private:
 
     class VertexBuffer* _myVertexBuffer;
     class IndexBuffer* _myIndexBuffer;
+    std::vector<ConstantBuffer<FrameResource::SceneConstantBuffer>*> _myConstantBuffers;
+    std::vector<UINT64> _fenceValues;
 
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];
@@ -141,8 +150,9 @@ private:
     // Frame resources.
     std::vector<FrameResource*> _frameResources;
     FrameResource* _currentFrameResource;
+public:
     UINT _currentFrameResourceIndex;
-
+private:
     // Synchronization objects.
     UINT _frameIndex;
     UINT _frameCounter;
