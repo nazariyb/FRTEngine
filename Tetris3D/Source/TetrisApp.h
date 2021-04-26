@@ -1,6 +1,6 @@
 #pragma once
 #include "App.h"
-
+#include <bitset>
 
 using frt::App;
 
@@ -13,5 +13,12 @@ public:
 
 protected:
     void Update() override;
+
+    std::bitset<6> moveDirections;
+    float Roll = 0.f;
+    float Pitch = 0.f;
+    float Yaw = 0.f;
+
+    class frt::Mesh* object1;
 };
 

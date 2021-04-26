@@ -48,6 +48,10 @@ public:
         GetDevice()->CreateConstantBufferView(&cbvDesc, cbvSrvHandle);
     }
 
+    inline virtual ~ConstantBuffer()
+    {
+    };
+
     virtual void Update() override {}
     virtual void PopulateCommandList() override {}
 

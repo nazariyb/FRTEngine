@@ -6,18 +6,45 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include "WindowsMinimal.h"
-
+#include "ITickable.h"
+#include "Render/ConstantBuffer.h"
+#include <memory>
 
 namespace frt
 {
 using Microsoft::WRL::ComPtr;
 
-class FRTENGINE_API Mesh
+class FRTENGINE_API Mesh : public ITickable
 {
 public:
+    Mesh();
     Mesh(float radius, DirectX::XMFLOAT3 initialPosition);
+    virtual ~Mesh();
+
+    virtual void Update() override;
+    virtual void PopulateCommandList() override;
+
+    void InitializeGraphicsResources(class Graphics* graphics);
 
 public:
+
+    struct SceneObjectConstantBuffer
+    {
+        DirectX::XMFLOAT4X4 mvp;   // Model-view-projection
+        DirectX::XMFLOAT4X4 modelView;
+        DirectX::XMFLOAT4 lightPosition;
+        DirectX::XMFLOAT4 diffuseColor;
+        DirectX::XMFLOAT4 ambient;
+        DirectX::XMFLOAT4 padding1;
+        FLOAT diffuseIntensity;
+        FLOAT attenuationConst;
+        FLOAT attenuationLinear;
+        FLOAT attenuationQuad;
+        FLOAT specularIntesity;
+        FLOAT specularPower;
+        FLOAT padding2[10];
+    };
+
     struct Vertex
     {
         DirectX::XMFLOAT3 position;
@@ -25,7 +52,7 @@ public:
         DirectX::XMFLOAT2 uv;
     };
 
-    void Update(ComPtr<ID3D12Device> device, D3D12_VERTEX_BUFFER_VIEW* vertexBufferView, D3D12_INDEX_BUFFER_VIEW* indexBufferView);
+    void UpdateConstantBuffer(const SceneObjectConstantBuffer& newBuffer);
 
     Vertex* GetVertices();
     UINT8* GetIndices();
@@ -36,6 +63,8 @@ public:
     static std::vector<UINT8> GenerateTextureData(uint32_t color1, uint32_t color2);
 
 protected:
+    std::vector<ConstantBuffer<SceneObjectConstantBuffer>*> _constantBuffers;
+
     unsigned int _radius;
     DirectX::XMFLOAT3 _initialPosition;
 

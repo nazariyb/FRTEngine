@@ -44,6 +44,10 @@ GameWorld* App::GetWorld()
 void App::Update()
 {
     window->GetGraphics().Update();
+}
+
+void App::Render()
+{
     window->GetGraphics().Render();
 }
 

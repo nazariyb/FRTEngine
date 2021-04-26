@@ -11,6 +11,8 @@
 #include "Debug/Debug.h"
 #include "MathLib.h"
 #include "Render/Graphics.h"
+#include "Render/Mesh.h"
+#include <DirectXMath.h>
 
 using frt::Window;
 using frt::Exception;
@@ -26,8 +28,9 @@ using frt::Vector3Int;
 //using frt::Vector3Float;
 using frt::Graphics;
 using frt::Logger;
+using frt::Mesh;
 
-//using namespace frt;
+using namespace DirectX;
 
 TetrisApp::TetrisApp()
     : App(1280, 720, "Yey")
@@ -35,6 +38,8 @@ TetrisApp::TetrisApp()
 
 int TetrisApp::Start()
 {
+    object1 = world->SpawnObject<Mesh>();
+
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
         KeyboardEvent* keyboardEvent = static_cast<KeyboardEvent*>(event);
@@ -46,16 +51,31 @@ int TetrisApp::Start()
         {
             window->SetTitle("It's NOT space!");
         }
-        // fcking visual studio doesn't support std::format yet!?
-        //Logger::DebugLogInfo("CODE is " + std::to_string(keyboardEvent->GetKeyCode()));
     };
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
 #if 1
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
-        window->GetGraphics().OnKeyDown(ev->GetKeyCode()); 
-     
+        window->GetGraphics().OnKeyDown(ev->GetKeyCode());
+
+        if (window->keyboard.IsKeyPressed('T'))
+            moveDirections[0] = true;
+        if (window->keyboard.IsKeyPressed('F'))
+            moveDirections[1] = true;
+        if (window->keyboard.IsKeyPressed('G'))
+            moveDirections[2] = true;
+        if (window->keyboard.IsKeyPressed('H'))
+            moveDirections[3] = true;
+        if (window->keyboard.IsKeyPressed('R'))
+            moveDirections[4] = true;
+        if (window->keyboard.IsKeyPressed('Y'))
+            moveDirections[5] = true;
+
+#elif 0
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        window->GetGraphics().OnKeyDown(ev->GetKeyCode());
+
         if (window->keyboard.IsKeyPressed('T'))
             window->GetGraphics().moveDirections[0] = true;
         if (window->keyboard.IsKeyPressed('F'))
@@ -86,6 +106,28 @@ int TetrisApp::Start()
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
 #if 1
+        KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
+        window->GetGraphics().OnKeyUp(ev->GetKeyCode());
+
+        if (!window->keyboard.IsKeyPressed('T'))
+            moveDirections[0] = false;
+        if (!window->keyboard.IsKeyPressed('F'))
+            moveDirections[1] = false;
+        if (!window->keyboard.IsKeyPressed('G'))
+            moveDirections[2] = false;
+        if (!window->keyboard.IsKeyPressed('H'))
+            moveDirections[3] = false;
+        if (!window->keyboard.IsKeyPressed('R'))
+            moveDirections[4] = false;
+        if (!window->keyboard.IsKeyPressed('Y'))
+            moveDirections[5] = false;
+
+        if (48 <= ev->GetKeyCode() && ev->GetKeyCode() <= 57)
+        {
+            Logger::DebugLogInfo("Now work with cube #" + std::to_string(ev->GetKeyCode()));
+            window->GetGraphics().SetCubeIndex(ev->GetKeyCode());
+        }
+#elif 0
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         window->GetGraphics().OnKeyUp(ev->GetKeyCode());
 
@@ -176,7 +218,7 @@ int TetrisApp::Start()
     Logger::DebugLogInfo("v3: " + v3.GetAsString());
     Logger::DebugLogInfo("v4: " + v4.GetAsString());
     Logger::DebugLogInfo("v5: " + v5.GetAsString());
-    
+
     Logger::DebugLogInfo("");
     Logger::DebugLogInfo("v1 + v2: " + operator+(v1, v2).GetAsString());
     //Logger::DebugLogInfo("v1 + v2: " + (v1 + v2).GetAsString());
@@ -229,7 +271,9 @@ int TetrisApp::Start()
 
     bool running = true;
 
-    window->mouse.onButtonPressedEvent += [this, &running] (Event* event)
+    world->InitializeGraphicsResources(&(window->GetGraphics()));
+
+    window->keyboard.onKeyReleasedEvent += [this, &running] (Event* event)
     {
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         if (ev->GetKeyCode() == VK_ESCAPE)
@@ -247,6 +291,7 @@ int TetrisApp::Start()
         }
 
         Update();
+        Render();
     }
 
     Logger::LogInfo("Exit from App");
@@ -256,4 +301,44 @@ int TetrisApp::Start()
 void TetrisApp::Update()
 {
     App::Update();
+
+    if (moveDirections[0]) // T
+        Pitch += DirectX::XMConvertToRadians(-2);
+    if (moveDirections[1]) // F
+        Roll += DirectX::XMConvertToRadians(2);
+    if (moveDirections[2]) // G
+        Pitch += DirectX::XMConvertToRadians(2);
+    if (moveDirections[3]) // H
+        Roll += DirectX::XMConvertToRadians(-2);
+    if (moveDirections[4]) // R
+        Yaw += DirectX::XMConvertToRadians(-2);
+    if (moveDirections[5]) // Y
+        Yaw += DirectX::XMConvertToRadians(2);
+
+    XMFLOAT4X4 model, view, projection, mvp;
+    FLOAT offsetX = 0.f, offsetZ = 0.f;
+    XMStoreFloat4x4(&model,
+                    XMMatrixMultiply(XMMatrixTranslation(-.5f, 0.f, 0.5f),
+                                     XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll),
+                                                      XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
+
+    XMStoreFloat4x4(&view, window->GetGraphics()._camera.GetViewMatrix());
+    XMStoreFloat4x4(&projection, window->GetGraphics()._camera.GetProjectionMatrix(0.8f, window->GetGraphics()._aspectRatio));
+
+    XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+    Mesh::SceneObjectConstantBuffer buffer;
+    XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+    XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
+    XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
+    XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+    buffer.diffuseIntensity = 1.0f;
+    buffer.attenuationConst = 1.0f;
+    buffer.attenuationLinear = 0.045;
+    buffer.attenuationQuad = 0.0075f;
+    buffer.specularIntesity = 1.f;
+    buffer.specularPower = 30.f;
+
+    object1->UpdateConstantBuffer(buffer);
 }

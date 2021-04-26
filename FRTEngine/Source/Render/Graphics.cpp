@@ -107,7 +107,7 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     currentTranslation{ DirectX::XMMatrixTranslation(0.f, 0.f, 0.f) }
 {
 
-    _mesh = new Mesh({ .5f, {0.f, 0.f, 0.f}, });
+    //_mesh = new Mesh({ .5f, {0.f, 0.f, 0.f}, });
     //_mesh->InitializeTextureData(0x000000, 0xffffff);
 
     App::GetInstance()->GetWorld()->Reserve(MaterialCount);
@@ -170,94 +170,94 @@ void Graphics::Update()
     _camera.Update(1. / 60.);
     //_camera.Update(static_cast<float>(_timer.GetElapsedSeconds()));
 
-    if (moveDirections[0]) // T
-        Pitch += DirectX::XMConvertToRadians(-2);
-    if (moveDirections[1]) // F
-        Roll += DirectX::XMConvertToRadians(2);
-    if (moveDirections[2]) // G
-        Pitch += DirectX::XMConvertToRadians(2);
-    if (moveDirections[3]) // H
-        Roll += DirectX::XMConvertToRadians(-2);
-    if (moveDirections[4]) // R
-        Yaw += DirectX::XMConvertToRadians(-2);
-    if (moveDirections[5]) // Y
-        Yaw += DirectX::XMConvertToRadians(2);
+    //if (moveDirections[0]) // T
+    //    Pitch += DirectX::XMConvertToRadians(-2);
+    //if (moveDirections[1]) // F
+    //    Roll += DirectX::XMConvertToRadians(2);
+    //if (moveDirections[2]) // G
+    //    Pitch += DirectX::XMConvertToRadians(2);
+    //if (moveDirections[3]) // H
+    //    Roll += DirectX::XMConvertToRadians(-2);
+    //if (moveDirections[4]) // R
+    //    Yaw += DirectX::XMConvertToRadians(-2);
+    //if (moveDirections[5]) // Y
+    //    Yaw += DirectX::XMConvertToRadians(2);
 
     //_currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
-    App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
+    //App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
     //_currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio), &_camera);
 
 
     using namespace DirectX;
-    const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
+    //const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
 
-    for (UINT i = 0; i < FrameCount; i++)
-    {
-        for (UINT j = 0; j < RowCount; j++)
-        {
-            FLOAT offsetZ = j * -SpacingInterval;
+    //for (UINT i = 0; i < FrameCount; i++)
+    //{
+    //    for (UINT j = 0; j < RowCount; j++)
+    //    {
+    //        FLOAT offsetZ = j * -SpacingInterval;
 
-            for (UINT k = 0; k < ColumnCount; k++)
-            {
-                FLOAT offsetX = k * SpacingInterval;
-                FrameResource::SceneConstantBuffer buffer{};
+    //        for (UINT k = 0; k < ColumnCount; k++)
+    //        {
+    //            FLOAT offsetX = k * SpacingInterval;
+    //            FrameResource::SceneConstantBuffer buffer{};
 
-                XMFLOAT4X4 model, view, projection, mvp;
+    //            XMFLOAT4X4 model, view, projection, mvp;
 
-                const UINT indexOffset = i * RowCount * ColumnCount;
-                const UINT index = j * ColumnCount + k;
+    //            const UINT indexOffset = i * RowCount * ColumnCount;
+    //            const UINT index = j * ColumnCount + k;
 
-                if (index == 0)
-                    DirectX::XMStoreFloat4x4(&model,
-                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, 0.5f),
-                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-                                                                                                 DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
-                else if (index == 1)
-                    DirectX::XMStoreFloat4x4(&model,
-                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, 0.5f),
-                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-                                                                                                 DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ - 0.5f))));
-                else if (index == 4)
-                    DirectX::XMStoreFloat4x4(&model,
-                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, -.5f),
-                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-                                                                                                 DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ + 0.5f))));
-                else if (index == 5)
-                    DirectX::XMStoreFloat4x4(&model,
-                                             DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, -.5f),
-                                                                       DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-                                                                                                 DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ + 0.5f))));
-                else
-                    DirectX::XMStoreFloat4x4(&model,
-                                             DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
-                                                                       DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
+    //            if (index == 0)
+    //                DirectX::XMStoreFloat4x4(&model,
+    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, 0.5f),
+    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+    //                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
+    //            else if (index == 1)
+    //                DirectX::XMStoreFloat4x4(&model,
+    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, 0.5f),
+    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+    //                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ - 0.5f))));
+    //            else if (index == 4)
+    //                DirectX::XMStoreFloat4x4(&model,
+    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, -.5f),
+    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+    //                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ + 0.5f))));
+    //            else if (index == 5)
+    //                DirectX::XMStoreFloat4x4(&model,
+    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, -.5f),
+    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
+    //                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ + 0.5f))));
+    //            else
+    //                DirectX::XMStoreFloat4x4(&model,
+    //                                         DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
+    //                                                                   DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
 
 
 
-                //XMStoreFloat4x4(&model, XMMatrixTranslation(offsetX, 0.f, offsetZ));
-                XMStoreFloat4x4(&view, _camera.GetViewMatrix());
-                XMStoreFloat4x4(&projection, _camera.GetProjectionMatrix(0.8f, _aspectRatio));
+    //            //XMStoreFloat4x4(&model, XMMatrixTranslation(offsetX, 0.f, offsetZ));
+    //            XMStoreFloat4x4(&view, _camera.GetViewMatrix());
+    //            XMStoreFloat4x4(&projection, _camera.GetProjectionMatrix(0.8f, _aspectRatio));
 
-                XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+    //            XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
-                //memcpy(&_myConstantBuffers[index], &mvp, sizeof(mvp));
-                XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-                XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
-                XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
-                XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
-                XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
-                buffer.diffuseIntensity = 1.0f;
-                buffer.attenuationConst = 1.0f;
-                buffer.attenuationLinear = 0.045;
-                buffer.attenuationQuad = 0.0075f;
-                buffer.specularIntesity = 1.f;
-                buffer.specularPower = 30.f;
+    //            //memcpy(&_myConstantBuffers[index], &mvp, sizeof(mvp));
+    //            XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+    //            XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+    //            XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
+    //            XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
+    //            XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+    //            buffer.diffuseIntensity = 1.0f;
+    //            buffer.attenuationConst = 1.0f;
+    //            buffer.attenuationLinear = 0.045;
+    //            buffer.attenuationQuad = 0.0075f;
+    //            buffer.specularIntesity = 1.f;
+    //            buffer.specularPower = 30.f;
 
-                _myConstantBuffers[indexOffset + index]->Update(buffer);
+    //            _myConstantBuffers[indexOffset + index]->Update(buffer);
 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
 }
 
 void Graphics::Render()
@@ -310,10 +310,10 @@ void Graphics::Destroy()
         delete _frameResources.at(i);
     }
 
-    for (UINT i = 0; i < _myConstantBuffers.size(); i++)
-    {
-        delete _myConstantBuffers.at(i);
-    }
+    //for (UINT i = 0; i < _myConstantBuffers.size(); i++)
+    //{
+    //    delete _myConstantBuffers.at(i);
+    //}
 
     delete _myIndexBuffer;
     delete _myVertexBuffer;
@@ -555,16 +555,110 @@ void Graphics::LoadAssets()
         NAME_D3D12_OBJECT_INDEXED(_renderTargets, i);
     }
 
+    const std::vector<unsigned char> _indices =
+    {
+        // front
+        0, 1, 2,
+        2, 1, 3,
+
+        // right
+        4, 5, 6,
+        6, 5, 7,
+
+        // left
+        8, 9, 10,
+        10, 9, 11,
+
+        // back
+        12, 13, 14,
+        14, 13, 15,
+
+        // top
+        16, 17, 18,
+        18, 17, 19,
+
+        // bottom
+        20, 21, 22,
+        22, 21, 23,
+    };
+
     // Create the vertex buffer.
     {
-        _myVertexBuffer = new VertexBuffer(this, _mesh->GetVertices(), _mesh->GetVertexDataSize());
+        const float x = 0.f;
+        const float y = 0.f;
+        const float z = 0.f;
+
+        static const unsigned int _vertexBufferSize = 24;
+        Mesh::Vertex _vertices[_vertexBufferSize];
+        float radius = 1.f;
+
+        // front side
+        _vertices[0] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[1] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[2] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[3] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        // right side
+        _vertices[4] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[5] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[6] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[7] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        // left side
+        _vertices[8] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[9] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[10] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[11] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        // back side
+        _vertices[12] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[13] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[14] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[15] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        // top side
+        _vertices[16] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[17] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[18] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[19] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        // bottom side
+        _vertices[20] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+        _vertices[21] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+        _vertices[22] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+        _vertices[23] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
+        using namespace DirectX;
+
+        for (size_t i = 0; i < _indices.size(); i += 3)
+        {
+            Mesh::Vertex& v0 = _vertices[_indices[i]];
+            Mesh::Vertex& v1 = _vertices[_indices[i + 1]];
+            Mesh::Vertex& v2 = _vertices[_indices[i + 2]];
+            const XMVECTOR pos0 = XMLoadFloat3(&v0.position);
+            const XMVECTOR pos1 = XMLoadFloat3(&v1.position);
+            const XMVECTOR pos2 = XMLoadFloat3(&v2.position);
+
+            const auto normal = XMVector3Normalize(XMVector3Cross((pos2 - pos0), (pos1 - pos0)));
+
+            XMStoreFloat3(&v0.normal, normal);
+            XMStoreFloat3(&v1.normal, normal);
+            XMStoreFloat3(&v2.normal, normal);
+
+            Logger::DebugLogInfo(
+                "normal for # " + std::to_string(_indices[i]) + "," + std::to_string(_indices[i + 1]) + "," + std::to_string(_indices[i + 2])
+                + " : <" + std::to_string(normal.m128_f32[0]) + ", " + std::to_string(normal.m128_f32[1]) + ", " + std::to_string(normal.m128_f32[2]) + ">"
+            );
+        }
+
+        _myVertexBuffer = new VertexBuffer(this, _vertices, _vertexBufferSize);
     }
     
     // index buffer
     {
-        _myIndexBuffer = new IndexBuffer(this, _mesh->GetIndices(), _mesh->GetIndexDataSize());
+        _myIndexBuffer = new IndexBuffer(this, const_cast<UINT8*>(&_indices[0]), _indices.size());
 
-        _indicesNum = _mesh->GetIndexDataSize();
+        _indicesNum = _indices.size();
     }
 
     //_mesh->Update(_device, &_vertexBufferView, &_indexBufferView);
@@ -728,7 +822,9 @@ void Graphics::LoadAssets()
         WaitForSingleObject(_fenceEvent, INFINITE);
     }
 
-    CreateFrameResources();
+    //CreateFrameResources();
+    //App::GetInstance()->GetWorld()->InitializeGraphicsResources(this);
+
     for (UINT i = 0; i < FrameCount; i++)
     {
         THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocators[i])));
@@ -775,7 +871,7 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     if (bUseBundles)
     {
         // Execute the prebuilt bundle.
-        _commandList->ExecuteBundle(pFrameResource->_bundle.Get());
+        //_commandList->ExecuteBundle(pFrameResource->_bundle.Get());
     }
     else
     {
@@ -785,6 +881,7 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
         ID3D12DescriptorHeap* ppHeaps[] = { _cbvSrvHeap.Get(), _samplerHeap.Get() };
         _commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
         _commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
         _myIndexBuffer->PopulateCommandList();
         _myVertexBuffer->PopulateCommandList();
 
@@ -793,15 +890,16 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
 
         // Calculate the descriptor offset due to multiple frame resources.
         // (_materialCount + 1) SRVs + how many CBVs we have currently.
-        UINT frameResourceDescriptorOffset = (MaterialCount + 1) + (_currentFrameResourceIndex * RowCount * ColumnCount);
+        UINT frameResourceDescriptorOffset = (MaterialCount + 1) + (_currentFrameResourceIndex);// *RowCount* ColumnCount);
         CD3DX12_GPU_DESCRIPTOR_HANDLE cbvSrvHandle(_cbvSrvHeap->GetGPUDescriptorHandleForHeapStart(), frameResourceDescriptorOffset, _cbvSrvDescriptorSize);
 
-        for (UINT i = 0; i < RowCount; i++)
+        //for (UINT i = 0; i < RowCount; i++)
         {
-            for (UINT j = 0; j < ColumnCount; j++)
+            //for (UINT j = 0; j < ColumnCount; j++)
             {
                 // Set the cube's root constant for dynamically indexing into the material array.
-                _commandList->SetGraphicsRoot32BitConstant(3, (i * ColumnCount) + j, 0);
+                //_commandList->SetGraphicsRoot32BitConstant(3, (i * ColumnCount) + j, 0);
+                _commandList->SetGraphicsRoot32BitConstant(3, 0, 0);
 
                 // Set this cube's CBV table and move to the next descriptor.
                 _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);
@@ -824,23 +922,23 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
 
 void Graphics::CreateFrameResources()
 {
-    using namespace DirectX;
+    //using namespace DirectX;
 
-    for (UINT i = 0; i < FrameCount; i++)
-    {
-        for (UINT j = 0; j < RowCount; j++)
-        {
-            FLOAT offsetZ = i * -SpacingInterval;
-            for (UINT k = 0; k < ColumnCount; k++)
-            {
-                FLOAT offsetX = j * SpacingInterval;
-                FrameResource::SceneConstantBuffer buffer{};
+    //for (UINT i = 0; i < FrameCount; i++)
+    //{
+    //    for (UINT j = 0; j < RowCount; j++)
+    //    {
+    //        FLOAT offsetZ = i * -SpacingInterval;
+    //        for (UINT k = 0; k < ColumnCount; k++)
+    //        {
+    //            FLOAT offsetX = j * SpacingInterval;
+    //            FrameResource::SceneConstantBuffer buffer{};
 
-                ConstantBuffer<FrameResource::SceneConstantBuffer>* myBuffer = new ConstantBuffer(this, buffer);
-                _myConstantBuffers.push_back(myBuffer);
-            }
-        }
-    }
+    //            ConstantBuffer<FrameResource::SceneConstantBuffer>* myBuffer = new ConstantBuffer(this, buffer);
+    //            _myConstantBuffers.push_back(myBuffer);
+    //        }
+    //    }
+    //}
 
 }
 

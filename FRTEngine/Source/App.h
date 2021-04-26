@@ -33,6 +33,7 @@ protected:
     void Init(HINSTANCE hInstance, HICON icon);
 
     virtual void Update();
+    virtual void Render();
 
     Window* window;
     GameWorld* world;

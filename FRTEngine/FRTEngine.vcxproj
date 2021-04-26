@@ -208,6 +208,7 @@
     <ClInclude Include="Source\Input\Mouse.h" />
     <ClInclude Include="Source\Input\MouseEvent.h" />
     <ClInclude Include="Source\Input\MouseInfo.h" />
+    <ClInclude Include="Source\ITickable.h" />
     <ClInclude Include="Source\Render\Camera.h" />
     <ClInclude Include="Source\Render\ConstantBuffer.h" />
     <ClInclude Include="Source\Render\DeviceResources.h" />

@@ -10,7 +10,7 @@
 #include <wrl.h>
 #include <bitset>
 
-#include "Render/Mesh.h"
+//#include "Render/Mesh.h"
 #include "Tools/d3dx12.h"
 #include "Camera.h"
 #include "FrameResource.h"
@@ -21,8 +21,8 @@ namespace frt
 using Microsoft::WRL::ComPtr;
 class Window;
 
-template<typename C>
-class ConstantBuffer;
+//template<typename C>
+//class ConstantBuffer;
 
 class FRTENGINE_API Graphics
 {
@@ -80,7 +80,9 @@ public:
 private:
     Window* _owner;
 
+public:
     static const UINT FrameCount = 4;
+private:
 
     static const UINT RowCount = 2;
     static const UINT ColumnCount = 4;
@@ -139,13 +141,15 @@ private:
 
     class VertexBuffer* _myVertexBuffer;
     class IndexBuffer* _myIndexBuffer;
-    std::vector<ConstantBuffer<FrameResource::SceneConstantBuffer>*> _myConstantBuffers;
+    //std::vector<ConstantBuffer<FrameResource::SceneConstantBuffer>*> _myConstantBuffers;
     std::vector<UINT64> _fenceValues;
 
     UINT _indicesNum;
     ComPtr<ID3D12Resource> _textures[MaterialCount];
 
+public:
     Camera _camera;
+private:
 
     // Frame resources.
     std::vector<FrameResource*> _frameResources;
@@ -160,14 +164,16 @@ private:
     ComPtr<ID3D12Fence> _fence;
     UINT64 _fenceValue;
 
+public:
     float _aspectRatio = 1280. / 720.;
+private:
 
     void LoadPipeline(HWND hWindow);
     void LoadAssets();
     void PopulateCommandList(FrameResource* pFrameResource);
     void CreateFrameResources();
 
-    Mesh* _mesh;
+    //Mesh* _mesh;
 };
 }
 

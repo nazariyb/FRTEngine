@@ -74,55 +74,46 @@ Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
 
 }
 
-void Mesh::Update(ComPtr<ID3D12Device> device, D3D12_VERTEX_BUFFER_VIEW* vertexBufferView, D3D12_INDEX_BUFFER_VIEW* indexBufferView)
+Mesh::Mesh()
+    : Mesh(0.f, {})
 {
-    // Note: using upload heaps to transfer static data like vert buffers is not 
-    // recommended. Every time the GPU needs it, the upload heap will be marshalled 
-    // over. Please read up on Default Heap usage. An upload heap is used here for 
-    // code simplicity and because there are very few verts to actually transfer.
-    //CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_UPLOAD);
-    //auto desc = CD3DX12_RESOURCE_DESC::Buffer(_vertexBufferSize);
-    //THROW_IF_FAILED(device->CreateCommittedResource(
-    //    &heapProps,
-    //    D3D12_HEAP_FLAG_NONE,
-    //    &desc,
-    //    D3D12_RESOURCE_STATE_GENERIC_READ,
-    //    nullptr,
-    //    IID_PPV_ARGS(&_vertexBuffer)));
+}
 
-    //// Copy the triangle data to the vertex buffer.
-    //UINT8* pVertexDataBegin;
-    //CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
-    //THROW_IF_FAILED(_vertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
-    //memcpy(pVertexDataBegin, _vertices, sizeof(_vertices));
-    //_vertexBuffer->Unmap(0, nullptr);
+Mesh::~Mesh()
+{
+    for (size_t i = 0; i < _constantBuffers.size(); ++i)
+    {
+        delete _constantBuffers.at(i);
+    }
+}
 
-    //// Initialize the vertex buffer view.
-    //vertexBufferView->BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
-    //vertexBufferView->StrideInBytes = sizeof(Vertex);
-    //vertexBufferView->SizeInBytes = _vertexBufferSize;
+void Mesh::UpdateConstantBuffer(const SceneObjectConstantBuffer& newBuffer)
+{
+    for (ConstantBuffer<SceneObjectConstantBuffer>* constantBuffer : _constantBuffers)
+    {
+        constantBuffer->Update(newBuffer);
+    }
+}
 
-    //// index buffer
-    //CD3DX12_HEAP_PROPERTIES heapProps_(D3D12_HEAP_TYPE_UPLOAD);
-    //auto desc_ = CD3DX12_RESOURCE_DESC::Buffer(_indexBufferSize);
-    //THROW_IF_FAILED(device->CreateCommittedResource(
-    //    &heapProps_,
-    //    D3D12_HEAP_FLAG_NONE,
-    //    &desc_,
-    //    D3D12_RESOURCE_STATE_GENERIC_READ,
-    //    nullptr,
-    //    IID_PPV_ARGS(&_indexBuffer)));
+void Mesh::Update()
+{
 
-    //// Copy the triangle data to the vertex buffer.
-    //UINT8* pIndexDataBegin;
-    //CD3DX12_RANGE readRangeIndex(0, 0);        // We do not intend to read from this resource on the CPU.
-    //THROW_IF_FAILED(_indexBuffer->Map(0, &readRangeIndex, reinterpret_cast<void**>(&pIndexDataBegin)));
-    //memcpy(pIndexDataBegin, &_indices[0], sizeof(_indices));
-    //_indexBuffer->Unmap(0, nullptr);
+}
 
-    //// Initialize the vertex buffer view.
-    //indexBufferView->BufferLocation = _indexBuffer->GetGPUVirtualAddress();
-    //indexBufferView->SizeInBytes = _indexBufferSize;
+void Mesh::PopulateCommandList()
+{
+    for (ConstantBuffer<SceneObjectConstantBuffer>* constantBuffer : _constantBuffers)
+    {
+        constantBuffer->PopulateCommandList();
+    }
+}
+
+void Mesh::InitializeGraphicsResources(Graphics* graphics)
+{
+    for (UINT i = 0; i < graphics->FrameCount; ++i)
+    {
+        _constantBuffers.push_back(new ConstantBuffer<SceneObjectConstantBuffer>(graphics, {}));
+    }
 }
 
 Mesh::Vertex* Mesh::GetVertices()

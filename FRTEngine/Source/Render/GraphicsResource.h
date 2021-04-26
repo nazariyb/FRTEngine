@@ -1,19 +1,17 @@
 #pragma once
 #include "FRTEngine.h"
 #include "Render/Graphics.h"
+#include "ITickable.h"
+
 
 namespace frt
 {
-class FRTENGINE_API GraphicsResource
+class FRTENGINE_API GraphicsResource : public ITickable
 {
 protected:
     GraphicsResource() = delete;
     GraphicsResource(Graphics* graphics);
     virtual ~GraphicsResource();
-
-public:
-    virtual void Update() = 0;
-    virtual void PopulateCommandList() = 0;
 
 protected:
     Graphics* _owner;

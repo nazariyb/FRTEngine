@@ -1,4 +1,5 @@
 #include "GameWorld.h"
+#include "Render/Mesh.h"
 
 
 namespace frt
@@ -37,6 +38,14 @@ void GameWorld::RotateObject(UINT Index, float Roll, float Pitch, float Yaw)
 {
     DirectX::XMStoreFloat4x4(&_meshes[Index],
                              DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll));
+}
+
+void GameWorld::InitializeGraphicsResources(Graphics* graphics)
+{
+    for (Mesh* gameObject : _gameObjects)
+    {
+        gameObject->InitializeGraphicsResources(graphics);
+    }
 }
 
 }
