@@ -9,6 +9,35 @@
 namespace frt
 {
 
+const std::vector<unsigned char> Mesh::_indices =
+{
+    // front
+    0, 1, 2,
+    2, 1, 3,
+
+    // right
+    4, 5, 6,
+    6, 5, 7,
+
+    // left
+    8, 9, 10,
+    10, 9, 11,
+
+    // back
+    12, 13, 14,
+    14, 13, 15,
+
+    // top
+    16, 17, 18,
+    18, 17, 19,
+
+    // bottom
+    20, 21, 22,
+    22, 21, 23,
+};
+
+const unsigned int Mesh::_indexBufferSize = Mesh::_indices.size();
+
 Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
     : _radius(radius), _initialPosition(initialPosition), _texture{}
 {
@@ -68,17 +97,12 @@ Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
         XMStoreFloat3(&v0.normal, normal);
         XMStoreFloat3(&v1.normal, normal);
         XMStoreFloat3(&v2.normal, normal);
-
-        Logger::DebugLogInfo(
-            "normal for # " + std::to_string(_indices[i]) + "," + std::to_string(_indices[i + 1]) + "," + std::to_string(_indices[i + 2])
-            + " : <" + std::to_string(normal.m128_f32[0]) + ", " + std::to_string(normal.m128_f32[1]) + ", " + std::to_string(normal.m128_f32[2]) + ">"
-        );
     }
 
 }
 
 Mesh::Mesh()
-    : Mesh(0.5f, {})
+    : Mesh(1.f, {})
 {
 }
 

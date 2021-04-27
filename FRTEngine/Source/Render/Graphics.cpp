@@ -100,16 +100,11 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     _fenceValue(0),
     _frameCounter(0),
     _currentFrameResourceIndex(0),
-    //_currentFrameResource(nullptr),
     _rtvDescriptorSize(0),
     _cbvSrvDescriptorSize(0),
     currentRotation{ DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) },
     currentTranslation{ DirectX::XMMatrixTranslation(0.f, 0.f, 0.f) }
 {
-
-    //_mesh = new Mesh({ .5f, {0.f, 0.f, 0.f}, });
-    //_mesh->InitializeTextureData(0x000000, 0xffffff);
-
     App::GetInstance()->GetWorld()->Reserve(MaterialCount);
     _fenceValues.resize(FrameCount * MaterialCount);
     //_hWindow = hWindow;
@@ -169,95 +164,6 @@ void Graphics::Update()
 
     _camera.Update(1. / 60.);
     //_camera.Update(static_cast<float>(_timer.GetElapsedSeconds()));
-
-    //if (moveDirections[0]) // T
-    //    Pitch += DirectX::XMConvertToRadians(-2);
-    //if (moveDirections[1]) // F
-    //    Roll += DirectX::XMConvertToRadians(2);
-    //if (moveDirections[2]) // G
-    //    Pitch += DirectX::XMConvertToRadians(2);
-    //if (moveDirections[3]) // H
-    //    Roll += DirectX::XMConvertToRadians(-2);
-    //if (moveDirections[4]) // R
-    //    Yaw += DirectX::XMConvertToRadians(-2);
-    //if (moveDirections[5]) // Y
-    //    Yaw += DirectX::XMConvertToRadians(2);
-
-    //_currentFrameResource->RotateCube(currentCubeIndex, Roll, Pitch, Yaw);
-    //App::GetInstance()->GetWorld()->RotateObject(currentCubeIndex, Roll, Pitch, Yaw);
-    //_currentFrameResource->UpdateConstantBuffers(_camera.GetViewMatrix(), _camera.GetProjectionMatrix(0.8f, _aspectRatio), &_camera);
-
-
-    using namespace DirectX;
-    //const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
-
-    //for (UINT i = 0; i < FrameCount; i++)
-    //{
-    //    for (UINT j = 0; j < RowCount; j++)
-    //    {
-    //        FLOAT offsetZ = j * -SpacingInterval;
-
-    //        for (UINT k = 0; k < ColumnCount; k++)
-    //        {
-    //            FLOAT offsetX = k * SpacingInterval;
-    //            FrameResource::SceneConstantBuffer buffer{};
-
-    //            XMFLOAT4X4 model, view, projection, mvp;
-
-    //            const UINT indexOffset = i * RowCount * ColumnCount;
-    //            const UINT index = j * ColumnCount + k;
-
-    //            if (index == 0)
-    //                DirectX::XMStoreFloat4x4(&model,
-    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, 0.5f),
-    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-    //                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
-    //            else if (index == 1)
-    //                DirectX::XMStoreFloat4x4(&model,
-    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, 0.5f),
-    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-    //                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ - 0.5f))));
-    //            else if (index == 4)
-    //                DirectX::XMStoreFloat4x4(&model,
-    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(-.5f, 0.f, -.5f),
-    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-    //                                                                                             DirectX::XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ + 0.5f))));
-    //            else if (index == 5)
-    //                DirectX::XMStoreFloat4x4(&model,
-    //                                         DirectX::XMMatrixMultiply(DirectX::XMMatrixTranslation(0.5f, 0.f, -.5f),
-    //                                                                   DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[0]),
-    //                                                                                             DirectX::XMMatrixTranslation(offsetX - 0.5f, 0.f, offsetZ + 0.5f))));
-    //            else
-    //                DirectX::XMStoreFloat4x4(&model,
-    //                                         DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&meshes[index]),
-    //                                                                   DirectX::XMMatrixTranslation(offsetX, 0.f, offsetZ)));
-
-
-
-    //            //XMStoreFloat4x4(&model, XMMatrixTranslation(offsetX, 0.f, offsetZ));
-    //            XMStoreFloat4x4(&view, _camera.GetViewMatrix());
-    //            XMStoreFloat4x4(&projection, _camera.GetProjectionMatrix(0.8f, _aspectRatio));
-
-    //            XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
-
-    //            //memcpy(&_myConstantBuffers[index], &mvp, sizeof(mvp));
-    //            XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-    //            XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
-    //            XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
-    //            XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
-    //            XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
-    //            buffer.diffuseIntensity = 1.0f;
-    //            buffer.attenuationConst = 1.0f;
-    //            buffer.attenuationLinear = 0.045;
-    //            buffer.attenuationQuad = 0.0075f;
-    //            buffer.specularIntesity = 1.f;
-    //            buffer.specularPower = 30.f;
-
-    //            _myConstantBuffers[indexOffset + index]->Update(buffer);
-
-    //        }
-    //    }
-    //}
 }
 
 void Graphics::Render()
@@ -265,7 +171,7 @@ void Graphics::Render()
     PIXBeginEvent(_commandQueue.Get(), 0, L"Render");
 
     // Record all the commands we need to render the scene into the command list.
-    PopulateCommandList(nullptr);
+    PopulateCommandList();
 
     // Execute the command list.
     ID3D12CommandList* ppCommandLists[] = { _commandList.Get() };
@@ -304,21 +210,6 @@ void Graphics::Destroy()
             WaitForSingleObject(_fenceEvent, INFINITE);
         }
     }
-
-    //for (UINT i = 0; i < _frameResources.size(); i++)
-    //{
-    //    delete _frameResources.at(i);
-    //}
-
-    //for (UINT i = 0; i < _myConstantBuffers.size(); i++)
-    //{
-    //    delete _myConstantBuffers.at(i);
-    //}
-
-    //delete _myIndexBuffer;
-    //delete _myVertexBuffer;
-    //free(_myConstantBuffers);
-    //delete _myConstantBuffers;
 }
 
 void Graphics::BeforeFirstTick()
@@ -484,9 +375,6 @@ void Graphics::BeforeFirstTick()
         THROW_IF_FAILED(_fence->SetEventOnCompletion(fenceToWaitFor, _fenceEvent));
         WaitForSingleObject(_fenceEvent, INFINITE);
     }
-
-    //CreateFrameResources();
-    //App::GetInstance()->GetWorld()->InitializeGraphicsResources(this);
 
     for (UINT i = 0; i < FrameCount; i++)
     {
@@ -655,8 +543,6 @@ void Graphics::LoadAssets()
 
     // Create the pipeline state, which includes compiling and loading shaders.
     {
-        //ComPtr<ID3DBlob> vertexShader;
-        //ComPtr<ID3DBlob> pixelShader;
 
 #if defined(_DEBUG)
         // Enable better shader debugging with the graphics debugging tools.
@@ -673,8 +559,6 @@ void Graphics::LoadAssets()
         // FIXME: paths
         THROW_IF_FAILED(ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\VertexShader.cso", &pVertexShaderData, &vertexShaderDataLength));
         THROW_IF_FAILED(ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\PixelShader.cso", &pPixelShaderData, &pixelShaderDataLength));
-        //THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\Assets\\Shaders\\shaders.hlsl", nullptr, nullptr, "VShader", "vs_5_0", compileFlags, 0, &vertexShader, nullptr));
-        //THROW_IF_FAILED(D3DCompileFromFile(L"D:\\FRT\\FRTEngine\\FRTEngine\\Assets\\Shaders\\shaders.hlsl", nullptr, nullptr, "PShader", "ps_5_0", compileFlags, 0, &pixelShader, nullptr));
 
         // Define the vertex input layout.
         D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
@@ -692,8 +576,6 @@ void Graphics::LoadAssets()
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
         psoDesc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
         psoDesc.pRootSignature = _rootSignature.Get();
-        //psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShader.Get());
-        //psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShader.Get());
         psoDesc.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderData, vertexShaderDataLength);
         psoDesc.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderData, pixelShaderDataLength);
         psoDesc.RasterizerState = rasterizerStateDesc;
@@ -728,283 +610,10 @@ void Graphics::LoadAssets()
         NAME_D3D12_OBJECT_INDEXED(_renderTargets, i);
     }
 
-    //_mesh->Update(_device, &_vertexBufferView, &_indexBufferView);
-
-    //// Create the texture.
-    //{
-    //    // All of these materials use the same texture desc.
-    //    D3D12_RESOURCE_DESC textureDesc = {};
-    //    textureDesc.MipLevels = 1;
-    //    textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    //    textureDesc.Width = Mesh::TextureWidth;
-    //    textureDesc.Height = Mesh::TextureHeight;
-    //    textureDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-    //    textureDesc.DepthOrArraySize = 1;
-    //    textureDesc.SampleDesc.Count = 1;
-    //    textureDesc.SampleDesc.Quality = 0;
-    //    textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-
-    //    {
-    //        // Generate texture data
-    //        std::vector<std::vector<UINT8>> textures(MaterialCount);
-    //        for (UINT i = 0; i < MaterialCount; ++i)
-    //        {
-    //            const CD3DX12_HEAP_PROPERTIES textureHeapProps(D3D12_HEAP_TYPE_DEFAULT);
-
-    //            THROW_IF_FAILED(_device->CreateCommittedResource(
-    //                &textureHeapProps,
-    //                D3D12_HEAP_FLAG_NONE,
-    //                &textureDesc,
-    //                D3D12_RESOURCE_STATE_COPY_DEST,
-    //                nullptr,
-    //                IID_PPV_ARGS(&_textures[i])));
-
-    //            NAME_D3D12_OBJECT_INDEXED(_textures, i);
-
-    //            textures[i] = Mesh::GenerateTextureData(0x222222ff, 0xffffffff);
-    //        }
-
-
-    //        // Upload texture data to the default heap resources.
-    //        {
-    //            const UINT subresourceCount = textureDesc.DepthOrArraySize * textureDesc.MipLevels;
-    //            const UINT64 uploadBufferStep = GetRequiredIntermediateSize(_textures[0].Get(), 0, subresourceCount); // All of our textures are the same size in this case.
-    //            const UINT64 uploadBufferSize = uploadBufferStep * MaterialCount;
-    //            const CD3DX12_HEAP_PROPERTIES textureUploadHeapProps(D3D12_HEAP_TYPE_UPLOAD);
-    //            const CD3DX12_RESOURCE_DESC textureUploadDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
-    //            THROW_IF_FAILED(_device->CreateCommittedResource(
-    //                &textureUploadHeapProps,
-    //                D3D12_HEAP_FLAG_NONE,
-    //                &textureUploadDesc,
-    //                D3D12_RESOURCE_STATE_GENERIC_READ,
-    //                nullptr,
-    //                IID_PPV_ARGS(&materialsUploadHeap)));
-
-    //            for (int i = 0; i < MaterialCount; ++i)
-    //            {
-    //                // Copy data to the intermediate upload heap and then schedule 
-    //                // a copy from the upload heap to the appropriate texture.
-    //                D3D12_SUBRESOURCE_DATA textureData = {};
-    //                textureData.pData = &textures[i][0];
-    //                textureData.RowPitch = static_cast<LONG_PTR>((4U * textureDesc.Width));
-    //                textureData.SlicePitch = textureData.RowPitch * textureDesc.Height;
-
-    //                auto bar_ = CD3DX12_RESOURCE_BARRIER::Transition(_textures[i].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    //                UpdateSubresources(_commandList.Get(), _textures[i].Get(), materialsUploadHeap.Get(), i * uploadBufferStep, 0, subresourceCount, &textureData);
-    //                _commandList->ResourceBarrier(1, &bar_);
-    //            }
-    //        }
-    //    }
-
-    //    // Describe and create a sampler.
-    //    D3D12_SAMPLER_DESC samplerDesc = {};
-    //    samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-    //    samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    //    samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    //    samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    //    samplerDesc.MinLOD = 0;
-    //    samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-    //    samplerDesc.MipLODBias = 0.0f;
-    //    samplerDesc.MaxAnisotropy = 1;
-    //    samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-    //    _device->CreateSampler(&samplerDesc, _samplerHeap->GetCPUDescriptorHandleForHeapStart());
-
-    //    CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle(_cbvSrvHeap->GetCPUDescriptorHandleForHeapStart(), 0, _cbvSrvDescriptorSize);
-
-    //    // Create SRVs for each cube material.
-    //    for (int i = 0; i < MaterialCount; ++i)
-    //    {
-    //        D3D12_SHADER_RESOURCE_VIEW_DESC materialSrvDesc = {};
-    //        materialSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-    //        materialSrvDesc.Format = textureDesc.Format;
-    //        materialSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    //        materialSrvDesc.Texture2D.MipLevels = 1;
-    //        _device->CreateShaderResourceView(_textures[i].Get(), &materialSrvDesc, srvHandle);
-
-    //        srvHandle.Offset(_cbvSrvDescriptorSize);
-    //    }
-
-    //}
-
-    //// Create the depth stencil view.
-    //{
-    //    D3D12_DEPTH_STENCIL_VIEW_DESC depthStencilDesc = {};
-    //    depthStencilDesc.Format = DXGI_FORMAT_D32_FLOAT;
-    //    depthStencilDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-    //    depthStencilDesc.Flags = D3D12_DSV_FLAG_NONE;
-
-    //    D3D12_CLEAR_VALUE depthOptimizedClearValue = {};
-    //    depthOptimizedClearValue.Format = DXGI_FORMAT_D32_FLOAT;
-    //    depthOptimizedClearValue.DepthStencil.Depth = 1.0f;
-    //    depthOptimizedClearValue.DepthStencil.Stencil = 0;
-
-    //    const CD3DX12_HEAP_PROPERTIES dsvHeapProps(D3D12_HEAP_TYPE_DEFAULT);
-    //    // Performance tip: Deny shader resource access to resources that don't need shader resource views.
-    //    const CD3DX12_RESOURCE_DESC dsvUploadDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT,
-    //                                                                             1280, 720, 1, 0, 1, 0,
-    //                                                                             D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
-
-    //    THROW_IF_FAILED(_device->CreateCommittedResource(
-    //        &dsvHeapProps,
-    //        D3D12_HEAP_FLAG_NONE,
-    //        &dsvUploadDesc,
-    //        D3D12_RESOURCE_STATE_DEPTH_WRITE,
-    //        &depthOptimizedClearValue,
-    //        IID_PPV_ARGS(&_depthStencil)
-    //    ));
-
-    //    NAME_D3D12_OBJECT(_depthStencil);
-
-    //    _device->CreateDepthStencilView(_depthStencil.Get(), &depthStencilDesc, _dsvHeap->GetCPUDescriptorHandleForHeapStart());
-    //}
-
-    const std::vector<unsigned char> _indices =
-    {
-        // front
-        0, 1, 2,
-        2, 1, 3,
-
-        // right
-        4, 5, 6,
-        6, 5, 7,
-
-        // left
-        8, 9, 10,
-        10, 9, 11,
-
-        // back
-        12, 13, 14,
-        14, 13, 15,
-
-        // top
-        16, 17, 18,
-        18, 17, 19,
-
-        // bottom
-        20, 21, 22,
-        22, 21, 23,
-    };
-
-    // Create the vertex buffer.
-    {
-        const float x = 0.f;
-        const float y = 0.f;
-        const float z = 0.f;
-
-        static const unsigned int _vertexBufferSize = 24;
-        Mesh::Vertex _vertices[_vertexBufferSize];
-        float radius = 1.f;
-
-        // front side
-        _vertices[0] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[1] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[2] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[3] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        // right side
-        _vertices[4] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[5] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[6] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[7] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        // left side
-        _vertices[8] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[9] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[10] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[11] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        // back side
-        _vertices[12] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[13] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[14] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[15] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        // top side
-        _vertices[16] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[17] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[18] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[19] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        // bottom side
-        _vertices[20] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-        _vertices[21] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-        _vertices[22] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-        _vertices[23] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-
-        using namespace DirectX;
-
-        for (size_t i = 0; i < _indices.size(); i += 3)
-        {
-            Mesh::Vertex& v0 = _vertices[_indices[i]];
-            Mesh::Vertex& v1 = _vertices[_indices[i + 1]];
-            Mesh::Vertex& v2 = _vertices[_indices[i + 2]];
-            const XMVECTOR pos0 = XMLoadFloat3(&v0.position);
-            const XMVECTOR pos1 = XMLoadFloat3(&v1.position);
-            const XMVECTOR pos2 = XMLoadFloat3(&v2.position);
-
-            const auto normal = XMVector3Normalize(XMVector3Cross((pos2 - pos0), (pos1 - pos0)));
-
-            XMStoreFloat3(&v0.normal, normal);
-            XMStoreFloat3(&v1.normal, normal);
-            XMStoreFloat3(&v2.normal, normal);
-
-            Logger::DebugLogInfo(
-                "normal for # " + std::to_string(_indices[i]) + "," + std::to_string(_indices[i + 1]) + "," + std::to_string(_indices[i + 2])
-                + " : <" + std::to_string(normal.m128_f32[0]) + ", " + std::to_string(normal.m128_f32[1]) + ", " + std::to_string(normal.m128_f32[2]) + ">"
-            );
-        }
-
-        //_myVertexBuffer = new VertexBuffer(this, _vertices, _vertexBufferSize);
-    }
-
-    // index buffer
-    {
-        //_myIndexBuffer = new IndexBuffer(this, const_cast<UINT8*>(&_indices[0]), _indices.size());
-
-        _indicesNum = _indices.size();
-    }
-
-    // Close the command list and execute it to begin the initial GPU setup.
-    //THROW_IF_FAILED(_commandList->Close());
-    //ID3D12CommandList* ppCommandLists[] = { _commandList.Get() };
-    //_commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-
-    //// Create synchronization objects and wait until assets have been uploaded to the GPU.
-    //{
-    //    THROW_IF_FAILED(_device->CreateFence(_fenceValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence)));
-    //    _fenceValue++;
-
-    //    // Create an event handle to use for frame synchronization.
-    //    _fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-    //    if (_fenceEvent == nullptr)
-    //    {
-    //        THROW_IF_FAILED(HRESULT_FROM_WIN32(GetLastError()));
-    //    }
-
-    //    // Wait for the command list to execute; we are reusing the same command 
-    //    // list in our main loop but for now, we just want to wait for setup to 
-    //    // complete before continuing.
-
-    //    // Signal and increment the fence value.
-    //    const UINT64 fenceToWaitFor = _fenceValue;
-    //    THROW_IF_FAILED(_commandQueue->Signal(_fence.Get(), fenceToWaitFor));
-    //    _fenceValue++;
-
-    //    // Wait until the fence is completed.
-    //    THROW_IF_FAILED(_fence->SetEventOnCompletion(fenceToWaitFor, _fenceEvent));
-    //    WaitForSingleObject(_fenceEvent, INFINITE);
-    //}
-
-    ////CreateFrameResources();
-    ////App::GetInstance()->GetWorld()->InitializeGraphicsResources(this);
-
-    //for (UINT i = 0; i < FrameCount; i++)
-    //{
-    //    THROW_IF_FAILED(_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_commandAllocators[i])));
-    //}
+    _indicesNum = Mesh::GetIndexDataSize();
 }
 
-void Graphics::PopulateCommandList(FrameResource* pFrameResource)
+void Graphics::PopulateCommandList()
 {
     // Command list allocators can only be reset when the associated
     // command lists have finished execution on the GPU; apps should use
@@ -1055,8 +664,6 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
         _commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
         _commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        //_myIndexBuffer->PopulateCommandList();
-        //_myVertexBuffer->PopulateCommandList();
         App::GetInstance()->GetWorld()->PopulateCommandList();
 
         _commandList->SetGraphicsRootDescriptorTable(0, _cbvSrvHeap->GetGPUDescriptorHandleForHeapStart());
@@ -1082,8 +689,6 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
                 _commandList->DrawIndexedInstanced(_indicesNum, 1, 0, 0, 0);
             }
         }
-        //pFrameResource->PopulateCommandList(_commandList.Get(), _currentFrameResourceIndex, _indicesNum, &_indexBufferView,
-                                            //&_vertexBufferView, _cbvSrvHeap.Get(), _cbvSrvDescriptorSize, _samplerHeap.Get(), _rootSignature.Get());
     }
     PIXEndEvent(_commandList.Get());
 
@@ -1092,28 +697,6 @@ void Graphics::PopulateCommandList(FrameResource* pFrameResource)
     _commandList->ResourceBarrier(1, &bar4);
 
     THROW_IF_FAILED(_commandList->Close());
-}
-
-void Graphics::CreateFrameResources()
-{
-    //using namespace DirectX;
-
-    //for (UINT i = 0; i < FrameCount; i++)
-    //{
-    //    for (UINT j = 0; j < RowCount; j++)
-    //    {
-    //        FLOAT offsetZ = i * -SpacingInterval;
-    //        for (UINT k = 0; k < ColumnCount; k++)
-    //        {
-    //            FLOAT offsetX = j * SpacingInterval;
-    //            FrameResource::SceneConstantBuffer buffer{};
-
-    //            ConstantBuffer<FrameResource::SceneConstantBuffer>* myBuffer = new ConstantBuffer(this, buffer);
-    //            _myConstantBuffers.push_back(myBuffer);
-    //        }
-    //    }
-    //}
-
 }
 
 }

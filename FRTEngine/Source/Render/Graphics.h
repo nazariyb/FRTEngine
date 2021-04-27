@@ -8,21 +8,15 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <wrl.h>
-#include <bitset>
 
-//#include "Render/Mesh.h"
 #include "Tools/d3dx12.h"
 #include "Camera.h"
-#include "FrameResource.h"
 
 
 namespace frt
 {
 using Microsoft::WRL::ComPtr;
 class Window;
-
-//template<typename C>
-//class ConstantBuffer;
 
 class FRTENGINE_API Graphics
 {
@@ -38,9 +32,6 @@ public:
     virtual void Destroy();
 
     // TMP: start
-    std::bitset<6> moveDirections;
-    int currentCubeIndex = 0;
-
     const float translationSpeed = 0.06f;
     const float offsetBoundsX = 1.25f;
     const float offsetBoundsY = 1.42f;
@@ -68,14 +59,6 @@ public:
         _camera.OnKeyUp(key);
     }
 
-    inline void SetCubeIndex(int NewIndex)
-    {
-        //Roll = 0.f;
-        //Pitch = 0.f;
-        //Yaw = 0.f;
-        //currentCubeIndex = (NewIndex - 1) % MaterialCount;
-    }
-
     void BeforeFirstTick();
     // TMP: end
 
@@ -95,20 +78,6 @@ private:
     static const float SpacingInterval;
 
     UINT _constBuffersNum = 0;
-    //struct Vertex
-    //{
-    //    DirectX::XMFLOAT3 position;
-    //    DirectX::XMFLOAT2 uv;
-    //    //DirectX::XMFLOAT4 color;
-    //};
-
-    //struct SceneConstantBuffer
-    //{
-    //    DirectX::XMFLOAT4 offset;
-    //    DirectX::XMMATRIX transform;
-    //    float padding[44]; // Padding so the constant buffer is 256-byte aligned.
-    //};
-    //static_assert((sizeof(SceneConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 
     // Pipeline objects.
     CD3DX12_VIEWPORT _viewport;
@@ -134,16 +103,6 @@ private:
     UINT _rtvDescriptorSize;
     UINT _cbvSrvDescriptorSize;
 
-    // App resources.
-    //ComPtr<ID3D12Resource> _vertexBuffer;
-    //ComPtr<ID3D12Resource> _indexBuffer;
-
-    //D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
-    //D3D12_INDEX_BUFFER_VIEW _indexBufferView;
-
-    //class VertexBuffer* _myVertexBuffer;
-    //class IndexBuffer* _myIndexBuffer;
-    //std::vector<ConstantBuffer<FrameResource::SceneConstantBuffer>*> _myConstantBuffers;
     std::vector<UINT64> _fenceValues;
 
     UINT _indicesNum;
@@ -153,9 +112,6 @@ public:
     Camera _camera;
 private:
 
-    // Frame resources.
-    //std::vector<FrameResource*> _frameResources;
-    //FrameResource* _currentFrameResource;
 public:
     UINT _currentFrameResourceIndex;
 private:
@@ -172,10 +128,7 @@ private:
 
     void LoadPipeline(HWND hWindow);
     void LoadAssets();
-    void PopulateCommandList(FrameResource* pFrameResource);
-    void CreateFrameResources();
-
-    //Mesh* _mesh;
+    void PopulateCommandList();
 };
 }
 
