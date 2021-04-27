@@ -1,6 +1,7 @@
 #include "GameWorld.h"
 #include "Render/Mesh.h"
-
+#include "App.h"
+#include "Window.h"
 
 namespace frt
 {
@@ -45,6 +46,22 @@ void GameWorld::InitializeGraphicsResources(Graphics* graphics)
     for (Mesh* gameObject : _gameObjects)
     {
         gameObject->InitializeGraphicsResources(graphics);
+    }
+}
+
+void GameWorld::PopulateCommandList()
+{
+    for (Mesh* gameObject : _gameObjects)
+    {
+        gameObject->PopulateCommandList();
+    }
+}
+
+void GameWorld::BeforeFirstTick()
+{
+    for (Mesh* gameObject : _gameObjects)
+    {
+        gameObject->InitializeConstantBuffers(&(App::GetInstance()->GetWindow()->GetGraphics()));
     }
 }
 

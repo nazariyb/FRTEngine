@@ -75,6 +75,8 @@ public:
         //Yaw = 0.f;
         //currentCubeIndex = (NewIndex - 1) % MaterialCount;
     }
+
+    void BeforeFirstTick();
     // TMP: end
 
 private:
@@ -133,14 +135,14 @@ private:
     UINT _cbvSrvDescriptorSize;
 
     // App resources.
-    ComPtr<ID3D12Resource> _vertexBuffer;
-    ComPtr<ID3D12Resource> _indexBuffer;
+    //ComPtr<ID3D12Resource> _vertexBuffer;
+    //ComPtr<ID3D12Resource> _indexBuffer;
 
-    D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
-    D3D12_INDEX_BUFFER_VIEW _indexBufferView;
+    //D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
+    //D3D12_INDEX_BUFFER_VIEW _indexBufferView;
 
-    class VertexBuffer* _myVertexBuffer;
-    class IndexBuffer* _myIndexBuffer;
+    //class VertexBuffer* _myVertexBuffer;
+    //class IndexBuffer* _myIndexBuffer;
     //std::vector<ConstantBuffer<FrameResource::SceneConstantBuffer>*> _myConstantBuffers;
     std::vector<UINT64> _fenceValues;
 
@@ -152,8 +154,8 @@ public:
 private:
 
     // Frame resources.
-    std::vector<FrameResource*> _frameResources;
-    FrameResource* _currentFrameResource;
+    //std::vector<FrameResource*> _frameResources;
+    //FrameResource* _currentFrameResource;
 public:
     UINT _currentFrameResourceIndex;
 private:

@@ -5,11 +5,12 @@
 #include <WindowsMinimal.h>
 #include <memory>
 #include "Render/Mesh.h"
+#include "ITickable.h"
 
 
 namespace frt
 {
-class FRTENGINE_API GameWorld
+class FRTENGINE_API GameWorld : public ITickable
 {
 public:
     GameWorld();
@@ -25,11 +26,9 @@ public:
 
     void InitializeGraphicsResources(class Graphics* graphics);
 
-    inline Mesh* GetFirst()
-    {
-        return _gameObjects.front();
-    }
-
+    virtual void Update() override {};
+    virtual void PopulateCommandList() override;
+    void BeforeFirstTick();
 
 protected:
     std::vector<DirectX::XMFLOAT4X4> _meshes;

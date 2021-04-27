@@ -52,5 +52,5 @@ float4 main(PSInput input) : SV_TARGET
     
     const float4 specular = attenuation * (input.diffuseColor * input.diffuseIntensity) * input.specularIntensity * pow(max(0.0f, dot(normalize(-reflection), normalize(input.positionCam))), input.specularPower);
 
-    return saturate(diffuse + input.ambient + specular) * textureColor;
+    return saturate(diffuse + input.ambient + specular) * textureColor; //float4(0.3f, 0.3f, 0.3f, 1.0f);
 }

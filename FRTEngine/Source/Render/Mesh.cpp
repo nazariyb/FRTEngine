@@ -2,6 +2,9 @@
 #include <Tools\d3dx12.h>
 #include <Exception.h>
 #include "Utils\Logger\Logger.h"
+#include "Render\IndexBuffer.h"
+#include "Render\VertexBuffer.h"
+
 
 namespace frt
 {
@@ -75,15 +78,26 @@ Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
 }
 
 Mesh::Mesh()
-    : Mesh(0.f, {})
+    : Mesh(0.5f, {})
 {
 }
 
 Mesh::~Mesh()
 {
+    delete _vertexBuffer;
+    delete _indexBuffer;
+
     for (size_t i = 0; i < _constantBuffers.size(); ++i)
     {
         delete _constantBuffers.at(i);
+    }
+}
+
+void Mesh::InitializeConstantBuffers(Graphics* graphics)
+{
+    for (UINT i = 0; i < graphics->FrameCount; ++i)
+    {
+        _constantBuffers.push_back(new ConstantBuffer<SceneObjectConstantBuffer>(graphics, {}));
     }
 }
 
@@ -102,6 +116,9 @@ void Mesh::Update()
 
 void Mesh::PopulateCommandList()
 {
+    _vertexBuffer->PopulateCommandList();
+    _indexBuffer->PopulateCommandList();
+    
     for (ConstantBuffer<SceneObjectConstantBuffer>* constantBuffer : _constantBuffers)
     {
         constantBuffer->PopulateCommandList();
@@ -110,10 +127,8 @@ void Mesh::PopulateCommandList()
 
 void Mesh::InitializeGraphicsResources(Graphics* graphics)
 {
-    for (UINT i = 0; i < graphics->FrameCount; ++i)
-    {
-        _constantBuffers.push_back(new ConstantBuffer<SceneObjectConstantBuffer>(graphics, {}));
-    }
+    _vertexBuffer = new VertexBuffer(graphics, GetVertices(), GetVertexDataSize());
+    _indexBuffer = new IndexBuffer(graphics, GetIndices(), GetIndexDataSize());
 }
 
 Mesh::Vertex* Mesh::GetVertices()

@@ -271,8 +271,6 @@ int TetrisApp::Start()
 
     bool running = true;
 
-    world->InitializeGraphicsResources(&(window->GetGraphics()));
-
     window->keyboard.onKeyReleasedEvent += [this, &running] (Event* event)
     {
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
@@ -281,6 +279,10 @@ int TetrisApp::Start()
             running = false;
         }
     };
+
+    world->InitializeGraphicsResources(&(window->GetGraphics()));
+    window->GetGraphics().BeforeFirstTick();
+    world->BeforeFirstTick();
 
     while (true && running)
     {

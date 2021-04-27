@@ -12,6 +12,8 @@ class FRTENGINE_API IndexBuffer : public GraphicsResource
 {
 public:
     IndexBuffer() = delete;
+    IndexBuffer(const IndexBuffer&) = delete;
+    IndexBuffer(IndexBuffer&&) = delete;
 
     IndexBuffer(Graphics* owner, UINT8* indices, UINT indicesNum);
 

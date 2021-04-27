@@ -28,7 +28,7 @@ public:
     GameWorld* GetWorld();
 
 protected:
-    virtual int Start() { return 0; };
+    virtual int Start() = 0;
 
     void Init(HINSTANCE hInstance, HICON icon);
 

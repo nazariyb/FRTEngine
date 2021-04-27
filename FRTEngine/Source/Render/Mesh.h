@@ -52,6 +52,7 @@ public:
         DirectX::XMFLOAT2 uv;
     };
 
+    void InitializeConstantBuffers(Graphics* graphics);
     void UpdateConstantBuffer(const SceneObjectConstantBuffer& newBuffer);
 
     Vertex* GetVertices();
@@ -64,6 +65,8 @@ public:
 
 protected:
     std::vector<ConstantBuffer<SceneObjectConstantBuffer>*> _constantBuffers;
+    class IndexBuffer* _indexBuffer;
+    class VertexBuffer* _vertexBuffer;
 
     unsigned int _radius;
     DirectX::XMFLOAT3 _initialPosition;
@@ -105,8 +108,8 @@ public:
     static const unsigned int TextureHeight = 256;
     static const unsigned int TexturePixelSize = 4;    // The number of bytes used to represent a pixel in the texture.;
 private:
-    ComPtr<ID3D12Resource> _vertexBuffer;
-    ComPtr<ID3D12Resource> _indexBuffer;
+    //ComPtr<ID3D12Resource> _vertexBuffer;
+    //ComPtr<ID3D12Resource> _indexBuffer;
 };
 }
 

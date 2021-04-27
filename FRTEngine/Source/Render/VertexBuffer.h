@@ -12,6 +12,8 @@ class FRTENGINE_API VertexBuffer : public GraphicsResource
 {
 public:
     VertexBuffer() = delete;
+    VertexBuffer(const VertexBuffer&) = delete;
+    VertexBuffer(VertexBuffer&&) = delete;
 
     template<typename V>
     VertexBuffer(Graphics* owner, V* vertices, UINT verticesNum)
