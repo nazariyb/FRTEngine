@@ -238,6 +238,7 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
     <ClCompile Include="Source\GameMain.cpp" />
     <ClCompile Include="Source\Tetromino.cpp" />
     <ClCompile Include="Source\TetrisApp.cpp" />
+    <ClCompile Include="Source\TetrominoFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FRTEngine\FRTEngine.vcxproj">
@@ -248,6 +249,7 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
     <ClInclude Include="resource.h" />
     <ClInclude Include="Source\Tetrimino.h" />
     <ClInclude Include="Source\TetrisApp.h" />
+    <ClInclude Include="Source\TetrominoFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

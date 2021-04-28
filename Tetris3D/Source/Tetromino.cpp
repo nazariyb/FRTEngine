@@ -1,58 +1,61 @@
 #include "Tetrimino.h"
 #include <DirectXMath.h>
 #include "Utils/Logger/Logger.h"
+#include "TetrominoFactory.h"
 
 using namespace frt;
 using namespace DirectX;
 
+const unsigned int Tetromino::MeshesNum = 4;
 
-Tetromino::Tetromino()
-    : _pitch(0.0f)
-    , _yaw(0.0f)
-    , _roll(0.0f)
+Tetromino::Tetromino(Type type)
+    : Tetromino(type, 1.0f)
+{}
+
+Tetromino::Tetromino(Type type, float radius)
+    : _type(type)
+    , _radius(radius)
+    , _rotation{}
+    , _worldPosition{}
 {
     _owner = frt::App::GetInstance();
 
-    float radius = 1.0f;
-    float offsetX = 0.f, offsetY = 0.f;
-    XMFLOAT4X4 model, view, projection, mvp;
-
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < MeshesNum; ++i)
     {
-        offsetX = std::pow(-1.f, 1 * i) * -1.f;
-        offsetY = std::pow(-1.f, i / 2);
-
-        Logger::DebugLogInfo("Spawn cube at " + std::to_string(offsetX) + ", " + std::to_string(offsetY));
-
-        _meshes.push_back(new Mesh(radius, { 0.f, 0.f, 0.0f }));
+        _meshes.push_back(new Mesh(_radius, { }));
     }
 }
 
-void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buffer)
+void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* bufferBase)
 {
-    float radius = 1.0f, halfRadius = radius / 2.f;
-    float offsetX = 0.f, offsetY = 0.f;
+    float radius = 1.0f;
+    float offsetX = 0.f, offsetY = 0.f, offsetZ = 0.f;
     XMFLOAT4X4 model, view, projection, mvp;
 
-    for (int i = 0; i < 4; ++i)
+    const std::vector<XMFLOAT3>& offsets = TetrominoFactory::_offsets.at(_type);
+
+    for (int i = 0; i < MeshesNum; ++i)
     {
-        offsetX = std::pow(-1.f, 1 * i) * -1.f;
-        offsetY = std::pow(-1.f, i / 2);
+        offsetX = _radius * offsets[i].x;
+        offsetY = _radius * offsets[i].y;
+        offsetZ = _radius * offsets[i].z;
 
-        frt::Mesh::SceneObjectConstantBuffer buffer1 = *buffer;
+        frt::Mesh::SceneObjectConstantBuffer buffer = *bufferBase;
 
-        XMStoreFloat4x4(&model, XMMatrixMultiply(XMMatrixTranslation(offsetX, offsetY, 0.f),
-                                                 XMMatrixRotationRollPitchYaw(_pitch, _yaw, _roll)));
+        XMStoreFloat4x4(&model, XMMatrixMultiply(
+            XMMatrixMultiply(XMMatrixTranslation(offsetX, offsetY, offsetZ),
+                             XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.z, _rotation.y)),
+            XMMatrixTranslation(_worldPosition.x, _worldPosition.y, _worldPosition.z)));
 
         XMStoreFloat4x4(&view, _owner->GetWindow()->GetGraphics()._camera.GetViewMatrix());
         XMStoreFloat4x4(&projection, _owner->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(0.8f, _owner->GetWindow()->GetGraphics()._aspectRatio));
 
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
-        XMStoreFloat4x4(&(buffer1.mvp), XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-        XMStoreFloat4x4(&(buffer1.modelView), XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+        XMStoreFloat4x4(&(buffer.mvp), XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+        XMStoreFloat4x4(&(buffer.modelView), XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
 
-        _meshes[i]->UpdateConstantBuffer(buffer1);
+        _meshes[i]->UpdateConstantBuffer(buffer);
     }
 }
 

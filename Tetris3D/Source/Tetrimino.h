@@ -3,16 +3,35 @@
 #include <vector>
 #include "Render\Mesh.h"
 #include "App.h"
+#include <DirectXMath.h>
 
 class Tetromino : public frt::GameObject
 {
 public:
-    Tetromino();
+    enum Type
+    {
+        I,
+        O,
+        T,
+        J,
+        L,
+        S,
+        Z
+    };
+
+public:
+    Tetromino() = delete;
+    Tetromino(Type type);
+    Tetromino(Type type, float radius);
     //Tetromino(class frt::App* owner, frt::Mesh::SceneObjectConstantBuffer* buffer);
 
-    inline void RotatePitch(float pitchDelta) { _pitch += pitchDelta; };
-    inline void RotateYaw(float yawDelta) { _yaw += yawDelta; };
-    inline void RotateRoll(float rollDelta) { _roll += rollDelta; };
+    inline void MoveX(float deltaX) { _worldPosition.x += deltaX; }
+    inline void MoveY(float deltaY) { _worldPosition.y += deltaY; }
+    inline void MoveZ(float deltaZ) { _worldPosition.z += deltaZ; }
+
+    inline void RotatePitch (float pitchDelta) { _rotation.x += pitchDelta; }
+    inline void RotateYaw   (float yawDelta)   { _rotation.z += yawDelta; }
+    inline void RotateRoll  (float rollDelta)  { _rotation.y += rollDelta; }
     //void Rotate(float Pitch, float Yaw, float Roll);
     void UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buffer);
 
@@ -21,10 +40,15 @@ public:
     virtual void PopulateCommandList() override;
 
 private:
-    std::vector<frt::Mesh*> _meshes;
     frt::App* _owner;
-    float _pitch;
-    float _yaw;
-    float _roll;
+    
+    std::vector<frt::Mesh*> _meshes;
+    static const unsigned int MeshesNum;
+
+    Type _type;
+    float _radius;
+
+    DirectX::XMFLOAT3 _rotation;
+    DirectX::XMFLOAT3 _worldPosition;
 };
 

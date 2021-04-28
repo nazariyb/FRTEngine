@@ -17,8 +17,8 @@ public:
     GameWorld();
     ~GameWorld();
 
-    template<typename T>
-    T* SpawnObject();
+    template<typename T, class ... Args>
+    T* SpawnObject(Args&&... args);
 
     //void RegisterGameObject();
     //void Reserve(UINT GameObjectsNum);
@@ -38,12 +38,14 @@ protected:
 };
 
 
-template<typename T>
-T* GameWorld::SpawnObject()
+template<typename T, class ... Args>
+T* GameWorld::SpawnObject(Args&&... args)
 {
     static_assert(std::derived_from<T, GameObject> == true, "templated type must be publicly derived from GameObject");
 
-    T* newGameObject = new T();
+    T* newGameObject = new T(args...);
+
+    //_gameObjects.emplace_back();
 
     _gameObjects.push_back(newGameObject);
 
