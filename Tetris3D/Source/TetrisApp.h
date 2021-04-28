@@ -19,6 +19,6 @@ protected:
     float Pitch = 0.f;
     float Yaw = 0.f;
 
-    class frt::Mesh* object1;
+    class Tetromino* object1;
 };
 

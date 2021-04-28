@@ -236,6 +236,7 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameMain.cpp" />
+    <ClCompile Include="Source\Tetromino.cpp" />
     <ClCompile Include="Source\TetrisApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +246,7 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Source\Tetrimino.h" />
     <ClInclude Include="Source\TetrisApp.h" />
   </ItemGroup>
   <ItemGroup>

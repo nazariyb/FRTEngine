@@ -13,6 +13,7 @@
 #include "Render/Graphics.h"
 #include "Render/Mesh.h"
 #include <DirectXMath.h>
+#include "Tetrimino.h"
 
 using frt::Window;
 using frt::Exception;
@@ -35,7 +36,7 @@ TetrisApp::TetrisApp()
 
 int TetrisApp::Start()
 {
-    object1 = world->SpawnObject<Mesh>();
+    object1 = world->SpawnObject<Tetromino>();
 
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
     {
@@ -148,34 +149,42 @@ void TetrisApp::Update()
     App::Update();
 
     if (moveDirections[0]) // T
-        Pitch += DirectX::XMConvertToRadians(-2);
+        //Pitch += DirectX::XMConvertToRadians(-2);
+        object1->RotatePitch(DirectX::XMConvertToRadians(-2));
     if (moveDirections[1]) // F
-        Roll += DirectX::XMConvertToRadians(2);
+        //Roll += DirectX::XMConvertToRadians(2);
+        object1->RotateRoll(DirectX::XMConvertToRadians(2));
     if (moveDirections[2]) // G
-        Pitch += DirectX::XMConvertToRadians(2);
+        //Pitch += DirectX::XMConvertToRadians(2);
+        object1->RotatePitch(DirectX::XMConvertToRadians(2));
     if (moveDirections[3]) // H
-        Roll += DirectX::XMConvertToRadians(-2);
+        //Roll += DirectX::XMConvertToRadians(-2);
+        object1->RotateRoll(DirectX::XMConvertToRadians(-2));
     if (moveDirections[4]) // R
-        Yaw += DirectX::XMConvertToRadians(-2);
+        //Yaw += DirectX::XMConvertToRadians(-2);
+        object1->RotateYaw(DirectX::XMConvertToRadians(-2));
     if (moveDirections[5]) // Y
-        Yaw += DirectX::XMConvertToRadians(2);
+        //Yaw += DirectX::XMConvertToRadians(2);
+        object1->RotateYaw(DirectX::XMConvertToRadians(2));
 
-    XMFLOAT4X4 model, view, projection, mvp;
-    FLOAT offsetX = 0.f, offsetZ = 0.f;
-    XMStoreFloat4x4(&model,
-                    XMMatrixMultiply(XMMatrixTranslation(-.5f, 0.f, 0.5f),
-                                     XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll),
-                                                      XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
+    //XMFLOAT4X4 model, view, projection, mvp;
+    //FLOAT offsetX = 0.f, offsetZ = 0.f;
+    //XMStoreFloat4x4(&model,
+    //                XMMatrixMultiply(XMMatrixTranslation(-.5f, 0.f, 0.5f),
+    //                                 XMMatrixMultiply(DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll),
+    //                                                  XMMatrixTranslation(offsetX + 0.5f, 0.f, offsetZ - 0.5f))));
 
-    XMStoreFloat4x4(&view, window->GetGraphics()._camera.GetViewMatrix());
-    XMStoreFloat4x4(&projection, window->GetGraphics()._camera.GetProjectionMatrix(0.8f, window->GetGraphics()._aspectRatio));
+    //XMStoreFloat4x4(&view, window->GetGraphics()._camera.GetViewMatrix());
+    //XMStoreFloat4x4(&projection, window->GetGraphics()._camera.GetProjectionMatrix(0.8f, window->GetGraphics()._aspectRatio));
 
-    XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+    //XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
     Mesh::SceneObjectConstantBuffer buffer;
-    XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-    XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
-    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(DirectX::XMVectorSet(-2.f, 2.f, 0.f, 0.f), XMLoadFloat4x4(&view)));
+    //XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+    //XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(
+        DirectX::XMVectorSet(-4.f, 4.f, 0.f, 0.f),
+        window->GetGraphics()._camera.GetViewMatrix()));
     XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
     XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
     buffer.diffuseIntensity = 1.0f;
@@ -185,5 +194,5 @@ void TetrisApp::Update()
     buffer.specularIntesity = 1.f;
     buffer.specularPower = 30.f;
 
-    object1->UpdateConstantBuffer(buffer);
+    object1->UpdateConstantBuffers(&buffer);
 }

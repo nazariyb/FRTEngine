@@ -112,7 +112,7 @@ FrameResource::~FrameResource()
 
 void XM_CALLCONV FrameResource::UpdateConstantBuffers(DirectX::FXMMATRIX view, DirectX::CXMMATRIX projection, class Camera* camera)
 {
-    const std::vector<DirectX::XMFLOAT4X4>& meshes = App::GetInstance()->GetWorld()->GetMeshes();
+    const std::vector<DirectX::XMFLOAT4X4>& meshes{};// = App::GetInstance()->GetWorld()->GetMeshes();
 
     float x, z;
     for (UINT i = 0; i < _rowCount; i++)

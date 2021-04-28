@@ -105,7 +105,7 @@ Graphics::Graphics(Window* owner, HWND hWindow) :
     currentRotation{ DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0) },
     currentTranslation{ DirectX::XMMatrixTranslation(0.f, 0.f, 0.f) }
 {
-    App::GetInstance()->GetWorld()->Reserve(MaterialCount);
+    //App::GetInstance()->GetWorld()->Reserve(MaterialCount);
     _fenceValues.resize(FrameCount * MaterialCount);
     //_hWindow = hWindow;
     Init(hWindow);
@@ -677,10 +677,11 @@ void Graphics::PopulateCommandList()
         //for (UINT i = 0; i < RowCount; i++)
         {
             //for (UINT j = 0; j < ColumnCount; j++)
+            for (UINT i = 0; i < 4 * FrameCount; ++i)
             {
                 // Set the cube's root constant for dynamically indexing into the material array.
                 //_commandList->SetGraphicsRoot32BitConstant(3, (i * ColumnCount) + j, 0);
-                _commandList->SetGraphicsRoot32BitConstant(3, 0, 0);
+                _commandList->SetGraphicsRoot32BitConstant(3, i, 0);
 
                 // Set this cube's CBV table and move to the next descriptor.
                 _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);
