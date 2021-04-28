@@ -14,6 +14,7 @@
 #include "Render/Mesh.h"
 #include <DirectXMath.h>
 #include "Tetrimino.h"
+#include "Time/Time.h"
 
 
 using namespace DirectX;
@@ -21,12 +22,14 @@ using namespace frt;
 
 
 TetrisApp::TetrisApp()
-    : App(1280, 720, "Yey"), object1(nullptr)
+    : App(1280, 720, "Tetris3D")
+    , object1(nullptr)
+    , _lastTimeCheck{0.f}
 {}
 
 int TetrisApp::Start()
 {
-    object1 = world->SpawnObject<Tetromino>(Tetromino::I, 1.0f);
+    object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.0f);
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
@@ -48,30 +51,6 @@ int TetrisApp::Start()
     {
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         window->GetGraphics().OnKeyUp(ev->GetKeyCode());
-    };
-
-    window->mouse.onButtonPressedEvent += [this] (Event* event)
-    {
-        std::ostringstream oss;
-        oss << (static_cast<MouseEvent*>(event)->IsLeftPressed() ? "Left" : "Right");
-        oss << " clicked!";
-        window->SetTitle(oss.str());
-    };
-
-    window->mouse.onButtonReleasedEvent += [this] (Event* event)
-    {
-        std::ostringstream oss;
-        oss << "Released!";
-        window->SetTitle(oss.str());
-    };
-
-    window->mouse.onMouseMoveEvent += [this] (Event* event)
-    {
-        auto mouseEvent = static_cast<MouseEvent*>(event);
-        std::ostringstream oss;
-        oss << "Move: " << mouseEvent->GetPositionX()
-            << " : " << mouseEvent->GetPositionY();
-        window->SetTitle(oss.str());
     };
 
     bool running = true;
@@ -108,6 +87,13 @@ int TetrisApp::Start()
 void TetrisApp::Update()
 {
     App::Update();
+
+    float currentTime = Time::GetSecondsSinceFirstTick();
+    if ((currentTime - _lastTimeCheck) > .7f)
+    {
+        object1->MoveY(-2.f);
+        _lastTimeCheck = currentTime;
+    }
 
     Mesh::SceneObjectConstantBuffer buffer;
     XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(

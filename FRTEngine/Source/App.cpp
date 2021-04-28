@@ -1,5 +1,6 @@
 #include "App.h"
 #include "Utils/Logger/Logger.h"
+#include "Time/Time.h"
 
 namespace frt
 {
@@ -43,6 +44,7 @@ GameWorld* App::GetWorld()
 
 void App::Update()
 {
+    Time::Tick();
     window->GetGraphics().Update();
 }
 
@@ -55,6 +57,7 @@ void App::Init(HINSTANCE hInstance, HICON icon)
 {
     Logger::LogInfo("Initting game app");
     window = new Window(_windowWidth, _windowHeight, _windowName, icon);
+    Time::Init();
 }
 
 }

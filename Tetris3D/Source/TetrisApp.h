@@ -18,6 +18,8 @@ protected:
     float Pitch = 0.f;
     float Yaw = 0.f;
 
+    float _lastTimeCheck;
+
     class Tetromino* object1;
 };
 

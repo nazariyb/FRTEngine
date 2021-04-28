@@ -8,15 +8,9 @@
 class Tetromino : public frt::GameObject
 {
 public:
-    enum Type
+    enum class Type
     {
-        I,
-        O,
-        T,
-        J,
-        L,
-        S,
-        Z
+        I, O, T, J, L, S, Z
     };
 
 public:

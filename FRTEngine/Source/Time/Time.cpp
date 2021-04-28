@@ -1,8 +1,23 @@
 #include "Time.h"
 
-
 namespace frt
 {
+
+float Time::_secondsSinceFirstTick = 0.f;
+std::chrono::steady_clock::time_point Time::_lastTickTime{};
+
+void Time::Init()
+{
+    _lastTickTime = std::chrono::steady_clock::now();
+}
+
+void Time::Tick()
+{
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    _secondsSinceFirstTick += std::chrono::duration_cast<std::chrono::microseconds>(now - _lastTickTime).count() / 1'000'000.f;
+    _lastTickTime = now;
+}
+
 float Time::GetCurrentTimeInSeconds()
 {
     //LARGE_INTEGER currentTime;
