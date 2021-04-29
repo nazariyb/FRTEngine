@@ -20,6 +20,10 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
     , _radius(radius)
     , _rotation{}
     , _worldPosition{worldPosition}
+    , _topBound{ std::numeric_limits<float>::min() }
+    , _bottomBound{ std::numeric_limits<float>::max() }
+    , _leftBound{ std::numeric_limits<float>::max() }
+    , _rightBound{ std::numeric_limits<float>::min() }
 {
     _owner = frt::App::GetInstance();
 
@@ -37,6 +41,34 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
         for (Mesh* mesh : _meshes)
         {
             mesh->Resize(_radius);
+        }
+    }
+
+    float innerOffsetX = 0.f, innerOffsetY = 0.f, innerOffsetZ = 0.f;
+    const std::vector<XMFLOAT3>& offsets = TetrominoFactory::_offsets.at(_type);
+
+    for (int i = 0; i < MeshesNum; ++i)
+    {
+        innerOffsetX = offsets[i].x;
+        innerOffsetY = offsets[i].y;
+        innerOffsetZ = offsets[i].z;
+
+        if (innerOffsetX > _rightBound)
+        {
+            _rightBound = innerOffsetX;
+        }
+        else if (innerOffsetX < _leftBound)
+        {
+            _leftBound = innerOffsetX;
+        }
+
+        if (innerOffsetY > _topBound)
+        {
+            _topBound = innerOffsetY;
+        }
+        else if (innerOffsetY < _bottomBound)
+        {
+            _bottomBound = innerOffsetY;
         }
     }
 }

@@ -30,9 +30,17 @@ public:
     inline void MoveY(float deltaY) { _worldPosition.y += deltaY; }
     inline void MoveZ(float deltaZ) { _worldPosition.z += deltaZ; }
 
+    inline const DirectX::XMFLOAT3& GetWorldPosition() { return _worldPosition; }
+
     inline void RotatePitch (float pitchDelta) { _rotation.x += pitchDelta; }
-    inline void RotateYaw   (float yawDelta)   { _rotation.z += yawDelta; }
-    inline void RotateRoll  (float rollDelta)  { _rotation.y += rollDelta; }
+    inline void RotateYaw   (float yawDelta)   { _rotation.z += yawDelta;   }
+    inline void RotateRoll  (float rollDelta)  { _rotation.y += rollDelta;  }
+
+    inline float GetTopBound()    { return _worldPosition.y + _topBound;    }
+    inline float GetBottomBound() { return _worldPosition.y + _bottomBound; }
+    inline float GetLeftBound()   { return _worldPosition.x + _leftBound;   }
+    inline float GetRightBound()  { return _worldPosition.x + _rightBound;  }
+
     //void Rotate(float Pitch, float Yaw, float Roll);
     void UpdateConstantBuffers();
 
@@ -55,5 +63,10 @@ private:
 
     DirectX::XMFLOAT3 _rotation;
     DirectX::XMFLOAT3 _worldPosition;
+
+    float _topBound;
+    float _bottomBound;
+    float _leftBound;
+    float _rightBound;
 };
 

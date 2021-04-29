@@ -16,6 +16,7 @@
 #include "Tetrimino.h"
 #include "Time/Time.h"
 #include "Render/MeshPool.h"
+#include "TetrisBoard.h"
 
 
 using namespace DirectX;
@@ -25,6 +26,7 @@ using namespace frt;
 TetrisApp::TetrisApp()
     : App(1280, 720, "Tetris3D")
     , object1(nullptr)
+    , object2(nullptr)
     , _lastTimeCheck{0.f}
 {}
 
@@ -44,11 +46,11 @@ int TetrisApp::Start()
     buffer.specularPower = 30.f;
 
     MeshPool* pool = world->SpawnObject<MeshPool>(10u * 20u);
-    object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.0f,
-                                            XMFLOAT3{ 0.f, 20.f, 0.f },
+    object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.f,
+                                            TetrisBoard::TopBound,
                                             pool);
-    object2 = world->SpawnObject<Tetromino>(Tetromino::Type::I, 1.0f,
-                                            XMFLOAT3{ 5.f, 20.f, 0.f },
+    object2 = world->SpawnObject<Tetromino>(Tetromino::Type::I, 1.f,
+                                            TetrisBoard::TopBound,
                                             pool);
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
@@ -59,12 +61,21 @@ int TetrisApp::Start()
         if (window->keyboard.IsKeyPressed('T'))
             object1->MoveY(2.f);
         if (window->keyboard.IsKeyPressed('F'))
-            object1->RotateRoll(XM_PIDIV2);
+        {
+            if (object1->GetLeftBound() - 2.f >= TetrisBoard::LeftBound.x * 2)
+                object1->MoveX(-2.f);
+        }
         if (window->keyboard.IsKeyPressed('G'))
             object1->MoveY(-2.f);
         if (window->keyboard.IsKeyPressed('H'))
+        {
+            if (object1->GetRightBound() + 2.f <= TetrisBoard::RightBound.x * 2)
+                object1->MoveX(2.f);
+        }
+        if (window->keyboard.IsKeyPressed('R'))
+            object1->RotateRoll(XM_PIDIV2);
+        if (window->keyboard.IsKeyPressed('Y'))
             object1->RotateRoll(-XM_PIDIV2);
-
     };
 
     window->keyboard.onKeyReleasedEvent += [this] (Event* event)
@@ -115,8 +126,4 @@ void TetrisApp::Update()
         _lastTimeCheck = currentTime;
     }
 
-
-
-    //object1->UpdateConstantBuffers(&buffer);
-    //object2->UpdateConstantBuffers(&buffer);
 }
