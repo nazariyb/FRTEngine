@@ -46,6 +46,7 @@ void App::Update()
 {
     Time::Tick();
     window->GetGraphics().Update();
+    world->Update();
 }
 
 void App::Render()

@@ -30,6 +30,19 @@ TetrisApp::TetrisApp()
 
 int TetrisApp::Start()
 {
+    Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
+    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(
+        DirectX::XMVectorSet(-4.f, 4.f, 0.f, 0.f),
+        window->GetGraphics()._camera.GetViewMatrix()));
+    XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
+    XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+    buffer.diffuseIntensity = 1.0f;
+    buffer.attenuationConst = 1.0f;
+    buffer.attenuationLinear = 0.045;
+    buffer.attenuationQuad = 0.0075f;
+    buffer.specularIntesity = 1.f;
+    buffer.specularPower = 30.f;
+
     MeshPool* pool = world->SpawnObject<MeshPool>(10u * 20u);
     object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.0f,
                                             XMFLOAT3{ 0.f, 20.f, 0.f },
@@ -102,19 +115,8 @@ void TetrisApp::Update()
         _lastTimeCheck = currentTime;
     }
 
-    Mesh::SceneObjectConstantBuffer buffer;
-    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(
-        DirectX::XMVectorSet(-4.f, 4.f, 0.f, 0.f),
-        window->GetGraphics()._camera.GetViewMatrix()));
-    XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
-    XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
-    buffer.diffuseIntensity = 1.0f;
-    buffer.attenuationConst = 1.0f;
-    buffer.attenuationLinear = 0.045;
-    buffer.attenuationQuad = 0.0075f;
-    buffer.specularIntesity = 1.f;
-    buffer.specularPower = 30.f;
 
-    object1->UpdateConstantBuffers(&buffer);
-    object2->UpdateConstantBuffers(&buffer);
+
+    //object1->UpdateConstantBuffers(&buffer);
+    //object2->UpdateConstantBuffers(&buffer);
 }

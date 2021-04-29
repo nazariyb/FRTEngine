@@ -9,6 +9,7 @@ using namespace frt;
 using namespace DirectX;
 
 const unsigned int Tetromino::MeshesNum = 4;
+Mesh::SceneObjectConstantBuffer Tetromino::baseBuffer{};
 
 Tetromino::Tetromino(Type type)
     : Tetromino(type, 1.0f, {}, nullptr)
@@ -40,9 +41,8 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
     }
 }
 
-void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* bufferBase)
+void Tetromino::UpdateConstantBuffers()
 {
-    float radius = 1.0f;
     float offsetX = 0.f, offsetY = 0.f, offsetZ = 0.f;
     XMFLOAT4X4 model, view, projection, mvp;
 
@@ -54,7 +54,8 @@ void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buff
         offsetY = _radius * offsets[i].y;
         offsetZ = _radius * offsets[i].z;
 
-        frt::Mesh::SceneObjectConstantBuffer buffer = *bufferBase;
+        Mesh::SceneObjectConstantBuffer buffer;
+        memcpy(&buffer, &baseBuffer, sizeof(Mesh::SceneObjectConstantBuffer));
 
         XMStoreFloat4x4(&model, XMMatrixMultiply(
             XMMatrixMultiply(XMMatrixTranslation(offsetX, offsetY, offsetZ),
@@ -73,6 +74,19 @@ void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buff
     }
 }
 
+void Tetromino::Update()
+{
+    UpdateConstantBuffers();
+}
+
+void Tetromino::PopulateCommandList()
+{
+    //for (Mesh* mesh : _meshes)
+    //{
+    //    mesh->PopulateCommandList();
+    //}
+}
+
 void Tetromino::InitializeGraphicsResources(Graphics* graphics)
 {
     //for (Mesh* mesh : _meshes)
@@ -86,13 +100,5 @@ void Tetromino::InitializeConstantBuffers(Graphics* graphics)
     //for (Mesh* mesh : _meshes)
     //{
     //    mesh->InitializeConstantBuffers(graphics);
-    //}
-}
-
-void Tetromino::PopulateCommandList()
-{
-    //for (Mesh* mesh : _meshes)
-    //{
-    //    mesh->PopulateCommandList();
     //}
 }

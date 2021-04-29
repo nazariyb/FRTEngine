@@ -7,39 +7,23 @@ namespace frt
 {
 
 GameWorld::GameWorld()
-{
-
-}
+{}
 
 GameWorld::~GameWorld()
 {
-
+    for (size_t i = 0; i < _gameObjects.size(); ++i)
+    {
+        delete _gameObjects.at(i);
+    }
 }
 
-//void GameWorld::RegisterGameObject()
-//{
-//    _meshes.emplace_back();
-//}
-
-//void GameWorld::Reserve(UINT GameObjectsNum)
-//{
-//    _meshes.resize(GameObjectsNum);
-//    for (UINT i = 0; i < GameObjectsNum; ++i)
-//    {
-//        DirectX::XMStoreFloat4x4(&_meshes[i], DirectX::XMMatrixIdentity());
-//    }
-//}
-
-//const std::vector<DirectX::XMFLOAT4X4>& GameWorld::GetMeshes() const
-//{
-//    return _meshes;
-//}
-//
-//void GameWorld::RotateObject(UINT Index, float Roll, float Pitch, float Yaw)
-//{
-//    DirectX::XMStoreFloat4x4(&_meshes[Index],
-//                             DirectX::XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll));
-//}
+void GameWorld::Update()
+{
+    for (GameObject* gameObject : _gameObjects)
+    {
+        gameObject->Update();
+    }
+}
 
 void GameWorld::InitializeGraphicsResources(Graphics* graphics)
 {

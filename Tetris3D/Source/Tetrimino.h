@@ -34,11 +34,15 @@ public:
     inline void RotateYaw   (float yawDelta)   { _rotation.z += yawDelta; }
     inline void RotateRoll  (float rollDelta)  { _rotation.y += rollDelta; }
     //void Rotate(float Pitch, float Yaw, float Roll);
-    void UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buffer);
+    void UpdateConstantBuffers();
+
+    virtual void Update() override;
+    virtual void PopulateCommandList() override;
 
     virtual void InitializeGraphicsResources(frt::Graphics* graphics) override;
     virtual void InitializeConstantBuffers(frt::Graphics* graphics) override;
-    virtual void PopulateCommandList() override;
+
+    static frt::Mesh::SceneObjectConstantBuffer baseBuffer;
 
 private:
     frt::App* _owner;
