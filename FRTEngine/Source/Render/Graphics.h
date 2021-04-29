@@ -69,8 +69,8 @@ public:
     static const UINT FrameCount = 4;
 private:
 
-    static const UINT RowCount = 2;
-    static const UINT ColumnCount = 4;
+    static const UINT RowCount = 10;
+    static const UINT ColumnCount = 20;
 public:
     static const UINT MaterialCount = RowCount * ColumnCount;
 private:

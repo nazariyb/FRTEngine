@@ -39,47 +39,75 @@ const std::vector<unsigned char> Mesh::_indices =
 const unsigned int Mesh::_indexBufferSize = Mesh::_indices.size();
 
 Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
-    : _radius(radius), _initialPosition(initialPosition), _texture{}
+    : _radius(radius)
+    , _initialPosition(initialPosition)
+    , _texture{}
+    , _indexBuffer{}
+    , _vertexBuffer{}
 {
-    const float x = initialPosition.x;
-    const float y = initialPosition.x;
-    const float z = initialPosition.x;
+    Resize(_radius);
+}
+
+Mesh::Mesh(float radius)
+    : Mesh(1.f, {})
+{}
+
+Mesh::Mesh()
+    : Mesh(1.f)
+{}
+
+Mesh::~Mesh()
+{
+    delete _vertexBuffer;
+    delete _indexBuffer;
+
+    for (size_t i = 0; i < _constantBuffers.size(); ++i)
+    {
+        delete _constantBuffers.at(i);
+    }
+}
+
+void Mesh::Resize(float newRadius)
+{
+    const float x = _initialPosition.x;
+    const float y = _initialPosition.x;
+    const float z = _initialPosition.x;
 
     // front side
-    _vertices[ 0] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 1] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[ 2] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[ 3] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    
+    _vertices[0] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[1] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[2] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[3] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
     // right side
-    _vertices[ 4] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 5] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[ 6] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[ 7] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    
+    _vertices[4] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[5] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[6] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[7] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+
     // left side
-    _vertices[ 8] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[ 9] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[10] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[11] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[8] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[9] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[10] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[11] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // back side
-    _vertices[12] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[13] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[14] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[15] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[12] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[13] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[14] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[15] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // top side
-    _vertices[16] = { { x + radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[17] = { { x + radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[18] = { { x - radius, y + radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[19] = { { x - radius, y + radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[16] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[17] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[18] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[19] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     // bottom side
-    _vertices[20] = { { x - radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    _vertices[21] = { { x - radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    _vertices[22] = { { x + radius, y - radius, z - radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    _vertices[23] = { { x + radius, y - radius, z + radius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
+    _vertices[20] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
+    _vertices[21] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
+    _vertices[22] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
+    _vertices[23] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
 
     using namespace DirectX;
 
@@ -97,23 +125,6 @@ Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
         XMStoreFloat3(&v0.normal, normal);
         XMStoreFloat3(&v1.normal, normal);
         XMStoreFloat3(&v2.normal, normal);
-    }
-
-}
-
-Mesh::Mesh()
-    : Mesh(1.f, {})
-{
-}
-
-Mesh::~Mesh()
-{
-    delete _vertexBuffer;
-    delete _indexBuffer;
-
-    for (size_t i = 0; i < _constantBuffers.size(); ++i)
-    {
-        delete _constantBuffers.at(i);
     }
 }
 

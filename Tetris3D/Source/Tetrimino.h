@@ -1,9 +1,15 @@
 #pragma once
 #include "GameObject.h"
 #include <vector>
-#include "Render\Mesh.h"
-#include "App.h"
 #include <DirectXMath.h>
+#include "Render\Mesh.h"
+
+namespace frt
+{
+class MeshPool;
+class App;
+class Graphics;
+}
 
 class Tetromino : public frt::GameObject
 {
@@ -16,7 +22,8 @@ public:
 public:
     Tetromino() = delete;
     Tetromino(Type type);
-    Tetromino(Type type, float radius);
+    //Tetromino(Type type, float radius);
+    Tetromino(Type type, float radius, DirectX::XMFLOAT3 worldPosition, frt::MeshPool* meshPool = nullptr);
     //Tetromino(class frt::App* owner, frt::Mesh::SceneObjectConstantBuffer* buffer);
 
     inline void MoveX(float deltaX) { _worldPosition.x += deltaX; }
@@ -29,8 +36,8 @@ public:
     //void Rotate(float Pitch, float Yaw, float Roll);
     void UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buffer);
 
-    virtual void InitializeGraphicsResources(class frt::Graphics* graphics) override;
-    virtual void InitializeConstantBuffers(class frt::Graphics* graphics) override;
+    virtual void InitializeGraphicsResources(frt::Graphics* graphics) override;
+    virtual void InitializeConstantBuffers(frt::Graphics* graphics) override;
     virtual void PopulateCommandList() override;
 
 private:

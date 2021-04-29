@@ -18,8 +18,11 @@ class FRTENGINE_API Mesh : public ITickable
 {
 public:
     Mesh();
+    Mesh(float radius);
     Mesh(float radius, DirectX::XMFLOAT3 initialPosition);
     virtual ~Mesh();
+
+    void Resize(float newRadius);
 
     virtual void Update() override;
     virtual void PopulateCommandList() override;

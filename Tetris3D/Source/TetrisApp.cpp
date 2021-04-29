@@ -15,6 +15,7 @@
 #include <DirectXMath.h>
 #include "Tetrimino.h"
 #include "Time/Time.h"
+#include "Render/MeshPool.h"
 
 
 using namespace DirectX;
@@ -29,7 +30,13 @@ TetrisApp::TetrisApp()
 
 int TetrisApp::Start()
 {
-    object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.0f);
+    MeshPool* pool = world->SpawnObject<MeshPool>(10u * 20u);
+    object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.0f,
+                                            XMFLOAT3{ 0.f, 20.f, 0.f },
+                                            pool);
+    object2 = world->SpawnObject<Tetromino>(Tetromino::Type::I, 1.0f,
+                                            XMFLOAT3{ 5.f, 20.f, 0.f },
+                                            pool);
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
@@ -109,4 +116,5 @@ void TetrisApp::Update()
     buffer.specularPower = 30.f;
 
     object1->UpdateConstantBuffers(&buffer);
+    object2->UpdateConstantBuffers(&buffer);
 }

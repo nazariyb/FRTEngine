@@ -21,5 +21,6 @@ protected:
     float _lastTimeCheck;
 
     class Tetromino* object1;
+    class Tetromino* object2;
 };
 

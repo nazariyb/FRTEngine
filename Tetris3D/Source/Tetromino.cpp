@@ -2,6 +2,8 @@
 #include <DirectXMath.h>
 #include "Utils/Logger/Logger.h"
 #include "TetrominoFactory.h"
+#include "Render/MeshPool.h"
+#include "App.h"
 
 using namespace frt;
 using namespace DirectX;
@@ -9,20 +11,32 @@ using namespace DirectX;
 const unsigned int Tetromino::MeshesNum = 4;
 
 Tetromino::Tetromino(Type type)
-    : Tetromino(type, 1.0f)
+    : Tetromino(type, 1.0f, {}, nullptr)
 {}
 
-Tetromino::Tetromino(Type type, float radius)
+Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshPool* meshPool/* = nullptr*/)
     : _type(type)
     , _radius(radius)
     , _rotation{}
-    , _worldPosition{}
+    , _worldPosition{worldPosition}
 {
     _owner = frt::App::GetInstance();
 
-    for (int i = 0; i < MeshesNum; ++i)
+    if (meshPool == nullptr)
     {
-        _meshes.push_back(new Mesh(_radius, { }));
+        for (int i = 0; i < MeshesNum; ++i)
+        {
+            _meshes.push_back(new Mesh(_radius, { }));
+        }
+    }
+    else
+    {
+        auto getResult = meshPool->GetFreeMeshes(MeshesNum);
+        _meshes = getResult.second;
+        for (Mesh* mesh : _meshes)
+        {
+            mesh->Resize(_radius);
+        }
     }
 }
 
@@ -61,24 +75,24 @@ void Tetromino::UpdateConstantBuffers(frt::Mesh::SceneObjectConstantBuffer* buff
 
 void Tetromino::InitializeGraphicsResources(Graphics* graphics)
 {
-    for (Mesh* mesh : _meshes)
-    {
-        mesh->InitializeGraphicsResources(graphics);
-    }
+    //for (Mesh* mesh : _meshes)
+    //{
+    //    mesh->InitializeGraphicsResources(graphics);
+    //}
 }
 
 void Tetromino::InitializeConstantBuffers(Graphics* graphics)
 {
-    for (Mesh* mesh : _meshes)
-    {
-        mesh->InitializeConstantBuffers(graphics);
-    }
+    //for (Mesh* mesh : _meshes)
+    //{
+    //    mesh->InitializeConstantBuffers(graphics);
+    //}
 }
 
 void Tetromino::PopulateCommandList()
 {
-    for (Mesh* mesh : _meshes)
-    {
-        mesh->PopulateCommandList();
-    }
+    //for (Mesh* mesh : _meshes)
+    //{
+    //    mesh->PopulateCommandList();
+    //}
 }
