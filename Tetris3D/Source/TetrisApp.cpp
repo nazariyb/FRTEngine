@@ -27,6 +27,7 @@ TetrisApp::TetrisApp()
     : App(1280, 720, "Tetris3D")
     , object1(nullptr)
     , object2(nullptr)
+    , _meshPool(nullptr)
     , _lastTimeCheck{0.f}
 {}
 
@@ -34,7 +35,7 @@ int TetrisApp::Start()
 {
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
     XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(
-        DirectX::XMVectorSet(-4.f, 4.f, 0.f, 0.f),
+        DirectX::XMVectorSet(0.f, 15.f, 10.f, 0.f),
         window->GetGraphics()._camera.GetViewMatrix()));
     XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
     XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
@@ -45,13 +46,13 @@ int TetrisApp::Start()
     buffer.specularIntesity = 1.f;
     buffer.specularPower = 30.f;
 
-    MeshPool* pool = world->SpawnObject<MeshPool>(10u * 20u);
+    _meshPool = world->SpawnObject<MeshPool>(10u * 20u);
     object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.f,
                                             TetrisBoard::TopBound,
-                                            pool);
+                                            _meshPool);
     object2 = world->SpawnObject<Tetromino>(Tetromino::Type::I, 1.f,
                                             TetrisBoard::TopBound,
-                                            pool);
+                                            _meshPool);
 
     window->keyboard.onKeyPressedEvent += [this] (Event* event)
     {
@@ -63,14 +64,18 @@ int TetrisApp::Start()
         if (window->keyboard.IsKeyPressed('F'))
         {
             if (object1->GetLeftBound() - 2.f >= TetrisBoard::LeftBound.x * 2)
+            {
                 object1->MoveX(-2.f);
+            }
         }
         if (window->keyboard.IsKeyPressed('G'))
             object1->MoveY(-2.f);
         if (window->keyboard.IsKeyPressed('H'))
         {
             if (object1->GetRightBound() + 2.f <= TetrisBoard::RightBound.x * 2)
+            {
                 object1->MoveX(2.f);
+            }
         }
         if (window->keyboard.IsKeyPressed('R'))
             object1->RotateRoll(XM_PIDIV2);
@@ -124,6 +129,12 @@ void TetrisApp::Update()
     {
         object1->MoveY(-2.f);
         _lastTimeCheck = currentTime;
+        if (object1->GetBottomBound() - 2.f <= TetrisBoard::BottomBound.y * 2)
+        {
+            object1 = world->SpawnObject<Tetromino>(Tetromino::Type::T, 1.f,
+                                                    TetrisBoard::TopBound,
+                                                    _meshPool);
+        }
     }
 
 }

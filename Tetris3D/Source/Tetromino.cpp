@@ -73,6 +73,42 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
     }
 }
 
+void Tetromino::RotatePitch(float pitchDelta)
+{
+    _rotation.x += pitchDelta;
+}
+
+void Tetromino::RotateYaw(float yawDelta)
+{
+    _rotation.z += yawDelta;
+}
+
+void Tetromino::RotateRoll(float rollDelta)
+{
+    _rotation.y += rollDelta;
+
+    float top, bottom, left, right;
+    if (rollDelta > 0.f)
+    {
+        top = _rightBound;
+        right = -_bottomBound;
+        bottom = _leftBound;
+        left = -_topBound;
+    }
+    else
+    {
+        right = _topBound;
+        bottom = -_rightBound;
+        left = _bottomBound;
+        top = -_leftBound;
+    }
+
+    _topBound = top;
+    _rightBound = right;
+    _bottomBound = bottom;
+    _leftBound = left;
+}
+
 void Tetromino::UpdateConstantBuffers()
 {
     float offsetX = 0.f, offsetY = 0.f, offsetZ = 0.f;

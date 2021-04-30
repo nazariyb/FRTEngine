@@ -32,9 +32,9 @@ public:
 
     inline const DirectX::XMFLOAT3& GetWorldPosition() { return _worldPosition; }
 
-    inline void RotatePitch (float pitchDelta) { _rotation.x += pitchDelta; }
-    inline void RotateYaw   (float yawDelta)   { _rotation.z += yawDelta;   }
-    inline void RotateRoll  (float rollDelta)  { _rotation.y += rollDelta;  }
+    void RotatePitch(float pitchDelta);
+    void RotateYaw(float yawDelta);
+    void RotateRoll(float rollDelta);
 
     inline float GetTopBound()    { return _worldPosition.y + _topBound;    }
     inline float GetBottomBound() { return _worldPosition.y + _bottomBound; }

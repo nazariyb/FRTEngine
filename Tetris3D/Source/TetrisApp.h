@@ -3,6 +3,12 @@
 #include <bitset>
 
 using frt::App;
+class Tetromino;
+
+namespace frt
+{
+class MeshPool;
+}
 
 class TetrisApp :
     public App
@@ -20,7 +26,9 @@ protected:
 
     float _lastTimeCheck;
 
-    class Tetromino* object1;
-    class Tetromino* object2;
+    Tetromino* object1;
+    Tetromino* object2;
+
+    frt::MeshPool* _meshPool;
 };
 

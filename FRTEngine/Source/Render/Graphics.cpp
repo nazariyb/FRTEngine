@@ -119,8 +119,8 @@ Graphics::~Graphics()
 
 void Graphics::Init(HWND hWindow)
 {
-    _camera.Init({ (ColumnCount / 2.f) * SpacingInterval - (SpacingInterval / 2.f), 3, 25 });
-    _camera.SetMoveSpeed(SpacingInterval * 2.f);
+    _camera.Init({ 0.f, 10.f, 30.f });
+    _camera.SetMoveSpeed(6.f);
 
     LoadPipeline(hWindow);
     LoadAssets();
