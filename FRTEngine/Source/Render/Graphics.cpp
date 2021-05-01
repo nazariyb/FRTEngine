@@ -645,7 +645,7 @@ void Graphics::PopulateCommandList()
     _commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
     // Record commands.
-    const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    const float clearColor[] = { 1.f, 0.7f, 0.f, 1.0f };
     _commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
     _commandList->ClearDepthStencilView(_dsvHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 

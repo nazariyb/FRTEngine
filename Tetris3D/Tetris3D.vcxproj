@@ -248,7 +248,7 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Source\Tetrimino.h" />
+    <ClInclude Include="Source\Tetromino.h" />
     <ClInclude Include="Source\TetrisApp.h" />
     <ClInclude Include="Source\TetrisBoard.h" />
     <ClInclude Include="Source\TetrominoFactory.h" />

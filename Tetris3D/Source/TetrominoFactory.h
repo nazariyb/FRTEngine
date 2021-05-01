@@ -1,5 +1,5 @@
 #pragma once
-#include "Tetrimino.h"
+#include "Tetromino.h"
 #include <unordered_map>
 #include <vector>
 #include <DirectXMath.h>

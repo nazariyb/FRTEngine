@@ -1,4 +1,4 @@
-#include "Tetrimino.h"
+#include "Tetromino.h"
 #include <DirectXMath.h>
 #include "Utils/Logger/Logger.h"
 #include "TetrominoFactory.h"

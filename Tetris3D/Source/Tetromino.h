@@ -41,6 +41,16 @@ public:
     inline float GetLeftBound()   { return _worldPosition.x + _leftBound;   }
     inline float GetRightBound()  { return _worldPosition.x + _rightBound;  }
 
+    inline float GetTopBoundAfterClockwiseRotation()    { return _worldPosition.y - _leftBound;   }
+    inline float GetBottomBoundAfterClockwiseRotation() { return _worldPosition.y - _rightBound;  }
+    inline float GetLeftBoundAfterClockwiseRotation()   { return _worldPosition.x + _bottomBound; }
+    inline float GetRightBoundAfterClockwiseRotation()  { return _worldPosition.x + _topBound;    }
+
+    inline float GetTopBoundAfterCounterclockwiseRotation()    { return _worldPosition.y + _rightBound;  }
+    inline float GetBottomBoundAfterCounterclockwiseRotation() { return _worldPosition.y + _leftBound;   }
+    inline float GetLeftBoundAfterCounterclockwiseRotation()   { return _worldPosition.x - _topBound;    }
+    inline float GetRightBoundAfterCounterclockwiseRotation()  { return _worldPosition.x - _bottomBound; }
+
     //void Rotate(float Pitch, float Yaw, float Roll);
     void UpdateConstantBuffers();
 

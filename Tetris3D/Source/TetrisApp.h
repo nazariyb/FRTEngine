@@ -4,6 +4,7 @@
 
 using frt::App;
 class Tetromino;
+class TetrisBoard;
 
 namespace frt
 {
@@ -30,5 +31,6 @@ protected:
     Tetromino* object2;
 
     frt::MeshPool* _meshPool;
+    TetrisBoard* _board;
 };
 
