@@ -6,8 +6,11 @@ using std::string;
 using std::ofstream;
 using std::to_string;
 
-
+#if defined(_DEBUG)
 #define DEBUG_LOG(message, type) Log(message, type, true);
+#else
+#define DEBUG_LOG(message, type)
+#endif
 
 namespace frt
 {
@@ -62,7 +65,11 @@ void Logger::Log(const string & message, const string & messageType, bool isDebu
         + ":" + FormatTwoDigits(currentTime.wMinute)
         + ":" + FormatTwoDigits(currentTime.wSecond);
 
-    string logType = isDebug ? "DBG " : "DPL ";
+#if defined(_DEBUG)
+    string logType = isDebug ? "DBG " : "RLS ";
+#else
+    string logType = "";
+#endif
 
     _logBuffer << logType + time + " [" + messageType + "] " + message + "\n";
 }

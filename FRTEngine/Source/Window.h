@@ -32,8 +32,7 @@ private:
     //void FreeCursor() noexcept;
     //void ShowCursor() noexcept;
     //void HideCursor() noexcept;
-    //void EnableImGuiMouse() noexcept;
-    //void DisableImGuiMouse() noexcept;
+
     static LRESULT WINAPI HandleMsgSetup(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
     static LRESULT WINAPI HandleMsgThunk(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
     LRESULT HandleMsg(HWND hWindow, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -52,11 +51,6 @@ private:
 
     const char* windowClassName = "FRT Window Base Class";
 
-    //std::unique_ptr<Graphics> pGfx;
-    //std::vector<BYTE> rawBuffer;
-    //std::string commandLine;
-
     void RegisterWinAPIClass(HICON winIcon) noexcept;
-
 };
 }
