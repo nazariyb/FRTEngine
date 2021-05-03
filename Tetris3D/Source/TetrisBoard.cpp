@@ -5,7 +5,7 @@
 #include "Render/Mesh.h"
 #include "Render/MeshPool.h"
 #include "GameWorld.h"
-#include "TetrominoFactory.h"
+#include <cstdlib>
 
 using namespace frt;
 using namespace DirectX;
@@ -31,9 +31,11 @@ TetrisBoard::TetrisBoard(unsigned int width, unsigned int height, float cellSize
     const int iEnd = _width / 2;
     for (; i <= iEnd; ++i)
     {
-        for (unsigned int j = 0; j <= _height; ++j)
+        for (unsigned j = static_cast<unsigned>(_cellSize / 2);
+            j <= _height * static_cast<unsigned>(_cellSize);
+            j += static_cast<unsigned>(_cellSize))
         {
-            _cells.push_back(new Cell({ static_cast<float>(i) * cellSize, static_cast<float>(j) * (cellSize / 2.f), 0 }, nullptr));
+            _cells.push_back(new Cell({ static_cast<float>(i) * cellSize, static_cast<float>(j), 0 }, nullptr));
         }
     }
 
@@ -53,7 +55,7 @@ TetrisBoard::~TetrisBoard()
 
 Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
 {
-    return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::I, _cellSize / 2.f, TopBound, meshPool);
+    return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
 }
 
 void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
@@ -95,11 +97,11 @@ void TetrisBoard::RotateTetrominoClockwise(Tetromino* tetromino)
 {
     if (tetromino->GetLeftBoundAfterClockwiseRotation() < LeftBound.x)
     {
-        tetromino->MoveX(_cellSize);
+        // tetromino->MoveX(_cellSize);
     }
     else if (tetromino->GetRightBoundAfterClockwiseRotation() > RightBound.x)
     {
-        tetromino->MoveX(-_cellSize);
+        // tetromino->MoveX(-_cellSize);
     }
 
     tetromino->RotateRoll(-XM_PIDIV2);
@@ -109,11 +111,11 @@ void TetrisBoard::RotateTetrominoCounterclockwise(Tetromino* tetromino)
 {
     if (tetromino->GetRightBoundAfterCounterclockwiseRotation() > RightBound.x)
     {
-        tetromino->MoveX(-_cellSize);
+        // tetromino->MoveX(-_cellSize);
     }
     else if (tetromino->GetLeftBoundAfterCounterclockwiseRotation() < LeftBound.x)
     {
-        tetromino->MoveX(_cellSize);
+        // tetromino->MoveX(_cellSize);
     }
 
     tetromino->RotateRoll(XM_PIDIV2);
@@ -121,32 +123,26 @@ void TetrisBoard::RotateTetrominoCounterclockwise(Tetromino* tetromino)
 
 bool TetrisBoard::MoveTetrominoLeft(Tetromino* tetromino)
 {
-    if (tetromino->GetLeftBound() - _cellSize > LeftBound.x)
-    {
-        tetromino->MoveX(-_cellSize);
-        return true;
-    }
-    return false;
+    if (!IsMoveLeftPossible(tetromino)) return false;
+        
+    tetromino->MoveX(-_cellSize);
+    return true;
 }
 
 bool TetrisBoard::MoveTetrominoRight(Tetromino* tetromino)
 {
-    if (tetromino->GetRightBound() + _cellSize < RightBound.x)
-    {
-        tetromino->MoveX(_cellSize);
-        return true;
-    }
-    return false;
+    if (!IsMoveRightPossible(tetromino)) return false;
+    
+    tetromino->MoveX(_cellSize);
+    return true;
 }
 
 bool TetrisBoard::MoveTetrominoDown(Tetromino* tetromino)
 {
-    if (tetromino->GetBottomBound() > BottomBound.y)
-    {
-        tetromino->MoveY(-_cellSize);
-        return true;
-    }
-    return false;
+    if (!IsMoveDownPossible(tetromino)) return false;
+    
+    tetromino->MoveY(-_cellSize);
+    return true;
 }
 
 void TetrisBoard::DropTetromino(Tetromino* tetromino)
@@ -155,4 +151,68 @@ void TetrisBoard::DropTetromino(Tetromino* tetromino)
 
 void TetrisBoard::Update()
 {
+}
+
+bool TetrisBoard::IsMoveLeftPossible(Tetromino* tetromino)
+{
+    if (tetromino->GetLeftBound() <= LeftBound.x + 1e-3) return false;
+
+    XMFLOAT3 meshPosition;
+    for (unsigned int i = 0; i < tetromino->MeshesNum; ++i)
+    {
+        meshPosition = tetromino->_meshes[i]->GetWorldPosition();
+        meshPosition.x -= _cellSize;
+        for (Cell* cell : _cells)
+        {
+            if (cell->mesh != nullptr && XMVector3NearEqual(
+                       XMLoadFloat3(&cell->coordinates),
+                       XMLoadFloat3(&meshPosition),
+                       XMVectorReplicate(1e-3)))
+                           return false;
+        }
+    }
+    return true;
+}
+
+bool TetrisBoard::IsMoveRightPossible(Tetromino* tetromino)
+{
+    if (tetromino->GetRightBound() >= RightBound.x - 1e-3) return false;
+
+    XMFLOAT3 meshPosition;
+    for (unsigned int i = 0; i < tetromino->MeshesNum; ++i)
+    {
+        meshPosition = tetromino->_meshes[i]->GetWorldPosition();
+        meshPosition.x += _cellSize;
+        for (Cell* cell : _cells)
+        {
+            if (cell->mesh != nullptr && XMVector3NearEqual(
+                       XMLoadFloat3(&cell->coordinates),
+                       XMLoadFloat3(&meshPosition),
+                       XMVectorReplicate(1e-3)))
+                           return false;
+        }
+    }
+    return true;
+}
+
+bool TetrisBoard::IsMoveDownPossible(Tetromino* tetromino)
+{
+    if (tetromino->GetBottomBound() <= BottomBound.y + 1e-3) return false;
+
+    XMFLOAT3 meshPosition;
+    for (unsigned int i = 0; i < tetromino->MeshesNum; ++i)
+    {
+        meshPosition = tetromino->_meshes[i]->GetWorldPosition();
+        meshPosition.y -= _cellSize;
+        for (Cell* cell : _cells)
+        {
+            if (cell->mesh != nullptr && XMVector3NearEqual(
+                       XMLoadFloat3(&cell->coordinates),
+                       XMLoadFloat3(&meshPosition),
+                       XMVectorReplicate(1e-3)))
+                           return false;
+        }
+    }
+    return true;
+
 }

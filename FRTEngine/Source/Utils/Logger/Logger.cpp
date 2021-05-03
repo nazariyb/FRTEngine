@@ -1,13 +1,14 @@
 #include "Logger.h"
 #include "Time/Time.h"
-
+#include <DirectXMath.h>
 
 using std::string;
 using std::ofstream;
 using std::to_string;
+using DirectX::XMFLOAT4;
 
 #if defined(_DEBUG)
-#define DEBUG_LOG(message, type) Log(message, type, true);
+#define DEBUG_LOG(message, type) Log((message), (type), true);
 #else
 #define DEBUG_LOG(message, type)
 #endif
@@ -20,6 +21,15 @@ ofstream Logger::_logBuffer{ _logFileName }; // TODO: don't keep the entire log 
 void Logger::DebugLogInfo(const string& message)
 {
     DEBUG_LOG(message, "Info")
+}
+
+void Logger::DebugLogInfo(const std::string& message, const XMFLOAT4& vector)
+{
+    DEBUG_LOG(message + "<"
+        + std::to_string(vector.x) + ", "
+        + std::to_string(vector.y) + ", "
+        + std::to_string(vector.z) + ", "
+        + std::to_string(vector.w) + ">", "Info")
 }
 
 void Logger::DebugLogWarning(const string& message)

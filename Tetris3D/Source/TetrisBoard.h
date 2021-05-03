@@ -54,4 +54,8 @@ private:
     };
 
     std::vector<Cell*> _cells;
+
+    bool IsMoveLeftPossible(Tetromino* tetromino);
+    bool IsMoveRightPossible(Tetromino* tetromino);
+    bool IsMoveDownPossible(Tetromino* tetromino);
 };

@@ -38,10 +38,10 @@ public:
     void RotateYaw(float yawDelta);
     void RotateRoll(float rollDelta);
 
-    inline float GetTopBound()    { return _worldPosition.y + _topBound;    }
-    inline float GetBottomBound() { return _worldPosition.y + _bottomBound; }
-    inline float GetLeftBound()   { return _worldPosition.x + _leftBound;   }
-    inline float GetRightBound()  { return _worldPosition.x + _rightBound;  }
+    inline float GetTopBound()    { return _topBound;    }
+    inline float GetBottomBound() { return _bottomBound; }
+    inline float GetLeftBound()   { return _leftBound;   }
+    inline float GetRightBound()  { return _rightBound;  }
 
     inline float GetTopBoundAfterClockwiseRotation()    { return _worldPosition.y - _leftBound;   }
     inline float GetBottomBoundAfterClockwiseRotation() { return _worldPosition.y - _rightBound;  }

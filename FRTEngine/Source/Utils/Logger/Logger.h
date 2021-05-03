@@ -6,12 +6,18 @@
 #include <string>
 #include <fstream>
 
+namespace DirectX
+{
+    class XMFLOAT4;
+}
+
 namespace frt
 {
 class FRTENGINE_API Logger
 {
 public:
     static void DebugLogInfo(const std::string& message);
+    static void DebugLogInfo(const std::string& message, const DirectX::XMFLOAT4& vector);
     static void DebugLogWarning(const std::string& message);
     static void DebugLogError(const std::string& message);
 
