@@ -13,6 +13,8 @@ class Graphics;
 
 class Tetromino : public frt::GameObject
 {
+    friend class TetrisBoard;
+    
 public:
     enum class Type
     {
@@ -30,7 +32,7 @@ public:
     inline void MoveY(float deltaY) { _worldPosition.y += deltaY; }
     inline void MoveZ(float deltaZ) { _worldPosition.z += deltaZ; }
 
-    inline const DirectX::XMFLOAT3& GetWorldPosition() { return _worldPosition; }
+    inline const DirectX::XMFLOAT3& GetWorldPosition() const { return _worldPosition; }
 
     void RotatePitch(float pitchDelta);
     void RotateYaw(float yawDelta);

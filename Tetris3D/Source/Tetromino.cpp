@@ -13,17 +13,18 @@ Mesh::SceneObjectConstantBuffer Tetromino::baseBuffer{};
 
 Tetromino::Tetromino(Type type)
     : Tetromino(type, 1.0f, {}, nullptr)
-{}
+{
+}
 
 Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshPool* meshPool/* = nullptr*/)
     : _type(type)
-    , _radius(radius)
-    , _rotation{}
-    , _worldPosition{worldPosition}
-    , _topBound{ std::numeric_limits<float>::min() }
-    , _bottomBound{ std::numeric_limits<float>::max() }
-    , _leftBound{ std::numeric_limits<float>::max() }
-    , _rightBound{ std::numeric_limits<float>::min() }
+      , _radius(radius)
+      , _rotation{}
+      , _worldPosition{worldPosition}
+      , _topBound{std::numeric_limits<float>::min()}
+      , _bottomBound{std::numeric_limits<float>::max()}
+      , _leftBound{std::numeric_limits<float>::max()}
+      , _rightBound{std::numeric_limits<float>::min()}
 {
     _owner = frt::App::GetInstance();
 
@@ -31,7 +32,7 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
     {
         for (int i = 0; i < MeshesNum; ++i)
         {
-            _meshes.push_back(new Mesh(_radius, { }));
+            _meshes.push_back(new Mesh(_radius, {}));
         }
     }
     else
@@ -44,13 +45,26 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
         }
     }
 
-    float innerOffsetX = 0.f, innerOffsetY = 0.f, innerOffsetZ = 0.f;
+    float innerOffsetX, innerOffsetY, innerOffsetZ;
     const std::vector<XMFLOAT3>& offsets = TetrominoFactory::_offsets.at(_type);
+
+    if (static_cast<int>(offsets[0].x) % 2)
+        _worldPosition.x -= _radius;
+
+    if (static_cast<int>(offsets[0].y) % 2)
+        _worldPosition.y -= _radius;
 
     for (int i = 0; i < MeshesNum; ++i)
     {
         innerOffsetX = offsets[i].x;
         innerOffsetY = offsets[i].y;
+
+        if (static_cast<int>(offsets[i].x) % 2)
+            innerOffsetX -= _radius * 2;
+
+        if (static_cast<int>(offsets[i].y) % 2)
+            innerOffsetY -= _radius * 2;
+
         innerOffsetZ = offsets[i].z;
 
         if (innerOffsetX > _rightBound)
@@ -107,6 +121,10 @@ void Tetromino::RotateRoll(float rollDelta)
     _rightBound = right;
     _bottomBound = bottom;
     _leftBound = left;
+
+    Logger::DebugLogInfo("new bounds: <" + std::to_string(_leftBound)
+        + " " + std::to_string(_topBound) + " " + std::to_string(_rightBound)
+        + " " + std::to_string(_bottomBound) + ">");
 }
 
 void Tetromino::UpdateConstantBuffers()
@@ -126,17 +144,30 @@ void Tetromino::UpdateConstantBuffers()
         memcpy(&buffer, &baseBuffer, sizeof(Mesh::SceneObjectConstantBuffer));
 
         XMStoreFloat4x4(&model, XMMatrixMultiply(
-            XMMatrixMultiply(XMMatrixTranslation(offsetX, offsetY, offsetZ),
-                             XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.z, _rotation.y)),
-            XMMatrixTranslation(_worldPosition.x, _worldPosition.y, _worldPosition.z)));
+                            XMMatrixMultiply(XMMatrixTranslation(offsetX, offsetY, offsetZ),
+                                             XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.z, _rotation.y)),
+                            XMMatrixTranslation(_worldPosition.x, _worldPosition.y, _worldPosition.z)));
 
         XMStoreFloat4x4(&view, _owner->GetWindow()->GetGraphics()._camera.GetViewMatrix());
-        XMStoreFloat4x4(&projection, _owner->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(0.8f, _owner->GetWindow()->GetGraphics()._aspectRatio));
+        XMStoreFloat4x4(&projection,
+                        _owner->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
+                            0.8f, _owner->GetWindow()->GetGraphics()._aspectRatio));
 
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
         XMStoreFloat4x4(&(buffer.mvp), XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
         XMStoreFloat4x4(&(buffer.modelView), XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+
+        XMFLOAT3 pos{
+            offsets[i].x / _radius,
+            offsets[i].z / _radius,
+            offsets[i].z / _radius
+        };
+        XMStoreFloat3(&_meshes[i]->GetWorldPosition(),
+                      XMVector3Transform(XMLoadFloat3(&pos),
+                                         XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.z, _rotation.y)));
+        XMStoreFloat3(&_meshes[i]->GetWorldPosition(),
+                      XMVectorAdd(XMLoadFloat3(&_meshes[i]->GetWorldPosition()), XMLoadFloat3(&_worldPosition)));
 
         _meshes[i]->UpdateConstantBuffer(buffer);
     }

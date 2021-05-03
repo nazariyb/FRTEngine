@@ -20,6 +20,11 @@ public:
     template<typename T, class ... Args>
     T* SpawnObject(Args&&... args);
 
+    inline void DestroyObject(GameObject* object)
+    {
+        _gameObjects.erase(std::remove(_gameObjects.begin(), _gameObjects.end(), object), _gameObjects.end());
+    }
+    
     void InitializeGraphicsResources(class Graphics* graphics);
 
     virtual void Update() override;

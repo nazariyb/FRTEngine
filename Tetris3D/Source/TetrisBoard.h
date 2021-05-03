@@ -19,6 +19,7 @@ public:
     ~TetrisBoard();
 
     Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
+    void HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
     
     void RotateTetrominoClockwise(Tetromino* tetromino);
     void RotateTetrominoCounterclockwise(Tetromino* tetromino);

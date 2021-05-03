@@ -61,7 +61,14 @@ int TetrisApp::Start()
         else if (window->keyboard.IsKeyPressed('F'))
             _board->MoveTetrominoLeft(object1);
         else if (window->keyboard.IsKeyPressed('G'))
-            _board->MoveTetrominoDown(object1);
+        {
+            const bool isMoved = _board->MoveTetrominoDown(object1);
+            if (!isMoved)
+            {
+                _board->HarvestTetromino(world, object1);
+                object1 = _board->SpawnTetromino(world, _meshPool);
+            }
+        }
         else if (window->keyboard.IsKeyPressed('H'))
             _board->MoveTetrominoRight(object1);
         else if (window->keyboard.IsKeyPressed('R'))
@@ -111,13 +118,14 @@ void TetrisApp::Update()
 {
     App::Update();
 
-    float currentTime = Time::GetSecondsSinceFirstTick();
-    if ((currentTime - _lastTimeCheck) > 1.2f)
+    const float currentTime = Time::GetSecondsSinceFirstTick();
+    if (currentTime - _lastTimeCheck > 1.2f)
     {
-        bool isMoved = _board->MoveTetrominoDown(object1);
+        const bool isMoved = _board->MoveTetrominoDown(object1);
         _lastTimeCheck = currentTime;
         if (!isMoved)
         {
+            _board->HarvestTetromino(world, object1);
             object1 = _board->SpawnTetromino(world, _meshPool);
         }
     }

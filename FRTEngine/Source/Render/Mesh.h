@@ -23,6 +23,8 @@ public:
     virtual ~Mesh();
 
     void Resize(float newRadius);
+    inline void SetWorldPosition(const DirectX::XMFLOAT3 newPosition) { _worldPosition = newPosition; }
+    inline DirectX::XMFLOAT3& GetWorldPosition() { return _worldPosition; }
 
     virtual void Update() override;
     virtual void PopulateCommandList() override;
@@ -74,6 +76,7 @@ protected:
 
     unsigned int _radius;
     DirectX::XMFLOAT3 _initialPosition;
+    DirectX::XMFLOAT3 _worldPosition;
 
     static const unsigned int _vertexBufferSize = 24;
     Vertex _vertices[_vertexBufferSize];
