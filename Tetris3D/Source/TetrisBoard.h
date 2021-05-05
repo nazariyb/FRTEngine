@@ -21,12 +21,14 @@ public:
     Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
     void HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
     
-    void RotateTetrominoClockwise(Tetromino* tetromino);
-    void RotateTetrominoCounterclockwise(Tetromino* tetromino);
-    
-    bool MoveTetrominoLeft(Tetromino* tetromino);
-    bool MoveTetrominoRight(Tetromino* tetromino);
-    bool MoveTetrominoDown(Tetromino* tetromino);
+    inline void RotateTetrominoClockwise(Tetromino* tetromino)
+        { RotateTetromino(tetromino, -DirectX::XM_PIDIV2); }
+    inline void RotateTetrominoCounterclockwise(Tetromino* tetromino)
+        { RotateTetromino(tetromino, DirectX::XM_PIDIV2); }
+
+    inline bool MoveTetrominoLeft(Tetromino* tetromino)  { return MoveTetrominoLeft(tetromino, -_cellSize); }
+    inline bool MoveTetrominoRight(Tetromino* tetromino) { return MoveTetrominoRight(tetromino, _cellSize); }
+    inline bool MoveTetrominoDown(Tetromino* tetromino)  { return MoveTetrominoDown(tetromino, -_cellSize); }
 
     void DropTetromino(Tetromino* tetromino);
 
@@ -55,7 +57,18 @@ private:
 
     std::vector<Cell*> _cells;
 
+    bool RotateTetromino(Tetromino* tetromino, float deltaRadians);
+    
+    bool MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance);
+    bool MoveTetrominoRight(Tetromino* tetromino, float deltaDistance);
+    bool MoveTetrominoDown(Tetromino* tetromino, float deltaDistance);
+    
     bool IsMoveLeftPossible(Tetromino* tetromino);
     bool IsMoveRightPossible(Tetromino* tetromino);
     bool IsMoveDownPossible(Tetromino* tetromino);
+
+    bool ArePositionsValid(const std::vector<DirectX::XMFLOAT3>& positions, const DirectX::XMFLOAT3& offset={});
+    bool IsPositionValid(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& offset={});
+
+    bool DoesTetrominoBlockCollideWithBoardBlock(const DirectX::XMFLOAT3& blockPosition);
 };

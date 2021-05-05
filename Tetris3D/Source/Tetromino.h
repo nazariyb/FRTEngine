@@ -21,6 +21,20 @@ public:
         I, O, T, J, L, S, Z
     };
 
+    struct Bounds
+    {
+        DirectX::XMFLOAT2 left;
+        DirectX::XMFLOAT2 top;
+        DirectX::XMFLOAT2 right;
+        DirectX::XMFLOAT2 bottom;
+    };
+
+    struct BodyState
+    {
+        Bounds bounds;
+        std::vector<DirectX::XMFLOAT3> meshPositions;
+    };
+
 public:
     Tetromino() = delete;
     Tetromino(Type type);
@@ -43,15 +57,7 @@ public:
     inline float GetLeftBound()   { return _leftBound;   }
     inline float GetRightBound()  { return _rightBound;  }
 
-    inline float GetTopBoundAfterClockwiseRotation()    { return _worldPosition.y - _leftBound;   }
-    inline float GetBottomBoundAfterClockwiseRotation() { return _worldPosition.y - _rightBound;  }
-    inline float GetLeftBoundAfterClockwiseRotation()   { return _worldPosition.x + _bottomBound; }
-    inline float GetRightBoundAfterClockwiseRotation()  { return _worldPosition.x + _topBound;    }
-
-    inline float GetTopBoundAfterCounterclockwiseRotation()    { return _worldPosition.y + _rightBound;  }
-    inline float GetBottomBoundAfterCounterclockwiseRotation() { return _worldPosition.y + _leftBound;   }
-    inline float GetLeftBoundAfterCounterclockwiseRotation()   { return _worldPosition.x - _topBound;    }
-    inline float GetRightBoundAfterCounterclockwiseRotation()  { return _worldPosition.x - _bottomBound; }
+    BodyState GetBoundsAfterRotation(float deltaRadians);
 
     //void Rotate(float Pitch, float Yaw, float Roll);
     void UpdateConstantBuffers();
@@ -63,7 +69,7 @@ public:
     virtual void InitializeConstantBuffers(frt::Graphics* graphics) override;
 
     static frt::Mesh::SceneObjectConstantBuffer baseBuffer;
-
+    
 private:
     frt::App* _owner;
     
