@@ -43,6 +43,7 @@ void GameWorld::PopulateCommandList()
 
 void GameWorld::BeforeFirstTick()
 {
+    for (unsigned i = 0; i < Graphics::FrameCount; ++i)
     for (GameObject* gameObject : _gameObjects)
     {
         gameObject->InitializeConstantBuffers(&(App::GetInstance()->GetWindow()->GetGraphics()));

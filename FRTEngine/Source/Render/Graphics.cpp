@@ -671,17 +671,15 @@ void Graphics::PopulateCommandList()
 
         // Calculate the descriptor offset due to multiple frame resources.
         // (_materialCount + 1) SRVs + how many CBVs we have currently.
-        UINT frameResourceDescriptorOffset = (MaterialCount + 1) + (_currentFrameResourceIndex);// *RowCount* ColumnCount);
+        UINT frameResourceDescriptorOffset = MaterialCount + 1 + _currentFrameResourceIndex * RowCount * ColumnCount;
         CD3DX12_GPU_DESCRIPTOR_HANDLE cbvSrvHandle(_cbvSrvHeap->GetGPUDescriptorHandleForHeapStart(), frameResourceDescriptorOffset, _cbvSrvDescriptorSize);
 
         for (UINT i = 0; i < RowCount; i++)
         {
             for (UINT j = 0; j < ColumnCount; j++)
-            //for (UINT i = 0; i < 10*20 * FrameCount; ++i)
             {
                 // Set the cube's root constant for dynamically indexing into the material array.
-                _commandList->SetGraphicsRoot32BitConstant(3, (i * ColumnCount) + j, 0);
-                //_commandList->SetGraphicsRoot32BitConstant(3, i, 0);
+                _commandList->SetGraphicsRoot32BitConstant(3, i * ColumnCount + j, 0);
 
                 // Set this cube's CBV table and move to the next descriptor.
                 _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);

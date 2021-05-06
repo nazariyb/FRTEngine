@@ -130,10 +130,7 @@ void Mesh::Resize(float newRadius)
 
 void Mesh::InitializeConstantBuffers(Graphics* graphics)
 {
-    for (UINT i = 0; i < graphics->FrameCount; ++i)
-    {
-        _constantBuffers.push_back(new ConstantBuffer<SceneObjectConstantBuffer>(graphics, {}));
-    }
+    _constantBuffers.push_back(new ConstantBuffer<SceneObjectConstantBuffer>(graphics, {}));
 }
 
 void Mesh::UpdateConstantBuffer(const SceneObjectConstantBuffer& newBuffer)

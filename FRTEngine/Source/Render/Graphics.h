@@ -66,7 +66,7 @@ private:
     Window* _owner;
 
 public:
-    static const UINT FrameCount = 4;
+    static const UINT FrameCount = 2;
 private:
 
     static const UINT RowCount = 10;
