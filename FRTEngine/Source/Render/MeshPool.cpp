@@ -1,5 +1,6 @@
 #include "MeshPool.h"
 #include "Render/Mesh.h"
+#include "Utils/Logger/Logger.h"
 
 namespace frt
 {
@@ -12,6 +13,7 @@ MeshPool::MeshPool(unsigned int meshesNum)
     {
         _meshes[i] = new Mesh(0.f);
     }
+    Logger::DebugLogInfo("Meshes created: " + std::to_string(_meshes.size()));
 }
 
 MeshPool::~MeshPool()
@@ -44,6 +46,19 @@ std::pair<MeshPool::Result, std::vector<Mesh*>> MeshPool::GetFreeMeshes(unsigned
     };
 }
 
+void MeshPool::ReleaseMesh(Mesh* mesh)
+{
+    for (unsigned i = 0; i < _meshes.size(); ++i)
+    {
+        if (_meshes[i] == mesh)
+        {
+            _meshUsageFlags[i] = false;
+            Logger::DebugLogInfo("Mesh Released");
+            break;
+        }
+    }
+}
+
 void MeshPool::InitializeGraphicsResources(class Graphics* graphics)
 {
     for (Mesh* mesh : _meshes)
@@ -62,9 +77,10 @@ void MeshPool::InitializeConstantBuffers(class Graphics* graphics)
 
 void MeshPool::PopulateCommandList()
 {
-    for (Mesh* mesh : _meshes)
+    for (unsigned i = 0; i < _meshes.size(); ++i)
     {
-        mesh->PopulateCommandList();
+        if (_meshUsageFlags[i])
+            _meshes[i]->PopulateCommandList();
     }
 }
 

@@ -66,6 +66,7 @@ int TetrisApp::Start()
             if (!isMoved)
             {
                 _board->HarvestTetromino(world, object1);
+                _board->ClearRowsIfNeeded(_meshPool);
                 object1 = _board->SpawnTetromino(world, _meshPool);
             }
         }
@@ -126,6 +127,7 @@ void TetrisApp::Update()
         if (!isMoved)
         {
             _board->HarvestTetromino(world, object1);
+            _board->ClearRowsIfNeeded(_meshPool);
             object1 = _board->SpawnTetromino(world, _meshPool);
         }
     }

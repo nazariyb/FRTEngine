@@ -16,7 +16,7 @@ class TetrisBoard : public frt::GameObject
 public:
     TetrisBoard();
     TetrisBoard(unsigned int width, unsigned int height, float cellSize=2.0f);
-    ~TetrisBoard();
+    virtual ~TetrisBoard();
 
     Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
     void HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
@@ -32,6 +32,7 @@ public:
 
     void DropTetromino(Tetromino* tetromino);
 
+    unsigned ClearRowsIfNeeded(frt::MeshPool* meshPool);
 
     virtual void Update() override;
 
@@ -57,6 +58,8 @@ private:
 
     std::vector<Cell*> _cells;
 
+    void UpdateContantBuffers();
+    
     bool RotateTetromino(Tetromino* tetromino, float deltaRadians);
     
     bool MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance);

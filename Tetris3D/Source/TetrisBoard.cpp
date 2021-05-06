@@ -30,7 +30,6 @@ TetrisBoard::TetrisBoard(unsigned int width, unsigned int height, float cellSize
 {
     _cells.reserve(_width * _height);
 
-    // int i = - static_cast<int>(_width / 2);
     const int iEnd = _width / 2;
     for (unsigned j = static_cast<unsigned>(_cellSize / 2);
          j <= _height * static_cast<unsigned>(_cellSize);
@@ -97,6 +96,34 @@ void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
     }
 }
 
+void TetrisBoard::UpdateContantBuffers()
+{
+    XMFLOAT4X4 model, view, projection, mvp;
+    XMFLOAT3 meshPosition;
+    Mesh::SceneObjectConstantBuffer buffer;
+
+    for (Cell* cell : _cells)
+    {
+        if (cell->mesh == nullptr) continue;
+
+        meshPosition = cell->mesh->GetWorldPosition();
+
+        XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x, meshPosition.y - _cellSize / 2.f, meshPosition.z));
+        XMStoreFloat4x4(&view, App::GetInstance()->GetWindow()->GetGraphics()._camera.GetViewMatrix());
+        XMStoreFloat4x4(&projection,
+                        App::GetInstance()->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
+                            0.8f, App::GetInstance()->GetWindow()->GetGraphics()._aspectRatio));
+        
+        XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+        memcpy(&buffer, &Tetromino::baseBuffer, sizeof(Mesh::SceneObjectConstantBuffer));
+        XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+        XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+
+        cell->mesh->UpdateConstantBuffer(buffer);
+    }
+}
+
 bool TetrisBoard::RotateTetromino(Tetromino* tetromino, float deltaRadians)
 {
     const Tetromino::BodyState& newState = tetromino->GetBoundsAfterRotation(deltaRadians);
@@ -115,24 +142,26 @@ bool TetrisBoard::RotateTetromino(Tetromino* tetromino, float deltaRadians)
     {
         if (!ArePositionsValid(newState.meshPositions, {
                                    RightBound.x + _cellSize / 2.f - newBounds.right.x, 0.f, 0.f
-                               })) return false;
+                               }))
+            return false;
         if (!MoveTetrominoLeft(tetromino, RightBound.x + _cellSize / 2.f - newBounds.right.x)) return false;
     }
     else
     {
         enum
         {
-            noneD, leftD, topD, rightD
+            noneD,
+            leftD,
+            topD,
+            rightD
         } directionToMove = noneD;
 
         float distanceToMove = 0.f;
-        
+
         for (const XMFLOAT3& newPosition : newState.meshPositions)
         {
             if (!IsPositionValid(newPosition))
             {
-                
-                XMFLOAT3 center;
                 float X{}, Y{};
                 for (const XMFLOAT3& newPosition_ : newState.meshPositions)
                 {
@@ -140,9 +169,12 @@ bool TetrisBoard::RotateTetromino(Tetromino* tetromino, float deltaRadians)
                     Y += newPosition_.y;
                 }
 
-                center.x = X / newState.meshPositions.size();
-                center.y = Y / newState.meshPositions.size();
-                center.z = 0.f;
+                XMFLOAT3 center
+                {
+                    X / newState.meshPositions.size(),
+                    Y / newState.meshPositions.size(),
+                    0.f
+                };
 
                 XMFLOAT3 direction;
                 XMStoreFloat3(&direction,
@@ -151,61 +183,55 @@ bool TetrisBoard::RotateTetromino(Tetromino* tetromino, float deltaRadians)
                               ))
                 );
 
-                XMFLOAT3 right{ 1.f, 0.f, 0.f };
-                XMFLOAT3 bottom{ 0.f, -1.0f, 0.f };
-                XMFLOAT3 left{ -1.f, 0.f, 0.f };
-                float angleRight = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&right)));
-                float angleBottom = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&bottom)));
-                float angleleft = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&left)));
-                
+                XMFLOAT3 right{1.f, 0.f, 0.f};
+                XMFLOAT3 bottom{0.f, -1.0f, 0.f};
+                XMFLOAT3 left{-1.f, 0.f, 0.f};
+                const float angleRight = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&right)));
+                const float angleBottom = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&bottom)));
+                const float angleLeft = XMVectorGetX(XMVector3Dot(XMLoadFloat3(&direction), XMLoadFloat3(&left)));
+
                 Logger::DebugLogInfo("direction: ", {direction.x, direction.y, direction.z, 0.f});
 
-                if (angleRight > angleleft && angleRight > angleBottom)
+                float distToBound;
+                if (angleRight > angleLeft && angleRight > angleBottom)
                 {
                     directionToMove = leftD;
-                    float distToBound = newPosition.x - newBounds.left.x + tetromino->_radius;
-                    if (distToBound > distanceToMove)
-                    {
-                        distanceToMove = distToBound;
-                    }
+                    distToBound = newPosition.x - newBounds.left.x + tetromino->_radius;
                     Logger::DebugLogInfo("it's right");
                 }
-                else if (angleleft > angleRight && angleleft > angleBottom)
+                else if (angleLeft > angleRight && angleLeft > angleBottom)
                 {
                     directionToMove = rightD;
-                    float distToBound = newBounds.right.x - newPosition.x - tetromino->_radius;
-                    if (distToBound > distanceToMove)
-                    {
-                        distanceToMove = distToBound;
-                    }
-                    Logger::DebugLogInfo("it's left");      
+                    distToBound = newBounds.right.x - newPosition.x - tetromino->_radius;
+                    Logger::DebugLogInfo("it's left");
                 }
                 else
                 {
                     directionToMove = topD;
-                    float distToBound = newPosition.y - newBounds.bottom.y + tetromino->_radius;
-                    if (distToBound > distanceToMove)
-                    {
-                        distanceToMove = distToBound;
-                    }
+                    distToBound = newPosition.y - newBounds.bottom.y + tetromino->_radius;
                     Logger::DebugLogInfo("it's bottom");
+                }
+
+                if (distToBound > distanceToMove)
+                {
+                    distanceToMove = distToBound;
                 }
             }
         }
 
         if (directionToMove == leftD)
         {
-            if (!ArePositionsValid(newState.meshPositions, { -distanceToMove, 0.f, 0.f })) return false;
+            if (!ArePositionsValid(newState.meshPositions, {-distanceToMove, 0.f, 0.f})) return false;
             if (!MoveTetrominoLeft(tetromino, -distanceToMove)) return false;
         }
         else if (directionToMove == topD)
         {
-            if (!ArePositionsValid(newState.meshPositions, { 0.f, distanceToMove, 0.f })) return false;
+            if (!ArePositionsValid(newState.meshPositions, {0.f, distanceToMove, 0.f})) return false;
             tetromino->MoveY(distanceToMove);
         }
         else if (directionToMove == rightD)
         {
-            if (!ArePositionsValid(newState.meshPositions, { distanceToMove, 0.f, 0.f })) return false;
+            if (!ArePositionsValid(newState.meshPositions, {distanceToMove, 0.f, 0.f})) return false;
             if (!MoveTetrominoRight(tetromino, distanceToMove)) return false;
         }
     }
@@ -242,8 +268,75 @@ void TetrisBoard::DropTetromino(Tetromino* tetromino)
 {
 }
 
+unsigned TetrisBoard::ClearRowsIfNeeded(MeshPool* meshPool)
+{
+    std::vector<unsigned> rowsToClear;
+    bool rowNeedBeCleared;
+    for (unsigned i = 0; i < _height; ++i)
+    {
+        rowNeedBeCleared = true;
+        for (unsigned j = 0; j <= _width; ++j)
+        {
+            if (_cells[i * (_width + 1) + j]->mesh == nullptr)
+            {
+                rowNeedBeCleared = false;
+                break;
+            }
+        }
+        if (rowNeedBeCleared) rowsToClear.push_back(i);
+    }
+
+    {
+        Cell* cell;
+        for (unsigned rowToClear : rowsToClear)
+        {
+            for (unsigned i = 0; i <= _width; ++i)
+            {
+                cell = _cells[rowToClear * (_width + 1) + i];
+                cell->mesh->Resize(0.f);
+                cell->mesh->UpdateConstantBuffer({});
+                meshPool->ReleaseMesh(cell->mesh);
+                cell->mesh = nullptr;
+            }
+            Logger::DebugLogInfo("Row #" + std::to_string(rowToClear) + " cleared");
+        }
+    }
+
+    if (rowsToClear.size() == 0) return 0;
+
+    unsigned currentRow = rowsToClear.front() + 1;
+
+    for (; currentRow < _height; ++currentRow)
+    {
+        unsigned cellsToMove = 0;
+        for (unsigned rowToClear : rowsToClear)
+        {
+            if (rowToClear < currentRow)
+            {
+                ++cellsToMove;
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (unsigned j = 0; j <= _width; ++j)
+        {
+            Cell* cell = _cells[currentRow * (_width + 1) + j];
+            if (cell->mesh == nullptr) continue;
+            XMFLOAT3& currentPosition = cell->mesh->GetWorldPosition();
+            currentPosition.y -= cellsToMove * _cellSize;
+            _cells[(currentRow - 1) * (_width + 1) + j]->mesh = cell->mesh;
+            cell->mesh = nullptr;
+        }
+    }
+    
+    return rowsToClear.size();
+}
+
 void TetrisBoard::Update()
 {
+    UpdateContantBuffers();
 }
 
 bool TetrisBoard::IsMoveLeftPossible(Tetromino* tetromino)

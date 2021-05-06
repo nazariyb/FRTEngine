@@ -23,7 +23,8 @@ public:
     ~MeshPool();
 
     std::pair<Result, std::vector<class Mesh*>> GetFreeMeshes(unsigned int amount);
-
+    void ReleaseMesh(Mesh* mesh);
+    
     virtual void InitializeGraphicsResources(class Graphics* graphics) override;
     virtual void InitializeConstantBuffers(class Graphics* graphics) override;
     virtual void PopulateCommandList() override;
