@@ -1,4 +1,6 @@
 #include "MeshPool.h"
+
+#include "Primitives/Cube.h"
 #include "Render/Mesh.h"
 #include "Utils/Logger/Logger.h"
 
@@ -11,7 +13,7 @@ MeshPool::MeshPool(unsigned int meshesNum)
 {
     for (unsigned int i = 0; i < _meshesNum; ++i)
     {
-        _meshes[i] = new Mesh(0.f);
+        _meshes[i] = new Cube(0.f);
     }
     Logger::DebugLogInfo("Meshes created: " + std::to_string(_meshes.size()));
 }

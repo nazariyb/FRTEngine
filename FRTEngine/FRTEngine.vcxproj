@@ -219,6 +219,8 @@
     <ClInclude Include="Source\Render\IndexBuffer.h" />
     <ClInclude Include="Source\Render\Mesh.h" />
     <ClInclude Include="Source\Render\MeshPool.h" />
+    <ClInclude Include="Source\Render\Primitives\Cube.h" />
+    <ClInclude Include="Source\Render\Primitives\Plane.h" />
     <ClInclude Include="Source\Tools\d3dx12.h" />
     <ClInclude Include="Source\Tools\DXHelper.h" />
     <ClInclude Include="Source\Utils\Logger\Logger.h" />
@@ -249,6 +251,8 @@
     <ClCompile Include="Source\Render\IndexBuffer.cpp" />
     <ClCompile Include="Source\Render\Mesh.cpp" />
     <ClCompile Include="Source\Render\MeshPool.cpp" />
+    <ClCompile Include="Source\Render\Primitives\Cube.cpp" />
+    <ClCompile Include="Source\Render\Primitives\Plane.cpp" />
     <ClCompile Include="Source\Utils\Logger\Logger.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Time\Time.cpp" />

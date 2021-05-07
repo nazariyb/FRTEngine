@@ -22,7 +22,7 @@ public:
     Mesh(float radius, DirectX::XMFLOAT3 initialPosition);
     virtual ~Mesh();
 
-    void Resize(float newRadius);
+    virtual void Resize(float newRadius);
     inline void SetWorldPosition(const DirectX::XMFLOAT3 newPosition) { _worldPosition = newPosition; }
     inline DirectX::XMFLOAT3& GetWorldPosition() { return _worldPosition; }
 
