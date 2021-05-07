@@ -13,6 +13,8 @@
 #include "Render/Graphics.h"
 #include "Render/Mesh.h"
 #include <DirectXMath.h>
+
+#include "BoardBox.h"
 #include "Tetromino.h"
 #include "Time/Time.h"
 #include "Render/MeshPool.h"
@@ -51,7 +53,8 @@ int TetrisApp::Start()
     buffer.specularIntensity = 10.f;
     buffer.specularPower = 30.f;
 
-    _meshPool = world->SpawnObject<MeshPool>(10u * 20u);
+    world->SpawnObject<BoardBox>();
+    _meshPool = world->SpawnObject<MeshPool>(10u * 20u - 1u);
     _board = world->SpawnObject<TetrisBoard>(10u, 20u, 2.0f);
     object1 = _board->SpawnTetromino(world, _meshPool);
 

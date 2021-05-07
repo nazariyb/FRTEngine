@@ -82,7 +82,8 @@ protected:
 
     static const unsigned int _vertexBufferSize = 24;
     Vertex _vertices[_vertexBufferSize];
-
+    unsigned vertexBufferSlot;
+    
     static const std::vector<unsigned char> _indices;
     static const unsigned int _indexBufferSize;
 

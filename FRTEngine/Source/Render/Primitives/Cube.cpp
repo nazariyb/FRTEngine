@@ -16,6 +16,7 @@ namespace frt
     Cube::Cube(float radius, DirectX::XMFLOAT3 initialPosition)
         : Mesh(radius, initialPosition)
     {
+        vertexBufferSlot = 0;
         Cube::Resize(_radius);
     }
 

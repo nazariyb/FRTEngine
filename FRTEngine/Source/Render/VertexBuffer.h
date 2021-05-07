@@ -16,8 +16,8 @@ public:
     VertexBuffer(VertexBuffer&&) = delete;
 
     template<typename V>
-    VertexBuffer(Graphics* owner, V* vertices, UINT verticesNum)
-        : GraphicsResource(owner), _vertexBufferView{}
+    VertexBuffer(Graphics* owner, V* vertices, UINT verticesNum, unsigned bufferSlot)
+        : GraphicsResource(owner), _vertexBufferView{}, _vertexBufferSlot{bufferSlot}
     {
         const UINT vertexSize = sizeof(V);
         const UINT vertexBufferSize = verticesNum * vertexSize;
@@ -69,13 +69,14 @@ public:
     virtual void Update() override;
     inline virtual void PopulateCommandList() override
     {
-        GetCommandList()->IASetVertexBuffers(0, 1, &_vertexBufferView);
+        GetCommandList()->IASetVertexBuffers(_vertexBufferSlot, 1, &_vertexBufferView);
     }
 
 protected:
     ComPtr<ID3D12Resource> _vertexBuffer;
     D3D12_VERTEX_BUFFER_VIEW _vertexBufferView;
     ComPtr<ID3D12Resource> _vertexBufferUploadHeap;
+    unsigned _vertexBufferSlot;
 };
 }
 

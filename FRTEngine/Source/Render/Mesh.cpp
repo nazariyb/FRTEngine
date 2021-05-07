@@ -40,12 +40,12 @@ const unsigned int Mesh::_indexBufferSize = Mesh::_indices.size();
 
 Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
     : _indexBuffer{}
-      , _vertexBuffer{}
-      , _radius(radius)
+    , _vertexBuffer{}
+    , _radius(radius)
     , _initialPosition(initialPosition)
     , _worldPosition{}
-      , _vertices{}
-      , _texture{}
+    , _vertices{}
+    , _texture{}
 {
     // Resize(_radius);
 }
@@ -162,7 +162,7 @@ void Mesh::PopulateCommandList()
 
 void Mesh::InitializeGraphicsResources(Graphics* graphics)
 {
-    _vertexBuffer = new VertexBuffer(graphics, GetVertices(), GetVertexDataSize());
+    _vertexBuffer = new VertexBuffer(graphics, GetVertices(), GetVertexDataSize(), vertexBufferSlot);
     _indexBuffer = new IndexBuffer(graphics, GetIndices(), GetIndexDataSize());
 }
 
