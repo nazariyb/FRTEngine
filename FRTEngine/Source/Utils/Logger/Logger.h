@@ -8,7 +8,7 @@
 
 namespace DirectX
 {
-    class XMFLOAT4;
+    struct XMFLOAT4;
 }
 
 namespace frt

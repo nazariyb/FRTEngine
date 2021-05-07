@@ -57,7 +57,7 @@ TetrisBoard::~TetrisBoard()
 
 Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
 {
-    return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::I, _cellSize / 2.f, TopBound, meshPool);
+    return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::T, _cellSize / 2.f, TopBound, meshPool);
     // return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
 }
 

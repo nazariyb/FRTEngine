@@ -4,6 +4,7 @@
 #include "TetrominoFactory.h"
 #include "Render/MeshPool.h"
 #include "App.h"
+#include "Time/Time.h"
 
 using namespace frt;
 using namespace DirectX;
@@ -188,6 +189,8 @@ void Tetromino::UpdateConstantBuffers()
             bounds.w = meshPosition.y;
         }
 
+        buffer.deltaTime = Time::GetDeltaSeconds();
+        
         _meshes[i]->UpdateConstantBuffer(buffer);
     }
     _leftBound = bounds.x - _radius;

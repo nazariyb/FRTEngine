@@ -39,10 +39,10 @@ private:
     DirectX::XMFLOAT3 _initialPosition;
 public:
     DirectX::XMFLOAT3 _position;
+    DirectX::XMFLOAT3 _lookDirection;
 private:
     float _yaw;                  // Relative to the +z axis.
     float _pitch;                // Relative to the xz plane.
-    DirectX::XMFLOAT3 _lookDirection;
     DirectX::XMFLOAT3 _upDirection;
     float _moveSpeed;            // Speed at which the camera moves, in units per second.
     float _turnSpeed;            // Speed at which the camera turns, in radians per second.

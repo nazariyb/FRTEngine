@@ -35,16 +35,20 @@ TetrisApp::TetrisApp()
 int TetrisApp::Start()
 {
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
-    XMStoreFloat4(&buffer.lightPosition, DirectX::XMVector3Transform(
-                      DirectX::XMVectorSet(0.f, 15.f, 10.f, 0.f),
+    XMStoreFloat4(&buffer.lightPosition, XMVector3Transform(
+                        XMLoadFloat3(&window->GetGraphics()._camera._position),
+                      // XMVectorSet(0.f, 15.f, 10.f, 0.f),
                       window->GetGraphics()._camera.GetViewMatrix()));
-    XMStoreFloat4(&buffer.diffuseColor, DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f));
-    XMStoreFloat4(&buffer.ambient, DirectX::XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+    XMStoreFloat4(&buffer.lightDirection, XMVector3Transform(
+                        XMVector4Normalize(XMLoadFloat3(&window->GetGraphics()._camera._lookDirection)),
+                      window->GetGraphics()._camera.GetViewMatrix()));
+    XMStoreFloat4(&buffer.diffuseColor, XMVectorSet(1.f, 1.f, .9f, 1.f));
+    XMStoreFloat4(&buffer.ambient, XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
     buffer.diffuseIntensity = 1.0f;
     buffer.attenuationConst = 1.0f;
     buffer.attenuationLinear = 0.045;
     buffer.attenuationQuad = 0.0075f;
-    buffer.specularIntesity = 1.f;
+    buffer.specularIntensity = 10.f;
     buffer.specularPower = 30.f;
 
     _meshPool = world->SpawnObject<MeshPool>(10u * 20u);

@@ -3,6 +3,7 @@ cbuffer SceneConstantBuffer : register(b0)
     float4x4 g_mWorldViewProj;
     float4x4 modelView;
     float4 lightPosition;
+    float4 lightDirection;
     float4 diffuseColor;
     float4 ambient;
     float4 padding1;
@@ -12,7 +13,8 @@ cbuffer SceneConstantBuffer : register(b0)
     float attenuationQuad;
     float specularIntensity;
     float specularPower;
-    float padding2[10];
+    float deltaTime;
+    float padding2[5];
 }
 
 struct PSInput
@@ -23,6 +25,7 @@ struct PSInput
     float4 normal : NORMAL;
     float4 ambient : AMBIENT;
     float4 lightPosition : LIGHT_POSITION;
+    float4 lightDirection : LIGHT_DIRECTION;
     float4 diffuseColor : DIFFUSE_COLOR;
     float diffuseIntensity : DIFFUSE_INTENSITY;
     float attenuationConst : ATTENUATION;
@@ -30,6 +33,7 @@ struct PSInput
     float attenuationQuad : ATTENUATION_QUAD;
     float specularIntensity : SPECULAR_INTENSITY;
     float specularPower : SPECULAR_POWER;
+    float deltaTime : DELTA_TIME;
 };
 
 
@@ -43,6 +47,7 @@ PSInput main(float3 position : POSITION, float3 normal : NORMAL, float2 uv : TEX
     result.normal = float4(mul(normal, (float3x3) modelView), 1.0f);
     result.ambient = ambient;
     result.lightPosition = lightPosition;
+    result.lightDirection = lightDirection;
     result.diffuseColor = diffuseColor;
     result.diffuseIntensity = diffuseIntensity;
     result.attenuationConst = attenuationConst;
@@ -50,6 +55,7 @@ PSInput main(float3 position : POSITION, float3 normal : NORMAL, float2 uv : TEX
     result.attenuationQuad = attenuationQuad;
     result.specularIntensity = specularIntensity;
     result.specularPower = specularPower;
+    result.deltaTime = deltaTime;
 
     return result;
 }

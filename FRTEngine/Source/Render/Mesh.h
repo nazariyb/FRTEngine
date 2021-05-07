@@ -38,6 +38,7 @@ public:
         DirectX::XMFLOAT4X4 mvp;   // Model-view-projection
         DirectX::XMFLOAT4X4 modelView;
         DirectX::XMFLOAT4 lightPosition;
+        DirectX::XMFLOAT4 lightDirection;
         DirectX::XMFLOAT4 diffuseColor;
         DirectX::XMFLOAT4 ambient;
         DirectX::XMFLOAT4 padding1;
@@ -45,9 +46,10 @@ public:
         FLOAT attenuationConst;
         FLOAT attenuationLinear;
         FLOAT attenuationQuad;
-        FLOAT specularIntesity;
+        FLOAT specularIntensity;
         FLOAT specularPower;
-        FLOAT padding2[10];
+        FLOAT deltaTime;
+        FLOAT padding2[5];
     };
     static_assert((sizeof(SceneObjectConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 

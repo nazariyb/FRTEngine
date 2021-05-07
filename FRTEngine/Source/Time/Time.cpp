@@ -4,6 +4,7 @@ namespace frt
 {
 
 float Time::_secondsSinceFirstTick = 0.f;
+float Time::_deltaSeconds = 0.f;
 std::chrono::steady_clock::time_point Time::_lastTickTime{};
 
 void Time::Init()
@@ -14,7 +15,8 @@ void Time::Init()
 void Time::Tick()
 {
     std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    _secondsSinceFirstTick += std::chrono::duration_cast<std::chrono::microseconds>(now - _lastTickTime).count() / 1'000'000.f;
+    _deltaSeconds = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastTickTime).count() / 1'000'000.f;;
+    _secondsSinceFirstTick += _deltaSeconds;
     _lastTickTime = now;
 }
 
