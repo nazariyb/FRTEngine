@@ -91,7 +91,7 @@ private:
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
     ComPtr<ID3D12DescriptorHeap> _cbvSrvHeap;
-    ComPtr<ID3D12PipelineState> _pipelineState;
+    ComPtr<ID3D12PipelineState> _pipelineStates[2];
     ComPtr<ID3D12GraphicsCommandList> _commandList;
     ComPtr<ID3D12GraphicsCommandList> _bundle;
 

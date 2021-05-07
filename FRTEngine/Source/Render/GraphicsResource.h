@@ -26,10 +26,10 @@ protected:
         return _owner->_device.Get();
     };
 
-    inline ID3D12PipelineState* GetPipelineState()
-    {
-        return _owner->_pipelineState.Get();
-    };
+    // inline ID3D12PipelineState* GetPipelineState()
+    // {
+    //     return _owner->_pipelineState.Get();
+    // };
 
     inline UINT PostIncConstBuffersNum()
     {

@@ -219,11 +219,14 @@
     <ClInclude Include="Source\Render\IndexBuffer.h" />
     <ClInclude Include="Source\Render\Mesh.h" />
     <ClInclude Include="Source\Render\MeshPool.h" />
+    <ClInclude Include="Source\Render\PixelShader.h" />
     <ClInclude Include="Source\Render\Primitives\Cube.h" />
     <ClInclude Include="Source\Render\Primitives\Plane.h" />
+    <ClInclude Include="Source\Render\VertexShader.h" />
     <ClInclude Include="Source\Tools\d3dx12.h" />
     <ClInclude Include="Source\Tools\DXHelper.h" />
     <ClInclude Include="Source\Utils\Logger\Logger.h" />
+    <ClInclude Include="Source\Utils\ShaderReader.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\WindowsMinimal.h" />
     <ClInclude Include="Source\Time\Time.h" />
@@ -251,9 +254,12 @@
     <ClCompile Include="Source\Render\IndexBuffer.cpp" />
     <ClCompile Include="Source\Render\Mesh.cpp" />
     <ClCompile Include="Source\Render\MeshPool.cpp" />
+    <ClCompile Include="Source\Render\PixelShader.cpp" />
     <ClCompile Include="Source\Render\Primitives\Cube.cpp" />
     <ClCompile Include="Source\Render\Primitives\Plane.cpp" />
+    <ClCompile Include="Source\Render\VertexShader.cpp" />
     <ClCompile Include="Source\Utils\Logger\Logger.cpp" />
+    <ClCompile Include="Source\Utils\ShaderReader.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Time\Time.cpp" />
     <ClCompile Include="Source\Render\VertexBuffer.cpp" />
