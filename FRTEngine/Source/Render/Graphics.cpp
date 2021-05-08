@@ -518,11 +518,13 @@ namespace frt
 
             // FIXME: paths
             THROW_IF_FAILED(
-                ShaderReader::ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\VertexShader.cso",
+                ShaderReader::ReadDataFromFile(
+                    L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\VertexShader.cso",
                     &pVertexShaderData, &vertexShaderDataLength));
             THROW_IF_FAILED(
-                ShaderReader::ReadDataFromFile(L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\PixelShader.cso", &
-                    pPixelShaderData, &pixelShaderDataLength));
+                ShaderReader::ReadDataFromFile(
+                    L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\BlockPixelShader.cso",
+                    &pPixelShaderData, &pixelShaderDataLength));
 
             // Define the vertex input layout.
             D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
@@ -554,27 +556,44 @@ namespace frt
             THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[0])));
             NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 0);
 
-            D3D12_INPUT_ELEMENT_DESC inputElementDescs2[] =
             {
-                {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-                {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-                {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-            };
-            psoDesc.InputLayout = {inputElementDescs2, _countof(inputElementDescs2)};
+                THROW_IF_FAILED(
+                    ShaderReader::ReadDataFromFile(
+                        L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\BoardWallPixelShader.cso",
+                        &pPixelShaderData, &pixelShaderDataLength));
 
-            THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[1])));
-            NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 1);
+                D3D12_INPUT_ELEMENT_DESC inputElementDescs2[] =
+                {
+                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                };
 
-            D3D12_INPUT_ELEMENT_DESC inputElementDescs3[] =
+                psoDesc.InputLayout = {inputElementDescs2, _countof(inputElementDescs2)};
+                psoDesc.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderData, pixelShaderDataLength);
+
+                THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[1])));
+                NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 1);
+            }
+
             {
-                {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-                {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-                {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
-            };
-            psoDesc.InputLayout = {inputElementDescs3, _countof(inputElementDescs3)};
+                THROW_IF_FAILED(
+                    ShaderReader::ReadDataFromFile(
+                        L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\FloorPixelShader.cso",
+                        &pPixelShaderData, &pixelShaderDataLength));
 
-            THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[2])));
-            NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 2);
+                D3D12_INPUT_ELEMENT_DESC inputElementDescs3[] =
+                {
+                    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                    {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                    {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                };
+                psoDesc.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderData, pixelShaderDataLength);
+                psoDesc.InputLayout = {inputElementDescs3, _countof(inputElementDescs3)};
+
+                THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[2])));
+                NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 2);
+            }
 
             delete pVertexShaderData;
             delete pPixelShaderData;

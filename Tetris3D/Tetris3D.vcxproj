@@ -116,7 +116,9 @@
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"
-xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\PixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BlockPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BoardWallPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FloorPixelShader.cso" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\VertexShader.cso" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -153,7 +155,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"
-xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\PixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BlockPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BoardWallPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FloorPixelShader.cso" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\VertexShader.cso" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -186,7 +190,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"
-xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\PixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BlockPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BoardWallPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FloorPixelShader.cso" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\VertexShader.cso" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -223,7 +229,9 @@ xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.lib" 
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FRTEngine.dll" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\Math\Math.dll" "$(OutDir)"
-xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\PixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BlockPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\BoardWallPixelShader.cso" "$(OutDir)"
+xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\FloorPixelShader.cso" "$(OutDir)"
 xcopy /y /d "$(SolutionDir)Binaries\$(Platform)\$(Configuration)\FRTEngine\VertexShader.cso" "$(OutDir)"</Command>
     </PostBuildEvent>
     <PreLinkEvent>
