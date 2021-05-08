@@ -35,21 +35,26 @@ public:
 
     struct SceneObjectConstantBuffer
     {
-        DirectX::XMFLOAT4X4 mvp;   // Model-view-projection
-        DirectX::XMFLOAT4X4 modelView;
-        DirectX::XMFLOAT4 lightPosition;
-        DirectX::XMFLOAT4 lightDirection;
-        DirectX::XMFLOAT4 diffuseColor;
+        // DirectX::XMFLOAT4X4 mvp;   // Model-view-projection
+        DirectX::XMFLOAT4X4 model;
+        DirectX::XMFLOAT4X4 viewProj;
+        DirectX::XMFLOAT3 cameraPosition;
+        FLOAT roughness;
+        DirectX::XMFLOAT3 lightPosition; //
+        FLOAT falloffStart;              //
+        DirectX::XMFLOAT3 lightColor;    //
+        FLOAT falloffEnd;                //
         DirectX::XMFLOAT4 ambient;
-        DirectX::XMFLOAT4 padding1;
-        FLOAT diffuseIntensity;
-        FLOAT attenuationConst;
-        FLOAT attenuationLinear;
-        FLOAT attenuationQuad;
-        FLOAT specularIntensity;
-        FLOAT specularPower;
-        FLOAT deltaTime;
-        FLOAT padding2[5];
+        DirectX::XMFLOAT4 diffuseAlbedo;
+        DirectX::XMFLOAT3 FresnelR0;
+        // FLOAT diffuseIntensity;
+        // FLOAT attenuationConst;
+        // FLOAT attenuationLinear;
+        // FLOAT attenuationQuad;
+        // FLOAT specularIntensity;
+        // FLOAT specularPower;
+        // FLOAT deltaTime;
+        FLOAT padding[9];
     };
     static_assert((sizeof(SceneObjectConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 

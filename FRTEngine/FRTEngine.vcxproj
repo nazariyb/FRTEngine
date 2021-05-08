@@ -195,6 +195,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\Shaders\LightHelper.hlsli" />
     <ClInclude Include="Source\App.h" />
     <ClInclude Include="Source\Debug\Debug.h" />
     <ClInclude Include="Source\Event.h" />

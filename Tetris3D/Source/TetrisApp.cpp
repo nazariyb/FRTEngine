@@ -38,21 +38,25 @@ TetrisApp::TetrisApp()
 int TetrisApp::Start()
 {
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
-    XMStoreFloat4(&buffer.lightPosition, XMVector3Transform(
-                        XMLoadFloat3(&window->GetGraphics()._camera._position),
-                      // XMVectorSet(0.f, 15.f, 10.f, 0.f),
-                      window->GetGraphics()._camera.GetViewMatrix()));
-    XMStoreFloat4(&buffer.lightDirection, XMVector3Transform(
-                        XMVector4Normalize(XMLoadFloat3(&window->GetGraphics()._camera._lookDirection)),
-                      window->GetGraphics()._camera.GetViewMatrix()));
-    XMStoreFloat4(&buffer.diffuseColor, XMVectorSet(1.f, 1.f, .9f, 1.f));
-    XMStoreFloat4(&buffer.ambient, XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
-    buffer.diffuseIntensity = 1.0f;
-    buffer.attenuationConst = 1.0f;
-    buffer.attenuationLinear = 0.045;
-    buffer.attenuationQuad = 0.0075f;
-    buffer.specularIntensity = 10.f;
-    buffer.specularPower = 30.f;
+    XMStoreFloat3(&buffer.cameraPosition, XMLoadFloat3(&window->GetGraphics()._camera._position));
+    XMStoreFloat3(&buffer.lightPosition,
+        //XMVector3Transform(
+                        // XMLoadFloat3(&window->GetGraphics()._camera._position),
+                      XMVectorSet(0.f, 20.f, 25.f, 1.f));
+          //            window->GetGraphics()._camera.GetViewMatrix()));
+    XMStoreFloat4(&buffer.diffuseAlbedo, XMVectorSet(.2f, .6f, .2f, 1.f));
+    XMStoreFloat4(&buffer.ambient, XMVectorSet(0.25f, 0.25f, 0.25f, 1.f));
+    XMStoreFloat3(&buffer.lightColor, XMVectorSet(1.f, 1.f, 0.9f, 1.0f));
+    XMStoreFloat3(&buffer.FresnelR0, XMVectorSet(0.02f, 0.02f, 0.02f, 1.0f));
+    buffer.roughness = .9f;
+    buffer.falloffStart = 10.f;
+    buffer.falloffEnd = 100.f;
+    // buffer.diffuseIntensity = 1.0f;
+    // buffer.attenuationConst = 1.0f;
+    // buffer.attenuationLinear = 0.45;
+    // buffer.attenuationQuad = 0.075f;
+    // buffer.specularIntensity = 10.f;
+    // buffer.specularPower = 20.f;
 
     world->SpawnObject<BoardBox>();
     _meshPool = world->SpawnObject<MeshPool>(10u * 20u);

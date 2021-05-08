@@ -58,8 +58,8 @@ void Camera::Update(float elapsedSeconds)
         _pitch -= rotateInterval;
 
     // Prevent looking too far up or down.
-    _pitch = std::min(_pitch, XM_PIDIV4);
-    _pitch = std::max(-XM_PIDIV4, _pitch);
+    _pitch = std::min(_pitch, XMConvertToRadians(70));
+    _pitch = std::max(-XMConvertToRadians(70), _pitch);
 
     // Move the camera in model space.
     float x = move.x * -cosf(_yaw) - move.z * sinf(_yaw);

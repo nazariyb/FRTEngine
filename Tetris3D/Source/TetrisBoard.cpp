@@ -117,9 +117,11 @@ void TetrisBoard::UpdateContantBuffers()
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
         memcpy(&buffer, &Tetromino::baseBuffer, sizeof(Mesh::SceneObjectConstantBuffer));
-        XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-        XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
-
+        // XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+        // XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+        XMStoreFloat4x4(&buffer.model, XMMatrixTranspose(XMLoadFloat4x4(&model)));
+        XMStoreFloat4x4(&buffer.viewProj, XMMatrixTranspose(XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection)));
+        
         cell->mesh->UpdateConstantBuffer(buffer);
     }
 }

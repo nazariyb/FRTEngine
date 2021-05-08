@@ -158,8 +158,10 @@ void Tetromino::UpdateConstantBuffers()
 
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
-        XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
-        XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+        // XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+        // XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+        XMStoreFloat4x4(&buffer.model, XMMatrixTranspose(XMLoadFloat4x4(&model)));
+        XMStoreFloat4x4(&buffer.viewProj, XMMatrixTranspose(XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection)));
 
         XMStoreFloat3(&_meshes[i]->GetWorldPosition(),
                       XMVector3Transform(XMLoadFloat3(&offsets[i]),
@@ -189,7 +191,7 @@ void Tetromino::UpdateConstantBuffers()
             bounds.w = meshPosition.y;
         }
 
-        buffer.deltaTime = Time::GetDeltaSeconds();
+        // buffer.deltaTime = Time::GetDeltaSeconds();
         
         _meshes[i]->UpdateConstantBuffer(buffer);
     }
