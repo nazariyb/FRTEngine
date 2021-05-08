@@ -54,7 +54,8 @@ public:
         // FLOAT specularIntensity;
         // FLOAT specularPower;
         // FLOAT deltaTime;
-        FLOAT padding[9];
+        FLOAT progress;
+        FLOAT padding[8];
     };
     static_assert((sizeof(SceneObjectConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
 

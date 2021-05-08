@@ -190,8 +190,6 @@ void Tetromino::UpdateConstantBuffers()
         {
             bounds.w = meshPosition.y;
         }
-
-        // buffer.deltaTime = Time::GetDeltaSeconds();
         
         _meshes[i]->UpdateConstantBuffer(buffer);
     }

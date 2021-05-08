@@ -42,13 +42,13 @@ int TetrisApp::Start()
     XMStoreFloat3(&buffer.lightPosition,
         //XMVector3Transform(
                         // XMLoadFloat3(&window->GetGraphics()._camera._position),
-                      XMVectorSet(0.f, 20.f, 25.f, 1.f));
+                      XMVectorSet(0.f, 30.f, 25.f, 1.f));
           //            window->GetGraphics()._camera.GetViewMatrix()));
     XMStoreFloat4(&buffer.diffuseAlbedo, XMVectorSet(.2f, .6f, .2f, 1.f));
     XMStoreFloat4(&buffer.ambient, XMVectorSet(0.25f, 0.25f, 0.25f, 1.f));
     XMStoreFloat3(&buffer.lightColor, XMVectorSet(1.f, 1.f, 0.9f, 1.0f));
     XMStoreFloat3(&buffer.FresnelR0, XMVectorSet(0.02f, 0.02f, 0.02f, 1.0f));
-    buffer.roughness = .9f;
+    buffer.roughness = .7f;
     buffer.falloffStart = 10.f;
     buffer.falloffEnd = 100.f;
     // buffer.diffuseIntensity = 1.0f;
@@ -77,6 +77,7 @@ int TetrisApp::Start()
             const bool isMoved = _board->MoveTetrominoDown(object1);
             if (!isMoved)
             {
+                Tetromino::baseBuffer.progress += .1f;
                 _board->HarvestTetromino(world, object1);
                 _board->ClearRowsIfNeeded(_meshPool);
                 object1 = _board->SpawnTetromino(world, _meshPool);
@@ -138,6 +139,7 @@ void TetrisApp::Update()
         _lastTimeCheck = currentTime;
         if (!isMoved)
         {
+            Tetromino::baseBuffer.progress += .1f;
             _board->HarvestTetromino(world, object1);
             _board->ClearRowsIfNeeded(_meshPool);
             object1 = _board->SpawnTetromino(world, _meshPool);

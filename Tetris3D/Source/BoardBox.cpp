@@ -64,7 +64,7 @@ void BoardBox::UpdateConstantBuffers()
 
     // meshPosition = cell->mesh->GetWorldPosition();
 
-    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x - 1.f, meshPosition.y, meshPosition.z));
+    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x - 1.3f, meshPosition.y, meshPosition.z));
     XMStoreFloat4x4(&view, frt::App::GetInstance()->GetWindow()->GetGraphics()._camera.GetViewMatrix());
     XMStoreFloat4x4(&projection,
                     frt::App::GetInstance()->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
@@ -82,7 +82,7 @@ void BoardBox::UpdateConstantBuffers()
 
     meshPosition = TetrisBoard::RightBound;
 
-    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x + 1.f, meshPosition.y, meshPosition.z));
+    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x + 1.3f, meshPosition.y, meshPosition.z));
 
     XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 

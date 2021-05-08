@@ -1,14 +1,13 @@
 #include "TetrisBoard.h"
 
 #include <complex>
-
-
 #include "App.h"
 #include "Tetromino.h"
 #include "Render/Mesh.h"
 #include "Render/MeshPool.h"
 #include "GameWorld.h"
 #include <cstdlib>
+#include <ctime>
 
 using namespace frt;
 using namespace DirectX;
@@ -45,6 +44,8 @@ TetrisBoard::TetrisBoard(unsigned int width, unsigned int height, float cellSize
     XMStoreFloat3(&TetrisBoard::BottomBound, XMVectorScale(XMLoadFloat3(&TetrisBoard::BottomBound), _cellSize));
     XMStoreFloat3(&TetrisBoard::LeftBound, XMVectorScale(XMLoadFloat3(&TetrisBoard::LeftBound), _cellSize));
     XMStoreFloat3(&TetrisBoard::RightBound, XMVectorScale(XMLoadFloat3(&TetrisBoard::RightBound), _cellSize));
+
+    std::srand(std::time(nullptr));
 }
 
 TetrisBoard::~TetrisBoard()
@@ -57,8 +58,8 @@ TetrisBoard::~TetrisBoard()
 
 Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
 {
-    return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::T, _cellSize / 2.f, TopBound, meshPool);
-    // return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
+    // return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::T, _cellSize / 2.f, TopBound, meshPool);
+    return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
 }
 
 void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
