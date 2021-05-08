@@ -3,20 +3,20 @@
 
 namespace frt
 {
-    Plane::Plane()
-        : Plane(1.0f)
-    {
-    }
+    // Plane::Plane()
+    //     : Plane(1.0f)
+    // {
+    // }
+    //
+    // Plane::Plane(float radius)
+    //     : Plane(1.f, 1.f, {})
+    // {
+    // }
 
-    Plane::Plane(float radius)
-        : Plane(1.f, {})
+    Plane::Plane(float width, float height, DirectX::XMFLOAT3 initialPosition, Orientation orientation)
+        : Mesh(width, initialPosition), _width(width), _height(height), _orientation(orientation)
     {
-    }
-
-    Plane::Plane(float radius, DirectX::XMFLOAT3 initialPosition)
-        : Mesh(radius, initialPosition)
-    {
-        vertexBufferSlot = 1;
+        vertexBufferSlot = static_cast<unsigned>(_orientation) + 1;
         Plane::Resize(_radius);
     }
 
@@ -29,26 +29,32 @@ namespace frt
         Mesh::Resize(newRadius);
         
         const float x = _initialPosition.x;
-        const float y = _initialPosition.x;
-        const float z = _initialPosition.x;
+        const float y = _initialPosition.y;
+        const float z = _initialPosition.z;
         
         // front side
         _vertices[0] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
         _vertices[1] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
         _vertices[2] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
         _vertices[3] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
-        
+
+        float xHeightOffset{0.f}, xWidthOffset{0.f};
+        if (_orientation == X)
+        {
+            xHeightOffset = _height / 2.f;
+            xWidthOffset = _width / 2.f;            
+        }
         // right side
-        _vertices[4] = {{x + 0.0001f, y + newRadius, z - newRadius}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
-        _vertices[5] = {{x + 0.0001f, y - newRadius, z - newRadius}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
-        _vertices[6] = {{x + 0.0001f, y + newRadius, z + newRadius}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
-        _vertices[7] = {{x + 0.0001f, y - newRadius, z + newRadius}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
+        _vertices[4] = {{x + 0.0001f, y + xHeightOffset, z - xWidthOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
+        _vertices[5] = {{x + 0.0001f, y - xHeightOffset, z - xWidthOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
+        _vertices[6] = {{x + 0.0001f, y + xHeightOffset, z + xWidthOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
+        _vertices[7] = {{x + 0.0001f, y - xHeightOffset, z + xWidthOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
         
         // left side
-        _vertices[8] = {{x - 0.0001f, y + newRadius, z + newRadius}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
-        _vertices[9] = {{x - 0.0001f, y - newRadius, z + newRadius}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
-        _vertices[10] = {{x - 0.0001f, y + newRadius, z - newRadius}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
-        _vertices[11] = {{x - 0.0001f, y - newRadius, z - newRadius}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
+        _vertices[8] = {{x - 0.0001f, y + xHeightOffset, z + xWidthOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
+        _vertices[9] = {{x - 0.0001f, y - xHeightOffset, z + xWidthOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
+        _vertices[10] = {{x - 0.0001f, y + xHeightOffset, z - xWidthOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
+        _vertices[11] = {{x - 0.0001f, y - xHeightOffset, z - xWidthOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
         
         // back side
         _vertices[12] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
@@ -56,17 +62,23 @@ namespace frt
         _vertices[14] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
         _vertices[15] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
         
+        float yHeightOffset{0.f}, yWidthOffset{0.f};
+        if (_orientation == Y)
+        {
+            yHeightOffset = _height / 2.f;
+            yWidthOffset = _width / 2.f;            
+        }
         // top side
-        _vertices[16] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
-        _vertices[17] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
-        _vertices[18] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
-        _vertices[19] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
+        _vertices[16] = {{x + yWidthOffset, y + 0.0001f, z - yHeightOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
+        _vertices[17] = {{x + yWidthOffset, y + 0.0001f, z + yHeightOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
+        _vertices[18] = {{x - yWidthOffset, y + 0.0001f, z - yHeightOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
+        _vertices[19] = {{x - yWidthOffset, y + 0.0001f, z + yHeightOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
         
         // bottom side
-        _vertices[20] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
-        _vertices[21] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
-        _vertices[22] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
-        _vertices[23] = {{x, y, z}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
+        _vertices[20] = {{x - yWidthOffset, y - 0.0001f, z - yHeightOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}; //  ∟
+        _vertices[21] = {{x - yWidthOffset, y - 0.0001f, z + yHeightOffset}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}; //  Γ
+        _vertices[22] = {{x + yWidthOffset, y - 0.0001f, z - yHeightOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}; //  ┘
+        _vertices[23] = {{x + yWidthOffset, y - 0.0001f, z + yHeightOffset}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}; //  ┐
         
         using namespace DirectX;
         

@@ -67,12 +67,13 @@ private:
 
 public:
     static const UINT FrameCount = 2;
-private:
 
+private:
+    static const UINT PlanesCount = 3;
     static const UINT RowCount = 10;
     static const UINT ColumnCount = 20;
 public:
-    static const UINT MaterialCount = RowCount * ColumnCount;
+    static const UINT MaterialCount = RowCount * ColumnCount + PlanesCount;
 private:
     static const bool bUseBundles = false; // TODO:
     static const float SpacingInterval;
@@ -91,7 +92,7 @@ private:
     ComPtr<ID3D12RootSignature> _rootSignature;
     ComPtr<ID3D12DescriptorHeap> _rtvHeap;
     ComPtr<ID3D12DescriptorHeap> _cbvSrvHeap;
-    ComPtr<ID3D12PipelineState> _pipelineStates[2];
+    ComPtr<ID3D12PipelineState> _pipelineStates[3];
     ComPtr<ID3D12GraphicsCommandList> _commandList;
     ComPtr<ID3D12GraphicsCommandList> _bundle;
 

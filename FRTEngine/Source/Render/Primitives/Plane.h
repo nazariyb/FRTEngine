@@ -7,14 +7,24 @@ namespace frt
 class FRTENGINE_API Plane : public Mesh 
 {
 public:
-    Plane();
-    explicit Plane(float radius);
-    Plane(float radius, DirectX::XMFLOAT3 initialPosition);
-    virtual ~Plane();
+    enum Orientation
+    {
+        X, Y, Z
+    };
 
+    Plane() = delete;
+    Plane(float radius) = delete;
+    Plane(float width, float height, DirectX::XMFLOAT3 initialPosition, Orientation orientation);
+    virtual ~Plane();
+    
     virtual void Resize(float newRadius) override;
 
     virtual void Update() override;
     virtual void PopulateCommandList() override;
+
+private:
+    Orientation _orientation;
+    float _width;
+    float _height;
 };   
 }

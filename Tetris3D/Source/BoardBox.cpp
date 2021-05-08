@@ -11,12 +11,22 @@ using namespace DirectX;
 
 BoardBox::BoardBox()
 {
-    _plane = new frt::Plane(10.f, TetrisBoard::LeftBound);
+    _leftBorder = new frt::Plane(2.f, 40.f,
+                                 {0.f, -1.f, 0.f},
+                                 frt::Plane::X);
+    _rightBorder = new frt::Plane(2.f, 40.f,
+                                  {0.f, -1.f, 0.f},
+                                  frt::Plane::X);
+    _floor = new frt::Plane(22.f, 2.f,
+                            {0.f, -1.f, 0.f},
+                            frt::Plane::Y);
 }
 
 BoardBox::~BoardBox()
 {
-    delete _plane;
+    delete _leftBorder;
+    delete _rightBorder;
+    delete _floor;
 }
 
 void BoardBox::Update()
@@ -26,38 +36,67 @@ void BoardBox::Update()
 
 void BoardBox::PopulateCommandList()
 {
-    _plane->PopulateCommandList();
+    _leftBorder->PopulateCommandList();
+    _rightBorder->PopulateCommandList();
+    _floor->PopulateCommandList();
 }
 
 void BoardBox::InitializeGraphicsResources(frt::Graphics* graphics)
 {
-    _plane->InitializeGraphicsResources(graphics);
+    _leftBorder->InitializeGraphicsResources(graphics);
+    _rightBorder->InitializeGraphicsResources(graphics);
+    _floor->InitializeGraphicsResources(graphics);
 }
 
 void BoardBox::InitializeConstantBuffers(frt::Graphics* graphics)
 {
-    _plane->InitializeConstantBuffers(graphics);
+    _leftBorder->InitializeConstantBuffers(graphics);
+    _rightBorder->InitializeConstantBuffers(graphics);
+    _floor->InitializeConstantBuffers(graphics);
 }
 
 void BoardBox::UpdateConstantBuffers()
 {
     XMFLOAT4X4 model, view, projection, mvp;
-    XMFLOAT3 meshPosition = TetrisBoard::LeftBound;
     frt::Mesh::SceneObjectConstantBuffer buffer;
+
+    XMFLOAT3 meshPosition = TetrisBoard::LeftBound;
 
     // meshPosition = cell->mesh->GetWorldPosition();
 
-    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x, meshPosition.y, meshPosition.z));
+    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x - 1.f, meshPosition.y, meshPosition.z));
     XMStoreFloat4x4(&view, frt::App::GetInstance()->GetWindow()->GetGraphics()._camera.GetViewMatrix());
     XMStoreFloat4x4(&projection,
                     frt::App::GetInstance()->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
                         0.8f, frt::App::GetInstance()->GetWindow()->GetGraphics()._aspectRatio));
-    
+
     XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
     memcpy(&buffer, &Tetromino::baseBuffer, sizeof(frt::Mesh::SceneObjectConstantBuffer));
     XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
     XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
 
-    _plane->UpdateConstantBuffer(buffer);
+    _leftBorder->UpdateConstantBuffer(buffer);
+
+    meshPosition = TetrisBoard::RightBound;
+
+    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x + 1.f, meshPosition.y, meshPosition.z));
+
+    XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+    XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+    XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+
+    _rightBorder->UpdateConstantBuffer(buffer);
+
+    meshPosition = TetrisBoard::BottomBound;
+
+    XMStoreFloat4x4(&model, XMMatrixTranslation(meshPosition.x, meshPosition.y, meshPosition.z));
+
+    XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
+
+    XMStoreFloat4x4(&buffer.mvp, XMMatrixTranspose(XMLoadFloat4x4(&mvp)));
+    XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
+
+    _floor->UpdateConstantBuffer(buffer);
 }

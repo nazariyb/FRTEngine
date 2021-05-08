@@ -21,5 +21,7 @@ public:
 private:
     void UpdateConstantBuffers();
 
-    frt::Plane* _plane;
+    frt::Plane* _leftBorder;
+    frt::Plane* _rightBorder;
+    frt::Plane* _floor;
 };

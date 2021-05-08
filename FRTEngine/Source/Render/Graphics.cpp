@@ -424,8 +424,8 @@ namespace frt
             // buffer view (CBV) descriptor heap.
             D3D12_DESCRIPTOR_HEAP_DESC cbvSrvHeapDesc = {};
             cbvSrvHeapDesc.NumDescriptors =
-                FrameCount * RowCount * ColumnCount + // FrameCount frames * RowCount * ColumnCount.
-                MaterialCount + 1; // CityMaterialCount + 1 for the SRVs.
+                FrameCount * (RowCount * ColumnCount + // FrameCount frames * RowCount * ColumnCount.
+                    PlanesCount) + MaterialCount + 1; // CityMaterialCount + 1 for the SRVs.
             cbvSrvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
             cbvSrvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
             THROW_IF_FAILED(_device->CreateDescriptorHeap(&cbvSrvHeapDesc, IID_PPV_ARGS(&_cbvSrvHeap)));
@@ -565,6 +565,17 @@ namespace frt
             THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[1])));
             NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 1);
 
+            D3D12_INPUT_ELEMENT_DESC inputElementDescs3[] =
+            {
+                {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+                {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 2, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+            };
+            psoDesc.InputLayout = {inputElementDescs3, _countof(inputElementDescs3)};
+
+            THROW_IF_FAILED(_device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&_pipelineStates[2])));
+            NAME_D3D12_OBJECT_INDEXED(_pipelineStates, 2);
+
             delete pVertexShaderData;
             delete pPixelShaderData;
         }
@@ -652,19 +663,43 @@ namespace frt
 
             // Calculate the descriptor offset due to multiple frame resources.
             // (_materialCount + 1) SRVs + how many CBVs we have currently.
-            UINT frameResourceDescriptorOffset = MaterialCount + 1 + _currentFrameResourceIndex * RowCount *
-                ColumnCount;
+            UINT frameResourceDescriptorOffset = MaterialCount + 1 + _currentFrameResourceIndex * (RowCount *
+                ColumnCount + PlanesCount);
             CD3DX12_GPU_DESCRIPTOR_HANDLE cbvSrvHandle(_cbvSrvHeap->GetGPUDescriptorHandleForHeapStart(),
                                                        frameResourceDescriptorOffset, _cbvSrvDescriptorSize);
 
+            {
+                _commandList->SetPipelineState(_pipelineStates[1].Get());
+                for (unsigned i = 0; i < 2; ++i)
+                {
+                    // Set the cube's root constant for dynamically indexing into the material array.
+                    _commandList->SetGraphicsRoot32BitConstant(3, i, 0);
+
+                    // Set this cube's CBV table and move to the next descriptor.
+                    _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);
+                    cbvSrvHandle.Offset(_cbvSrvDescriptorSize);
+
+                    _commandList->DrawIndexedInstanced(_indicesNum, 1, 0, 0, 0);
+                }
+
+                _commandList->SetPipelineState(_pipelineStates[2].Get());
+                // Set the cube's root constant for dynamically indexing into the material array.
+                _commandList->SetGraphicsRoot32BitConstant(3, 2, 0);
+
+                // Set this cube's CBV table and move to the next descriptor.
+                _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);
+                cbvSrvHandle.Offset(_cbvSrvDescriptorSize);
+
+                _commandList->DrawIndexedInstanced(_indicesNum, 1, 0, 0, 0);
+            }
+
+            _commandList->SetPipelineState(_pipelineStates[0].Get());
             for (UINT i = 0; i < RowCount; i++)
             {
                 for (UINT j = 0; j < ColumnCount; j++)
                 {
-                    _commandList->SetPipelineState(_pipelineStates[(i * ColumnCount + j) == 0].Get());
-
                     // Set the cube's root constant for dynamically indexing into the material array.
-                    _commandList->SetGraphicsRoot32BitConstant(3, i * ColumnCount + j, 0);
+                    _commandList->SetGraphicsRoot32BitConstant(3, PlanesCount + i * ColumnCount + j, 0);
 
                     // Set this cube's CBV table and move to the next descriptor.
                     _commandList->SetGraphicsRootDescriptorTable(2, cbvSrvHandle);

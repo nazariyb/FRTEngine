@@ -54,7 +54,7 @@ int TetrisApp::Start()
     buffer.specularPower = 30.f;
 
     world->SpawnObject<BoardBox>();
-    _meshPool = world->SpawnObject<MeshPool>(10u * 20u - 1u);
+    _meshPool = world->SpawnObject<MeshPool>(10u * 20u);
     _board = world->SpawnObject<TetrisBoard>(10u, 20u, 2.0f);
     object1 = _board->SpawnTetromino(world, _meshPool);
 
