@@ -112,7 +112,7 @@ void TetrisBoard::UpdateContantBuffers()
         XMStoreFloat4x4(&view, App::GetInstance()->GetWindow()->GetGraphics()._camera.GetViewMatrix());
         XMStoreFloat4x4(&projection,
                         App::GetInstance()->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
-                            0.8f, App::GetInstance()->GetWindow()->GetGraphics()._aspectRatio));
+                            1.f, App::GetInstance()->GetWindow()->GetGraphics()._aspectRatio));
         
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 

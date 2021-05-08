@@ -11,7 +11,7 @@ Camera::Camera()
     , _position(_initialPosition)
     , _yaw(XM_PI)
     , _pitch(0.f)
-    , _lookDirection(0, 0, -1)
+    , _lookDirection(0.f, 0.f, -1.f)
     , _upDirection(0, 1, 0)
     , _moveSpeed(20.f)
     , _turnSpeed(XM_PIDIV4)
@@ -122,9 +122,10 @@ void Camera::OnKeyDown(WPARAM key)
     case VK_DOWN:
         _keysPressed.down = true;
         break;
-    case VK_ESCAPE:
+    case 'I':
         Reset();
         break;
+    default: break;
     }
 }
 
@@ -156,6 +157,7 @@ void Camera::OnKeyUp(WPARAM key)
     case VK_DOWN:
         _keysPressed.down = false;
         break;
+    default: break;
     }
 }
 

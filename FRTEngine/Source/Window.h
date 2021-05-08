@@ -40,11 +40,12 @@ private:
 public:
     Keyboard keyboard;
     Mouse mouse;
+    struct { const unsigned width; const unsigned height; } GetResolution() const { return { _width, _height }; }
 
 private:
     //bool cursorEnabled = true;
-    int _width;
-    int _height;
+    unsigned _width;
+    unsigned _height;
     HWND _hWindow;
     HINSTANCE _hInstance;
     std::unique_ptr <Graphics> _graphics;

@@ -154,7 +154,7 @@ void Tetromino::UpdateConstantBuffers()
         XMStoreFloat4x4(&view, _owner->GetWindow()->GetGraphics()._camera.GetViewMatrix());
         XMStoreFloat4x4(&projection,
                         _owner->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
-                            0.8f, _owner->GetWindow()->GetGraphics()._aspectRatio));
+                            1.f, _owner->GetWindow()->GetGraphics()._aspectRatio));
 
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 

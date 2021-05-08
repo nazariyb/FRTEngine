@@ -76,7 +76,7 @@ protected:
     class IndexBuffer* _indexBuffer;
     class VertexBuffer* _vertexBuffer;
 
-    unsigned int _radius;
+    float _radius;
     DirectX::XMFLOAT3 _initialPosition;
     DirectX::XMFLOAT3 _worldPosition;
 

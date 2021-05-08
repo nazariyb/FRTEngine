@@ -36,15 +36,16 @@ const std::vector<unsigned char> Mesh::_indices =
     22, 21, 23,
 };
 
-const unsigned int Mesh::_indexBufferSize = Mesh::_indices.size();
+const unsigned int Mesh::_indexBufferSize = static_cast<unsigned>(_indices.size());
 
 Mesh::Mesh(float radius, DirectX::XMFLOAT3 initialPosition)
     : _indexBuffer{}
-    , _vertexBuffer{}
-    , _radius(radius)
-    , _initialPosition(initialPosition)
-    , _worldPosition{}
-    , _vertices{}
+      , _vertexBuffer{}
+      , _radius(radius)
+      , _initialPosition(initialPosition)
+      , _worldPosition{}
+      , _vertices{}
+      , vertexBufferSlot(0)
     , _texture{}
 {
     // Resize(_radius);
@@ -72,63 +73,6 @@ Mesh::~Mesh()
 
 void Mesh::Resize(float newRadius)
 {
-    // const float x = _initialPosition.x;
-    // const float y = _initialPosition.x;
-    // const float z = _initialPosition.x;
-    //
-    // // front side
-    // _vertices[0] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[1] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[2] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[3] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // // right side
-    // _vertices[4] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[5] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[6] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[7] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // // left side
-    // _vertices[8] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[9] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[10] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[11] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // // back side
-    // _vertices[12] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[13] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[14] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[15] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // // top side
-    // _vertices[16] = { { x + newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[17] = { { x + newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[18] = { { x - newRadius, y + newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[19] = { { x - newRadius, y + newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // // bottom side
-    // _vertices[20] = { { x - newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f } };  //  ∟
-    // _vertices[21] = { { x - newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f } };  //  Γ
-    // _vertices[22] = { { x + newRadius, y - newRadius, z - newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } };  //  ┘
-    // _vertices[23] = { { x + newRadius, y - newRadius, z + newRadius }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f } };  //  ┐
-    //
-    // using namespace DirectX;
-    //
-    // for (size_t i = 0; i < _indices.size(); i += 3)
-    // {
-    //     Vertex& v0 = _vertices[_indices[i]];
-    //     Vertex& v1 = _vertices[_indices[i + 1]];
-    //     Vertex& v2 = _vertices[_indices[i + 2]];
-    //     const XMVECTOR pos0 = XMLoadFloat3(&v0.position);
-    //     const XMVECTOR pos1 = XMLoadFloat3(&v1.position);
-    //     const XMVECTOR pos2 = XMLoadFloat3(&v2.position);
-    //
-    //     const auto normal = XMVector3Normalize(XMVector3Cross((pos2 - pos0), (pos1 - pos0)));
-    //
-    //     XMStoreFloat3(&v0.normal, normal);
-    //     XMStoreFloat3(&v1.normal, normal);
-    //     XMStoreFloat3(&v2.normal, normal);
-    // }
 }
 
 void Mesh::InitializeConstantBuffers(Graphics* graphics)

@@ -124,7 +124,7 @@ private:
     UINT64 _fenceValue;
 
 public:
-    float _aspectRatio = 1280. / 720.;
+    float _aspectRatio;
 private:
 
     void LoadPipeline(HWND hWindow);

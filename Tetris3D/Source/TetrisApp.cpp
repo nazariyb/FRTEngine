@@ -26,11 +26,12 @@ using namespace frt;
 
 
 TetrisApp::TetrisApp()
-    : App(1280, 720, "Tetris3D")
-      , object1(nullptr)
-      , object2(nullptr)
-      , _meshPool(nullptr)
-      , _lastTimeCheck{0.f}
+    : App(1920, 1080, "Tetris3D")
+    , _lastTimeCheck{0.f}
+    , object1(nullptr)
+    , object2(nullptr)
+    , _meshPool(nullptr)
+    , _board(nullptr)
 {
 }
 

@@ -41,7 +41,7 @@ noexcept
     wr.right = _width + wr.left;
     wr.top = 500;
     wr.bottom = _height + wr.top;
-    if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU | WS_SIZEBOX, FALSE) == 0)
+    if (AdjustWindowRect(&wr, WS_MAXIMIZE, FALSE) == 0)
     {
 #ifdef _DEBUG
         throw LAST_EXCEPTION();
@@ -50,7 +50,7 @@ noexcept
 
     _hWindow = CreateWindow(
         windowClassName, name,
-        WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+        WS_MAXIMIZE,
         CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
         nullptr, nullptr, _hInstance, this
     );

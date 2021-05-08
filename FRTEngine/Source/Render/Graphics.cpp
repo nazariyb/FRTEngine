@@ -9,6 +9,9 @@
 #include "Tools\DXHelper.h"
 #include <filesystem>
 
+#include "Time/Time.h"
+#include "Utils/Logger/Logger.h"
+
 const float frt::Graphics::SpacingInterval = 1.f;
 
 
@@ -40,22 +43,27 @@ namespace frt
     using DirectX::XMFLOAT3;
 
     Graphics::Graphics(Window* owner, HWND hWindow) :
+        currentRotation{DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0)},
+        currentTranslation{DirectX::XMMatrixTranslation(0.f, 0.f, 0.f)},
         _owner(owner),
-        _frameIndex(0),
-        _viewport(0.0f, 0.0f, static_cast<float>(1280), static_cast<float>(720)),
-        _scissorRect(static_cast<LONG>(0), static_cast<LONG>(0), static_cast<LONG>(1280), static_cast<LONG>(720)),
-        _fenceValue(0),
-        _frameCounter(0),
-        _currentFrameResourceIndex(0),
+        _viewport(0.0f, 0.0f, static_cast<float>(_owner->GetResolution().width),
+                  static_cast<float>(_owner->GetResolution().height)),
+        _scissorRect(static_cast<LONG>(0), static_cast<LONG>(0), static_cast<LONG>(_owner->GetResolution().width),
+                     static_cast<LONG>(_owner->GetResolution().height)),
         _rtvDescriptorSize(0),
         _cbvSrvDescriptorSize(0),
-        currentRotation{DirectX::XMMatrixRotationRollPitchYaw(0, 0, 0)},
-        currentTranslation{DirectX::XMMatrixTranslation(0.f, 0.f, 0.f)}
+        _currentFrameResourceIndex(0),
+        _frameIndex(0),
+        _frameCounter(0),
+        _fenceValue(0)
     {
-        //App::GetInstance()->GetWorld()->Reserve(MaterialCount);
+        const auto resolution = _owner->GetResolution(); 
+        _aspectRatio = static_cast<float>(resolution.width) / static_cast<float>(resolution.height);
+        Logger::LogInfo("Aspect ratio is " + std::to_string(_aspectRatio));
+
         _fenceValues.resize(FrameCount * MaterialCount);
         //_hWindow = hWindow;
-        Init(hWindow);
+        Graphics::Init(hWindow);
     }
 
     Graphics::~Graphics()
@@ -66,8 +74,7 @@ namespace frt
 
     void Graphics::Init(HWND hWindow)
     {
-        _camera.Init({0.f, 10.f, 30.f});
-        _camera.SetMoveSpeed(6.f);
+        _camera.Init({0.f, 22.f, 45.f});
 
         LoadPipeline(hWindow);
         LoadAssets();
@@ -75,16 +82,10 @@ namespace frt
 
     void Graphics::Update()
     {
-        //CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(_rtvHeap->GetCPUDescriptorHandleForHeapStart(), _frameIndex, _rtvDescriptorSize);
-        //_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
-
-        //const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-        //_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-
         if (_frameCounter == 500)
         {
             // Update window text with FPS value.
-            wchar_t fps[64];
+            // wchar_t fps[64];
             //swprintf_s(fps, L"%ufps", m_timer.GetFramesPerSecond());
             //SetCustomWindowText(fps);
             _frameCounter = 0;
@@ -110,7 +111,7 @@ namespace frt
             WaitForSingleObject(_fenceEvent, INFINITE);
         }
 
-        _camera.Update(1. / 60.);
+        _camera.Update(Time::GetDeltaSeconds());
         //_camera.Update(static_cast<float>(_timer.GetElapsedSeconds()));
     }
 
@@ -158,6 +159,7 @@ namespace frt
                 WaitForSingleObject(_fenceEvent, INFINITE);
             }
         }
+        THROW_IF_FAILED(_swapChain->SetFullscreenState(FALSE, nullptr));
     }
 
     void Graphics::BeforeFirstTick()
@@ -278,10 +280,12 @@ namespace frt
             depthOptimizedClearValue.DepthStencil.Depth = 1.0f;
             depthOptimizedClearValue.DepthStencil.Stencil = 0;
 
+            auto resolution = _owner->GetResolution();
+            
             const CD3DX12_HEAP_PROPERTIES dsvHeapProps(D3D12_HEAP_TYPE_DEFAULT);
             // Performance tip: Deny shader resource access to resources that don't need shader resource views.
             const CD3DX12_RESOURCE_DESC dsvUploadDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT,
-                1280, 720, 1, 0, 1, 0,
+                resolution.width, resolution.height, 1, 0, 1, 0,
                 D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
 
             THROW_IF_FAILED(_device->CreateCommittedResource(
@@ -375,11 +379,13 @@ namespace frt
         THROW_IF_FAILED(_device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_commandQueue)));
         NAME_D3D12_OBJECT(_commandQueue);
 
+        auto resolution = App::GetInstance()->GetResolution();
+
         // Describe and create the swap chain.
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
         swapChainDesc.BufferCount = FrameCount;
-        swapChainDesc.BufferDesc.Width = 1280;
-        swapChainDesc.BufferDesc.Height = 720;
+        swapChainDesc.BufferDesc.Width = resolution.width;
+        swapChainDesc.BufferDesc.Height = resolution.height;
         swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         //swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
         //swapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
@@ -387,12 +393,12 @@ namespace frt
         //swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         //swapChainDesc.BufferCount = 1;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        //swapChainDesc.Flags = 0;
+        swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
         swapChainDesc.OutputWindow = hWindow;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
         swapChainDesc.SampleDesc.Count = 1;
         //swapChainDesc.SampleDesc.Quality = 0;
-        swapChainDesc.Windowed = TRUE;
+        swapChainDesc.Windowed = FALSE;
 
         ComPtr<IDXGISwapChain> swapChain;
         THROW_IF_FAILED(factory->CreateSwapChain(
@@ -403,6 +409,7 @@ namespace frt
 
         THROW_IF_FAILED(swapChain.As(&_swapChain));
         _frameIndex = _swapChain->GetCurrentBackBufferIndex();
+        _swapChain->SetFullscreenState(true, nullptr);
 
         // Create descriptor heaps.
         {

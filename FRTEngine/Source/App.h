@@ -27,6 +27,8 @@ public:
     Window* GetWindow();
     GameWorld* GetWorld();
 
+    struct { const unsigned width; const unsigned height; } GetResolution() const { return { _windowWidth, _windowHeight }; }
+
 protected:
     virtual int Start() = 0;
 
@@ -40,7 +42,7 @@ protected:
 
     static App* _instance;
 
-    int _windowWidth, _windowHeight;
+    unsigned _windowWidth, _windowHeight;
     const char* _windowName;
 };
 
