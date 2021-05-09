@@ -1,9 +1,4 @@
-struct Material
-{
-    float4 DiffuseAlbedo;
-    float3 FresnelR0;
-    float Shininess;
-};
+#include "Structures.hlsli"
 
 float CalcAttenuation(float d, float falloffStart, float falloffEnd)
 {
@@ -39,16 +34,6 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
 
     return (mat.DiffuseAlbedo.rgb + specAlbedo) * lightStrength;
 }
-
-struct Light
-{
-    float3 Strength;
-    float FalloffStart; // point/spot light only
-    float3 Direction;   // directional/spot light only
-    float FalloffEnd;   // point/spot light only
-    float3 Position;    // point light only
-    float SpotPower;    // spot light only
-};
 
 //---------------------------------------------------------------------------------------
 // Evaluates the lighting equation for point lights.

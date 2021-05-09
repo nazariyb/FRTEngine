@@ -21,32 +21,20 @@ cbuffer SceneConstantBuffer : register(b0)
     float4x4 viewProj;
     float3 cameraPosition;
     float roughness;
-    float3 lightPosition;
+    float3 lightPosition1;
     float falloffStart;
-    float3 lightColor;
+    float3 lightPosition2;
     float falloffEnd;
+    float3 lightColor;
+    float padding0;
     float4 ambient;
     float4 diffuseAlbedo;
     float3 FresnelR0;
     float progress;
-    float padding[8];
+    float padding[4];
 }
 
 #include "LightHelper.hlsli"
-
-struct PSInput
-{
-    float4 positionHomo : SV_POSITION;
-    float3 positionWorld : POSITION;
-    float3 normal : NORMAL;
-    float2 uv : TEXCOORD;
-    float3 cameraPosition : CAMERA_POSITION;
-    float4 ambient : AMBIENT;
-    float progress : PROGRESS;
-    Material material : MATERIAL;
-    Light light : LIGHT;
-};
-
 
 PSInput main(float3 position : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD)
 {
@@ -70,12 +58,19 @@ PSInput main(float3 position : POSITION, float3 normal : NORMAL, float2 uv : TEX
     material.FresnelR0 = FresnelR0;
     result.material = material;
 
-    Light light;
-    light.Position = lightPosition;
-    light.Strength = lightColor;
-    light.FalloffStart = falloffStart;
-    light.FalloffEnd = falloffEnd;
-    result.light = light;
+    Light light1;
+    light1.Position = lightPosition1;
+    light1.Strength = lightColor;
+    light1.FalloffStart = falloffStart;
+    light1.FalloffEnd = falloffEnd;
+    result.lights[0] = light1;
+    
+    Light light2;
+    light2.Position = lightPosition2;
+    light2.Strength = lightColor;
+    light2.FalloffStart = falloffStart;
+    light2.FalloffEnd = falloffEnd;
+    result.lights[1] = light2;
 
     result.progress = progress;
     

@@ -61,11 +61,8 @@ int TetrisApp::Run()
 {
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
     XMStoreFloat3(&buffer.cameraPosition, XMLoadFloat3(&window->GetGraphics()._camera._position));
-    XMStoreFloat3(&buffer.lightPosition,
-                  //XMVector3Transform(
-                  // XMLoadFloat3(&window->GetGraphics()._camera._position),
-                  XMVectorSet(0.f, 30.f, 25.f, 1.f));
-    //            window->GetGraphics()._camera.GetViewMatrix()));
+    XMStoreFloat3(&buffer.lightPosition1, XMVectorSet(-25.f, 30.f, 33.f, 1.f));
+    XMStoreFloat3(&buffer.lightPosition2, XMVectorSet(25.f, 30.f, 33.f, 1.f));
     XMStoreFloat4(&buffer.diffuseAlbedo, XMVectorSet(.2f, .6f, .2f, 1.f));
     XMStoreFloat4(&buffer.ambient, XMVectorSet(0.25f, 0.25f, 0.25f, 1.f));
     XMStoreFloat3(&buffer.lightColor, XMVectorSet(1.f, 1.f, 0.9f, 1.0f));
