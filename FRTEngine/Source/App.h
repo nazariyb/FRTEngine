@@ -30,7 +30,7 @@ public:
     struct { const unsigned width; const unsigned height; } GetResolution() const { return { _windowWidth, _windowHeight }; }
 
 protected:
-    virtual int Start() = 0;
+    virtual int Run() = 0;
 
     void Init(HINSTANCE hInstance, HICON icon);
 
@@ -53,7 +53,7 @@ frt::App* frt::App::Launch(HINSTANCE hInstance, HICON icon)
     static_assert((std::is_base_of<frt::App, T>::value));
     _instance = new T();
     _instance->Init(hInstance, icon);
-    _instance->Start();
+    _instance->Run();
     return _instance;
 }
 

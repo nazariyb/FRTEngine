@@ -16,21 +16,20 @@ class TetrisApp :
 {
 public:
     TetrisApp();
-    int Start() override;
+    int Run() override;
 
 protected:
+    void OnTetrominoLanded();
+    
     void Update() override;
-
-    float Roll = 0.f;
-    float Pitch = 0.f;
-    float Yaw = 0.f;
 
     float _lastTimeCheck;
 
-    Tetromino* object1;
-    Tetromino* object2;
+    Tetromino* tetromino;
 
     frt::MeshPool* _meshPool;
     TetrisBoard* _board;
+
+    std::function<void()> _runOnNextTick;
 };
 

@@ -62,8 +62,8 @@ Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
     return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
 }
 
-void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
-{
+TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
+{    
     for (int i = 0; i < tetromino->MeshesNum; ++i)
     {
         const XMFLOAT3& meshPosition = tetromino->_meshes[i]->GetWorldPosition();
@@ -85,6 +85,7 @@ void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
         }
     }
     gameWorld->DestroyObject(tetromino);
+#if defined(_DEBUG)
     for (Cell* cell : _cells)
     {
         if (cell->mesh != nullptr)
@@ -95,6 +96,9 @@ void TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
                 std::to_string(cell->coordinates.z) + ">");
         }
     }
+#endif
+
+    return tetromino->GetWorldPosition().y >= TopBound.y ? GameOver : Ok;
 }
 
 void TetrisBoard::UpdateContantBuffers()
@@ -243,28 +247,28 @@ bool TetrisBoard::RotateTetromino(Tetromino* tetromino, float deltaRadians)
     return true;
 }
 
-bool TetrisBoard::MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance)
+TetrisBoard::Result TetrisBoard::MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance)
 {
-    if (!IsMoveLeftPossible(tetromino)) return false;
+    if (!IsMoveLeftPossible(tetromino)) return UnableToMove;
 
     tetromino->MoveX(deltaDistance);
-    return true;
+    return Ok;
 }
 
-bool TetrisBoard::MoveTetrominoRight(Tetromino* tetromino, float deltaDistance)
+TetrisBoard::Result TetrisBoard::MoveTetrominoRight(Tetromino* tetromino, float deltaDistance)
 {
-    if (!IsMoveRightPossible(tetromino)) return false;
+    if (!IsMoveRightPossible(tetromino)) return UnableToMove;
 
     tetromino->MoveX(deltaDistance);
-    return true;
+    return Ok;
 }
 
-bool TetrisBoard::MoveTetrominoDown(Tetromino* tetromino, float deltaDistance, bool needCheck/*=true*/)
+TetrisBoard::Result TetrisBoard::MoveTetrominoDown(Tetromino* tetromino, float deltaDistance, bool needCheck/*=true*/)
 {
-    if (needCheck) if (!IsMoveDownPossible(tetromino)) return false;
+    if (needCheck) if (!IsMoveDownPossible(tetromino)) return UnableToMove;
 
     tetromino->MoveY(deltaDistance);
-    return true;
+    return Ok;
 }
 
 void TetrisBoard::DropTetromino(Tetromino* tetromino)
@@ -299,6 +303,7 @@ void TetrisBoard::DropTetromino(Tetromino* tetromino)
         }
     }
     const float distToMove = *std::min_element(dists.begin(), dists.end()) - _cellSize / 2;
+    Logger::DebugLogInfo("dist to drop: " + std::to_string(distToMove));
     MoveTetrominoDown(tetromino, -distToMove, false);
 }
 

@@ -28,14 +28,13 @@ using namespace frt;
 TetrisApp::TetrisApp()
     : App(1920, 1080, "Tetris3D")
     , _lastTimeCheck{0.f}
-    , object1(nullptr)
-    , object2(nullptr)
+    , tetromino(nullptr)
     , _meshPool(nullptr)
     , _board(nullptr)
 {
 }
 
-int TetrisApp::Start()
+int TetrisApp::Run()
 {
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
     XMStoreFloat3(&buffer.cameraPosition, XMLoadFloat3(&window->GetGraphics()._camera._position));
@@ -61,7 +60,7 @@ int TetrisApp::Start()
     world->SpawnObject<BoardBox>();
     _meshPool = world->SpawnObject<MeshPool>(10u * 20u);
     _board = world->SpawnObject<TetrisBoard>(10u, 20u, 2.0f);
-    object1 = _board->SpawnTetromino(world, _meshPool);
+    tetromino = _board->SpawnTetromino(world, _meshPool);
 
     window->keyboard.onKeyPressedEvent += [this](Event* event)
     {
@@ -69,26 +68,25 @@ int TetrisApp::Start()
         window->GetGraphics().OnKeyDown(ev->GetKeyCode());
 
         if (window->keyboard.IsKeyPressed('T'))
-            _board->DropTetromino(object1);
+        {
+            _board->DropTetromino(tetromino);
+            _runOnNextTick = [this](){ this->OnTetrominoLanded(); };
+        }
         else if (window->keyboard.IsKeyPressed('F'))
-            _board->MoveTetrominoLeft(object1);
+            _board->MoveTetrominoLeft(tetromino);
         else if (window->keyboard.IsKeyPressed('G'))
         {
-            const bool isMoved = _board->MoveTetrominoDown(object1);
-            if (!isMoved)
+            if (_board->MoveTetrominoDown(tetromino) == TetrisBoard::UnableToMove)
             {
-                Tetromino::baseBuffer.progress += .1f;
-                _board->HarvestTetromino(world, object1);
-                _board->ClearRowsIfNeeded(_meshPool);
-                object1 = _board->SpawnTetromino(world, _meshPool);
+                OnTetrominoLanded();
             }
         }
         else if (window->keyboard.IsKeyPressed('H'))
-            _board->MoveTetrominoRight(object1);
+            _board->MoveTetrominoRight(tetromino);
         else if (window->keyboard.IsKeyPressed('R'))
-            _board->RotateTetrominoCounterclockwise(object1);
+            _board->RotateTetrominoCounterclockwise(tetromino);
         else if (window->keyboard.IsKeyPressed('Y'))
-            _board->RotateTetrominoClockwise(object1);
+            _board->RotateTetrominoClockwise(tetromino);
     };
 
     window->keyboard.onKeyReleasedEvent += [this](Event* event)
@@ -128,21 +126,35 @@ int TetrisApp::Start()
     return 0;
 }
 
+void TetrisApp::OnTetrominoLanded()
+{
+    Tetromino::baseBuffer.progress += .1f;
+    if (_board->HarvestTetromino(world, tetromino) == TetrisBoard::GameOver)
+    {
+        Logger::LogInfo("Game Over");
+        return;
+    }
+    _board->ClearRowsIfNeeded(_meshPool);
+    tetromino = _board->SpawnTetromino(world, _meshPool);
+}
+
 void TetrisApp::Update()
 {
     App::Update();
 
+    if (_runOnNextTick != nullptr)
+    {
+        _runOnNextTick();
+        _runOnNextTick = nullptr;
+    }
+
     const float currentTime = Time::GetSecondsSinceFirstTick();
     if (currentTime - _lastTimeCheck > 1.2f)
     {
-        const bool isMoved = _board->MoveTetrominoDown(object1);
         _lastTimeCheck = currentTime;
-        if (!isMoved)
+        if (_board->MoveTetrominoDown(tetromino) == TetrisBoard::UnableToMove)
         {
-            Tetromino::baseBuffer.progress += .1f;
-            _board->HarvestTetromino(world, object1);
-            _board->ClearRowsIfNeeded(_meshPool);
-            object1 = _board->SpawnTetromino(world, _meshPool);
+            OnTetrominoLanded();
         }
     }
 }

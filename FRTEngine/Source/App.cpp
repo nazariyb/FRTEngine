@@ -8,9 +8,10 @@ namespace frt
 App* App::_instance = nullptr;
 
 App::App(int width, int height, const char* name)
-    : _windowName(name)
+    : window(nullptr)
     , _windowWidth(width)
     , _windowHeight(height)
+    , _windowName(name)
 {
     Logger::DebugLogInfo("Create App");
     world = new GameWorld();

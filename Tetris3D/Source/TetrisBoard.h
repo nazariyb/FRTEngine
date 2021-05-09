@@ -14,21 +14,28 @@ class GameWorld;
 class TetrisBoard : public frt::GameObject
 {
 public:
+    enum Result
+    {
+        Ok,
+        UnableToMove,
+        GameOver
+    };
+    
     TetrisBoard();
     TetrisBoard(unsigned int width, unsigned int height, float cellSize=2.0f);
     virtual ~TetrisBoard();
 
     Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
-    void HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
+    Result HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
     
     inline void RotateTetrominoClockwise(Tetromino* tetromino)
         { RotateTetromino(tetromino, -DirectX::XM_PIDIV2); }
     inline void RotateTetrominoCounterclockwise(Tetromino* tetromino)
         { RotateTetromino(tetromino, DirectX::XM_PIDIV2); }
 
-    inline bool MoveTetrominoLeft(Tetromino* tetromino)  { return MoveTetrominoLeft(tetromino, -_cellSize); }
-    inline bool MoveTetrominoRight(Tetromino* tetromino) { return MoveTetrominoRight(tetromino, _cellSize); }
-    inline bool MoveTetrominoDown(Tetromino* tetromino)  { return MoveTetrominoDown(tetromino, -_cellSize); }
+    inline Result MoveTetrominoLeft(Tetromino* tetromino)  { return MoveTetrominoLeft(tetromino, -_cellSize); }
+    inline Result MoveTetrominoRight(Tetromino* tetromino) { return MoveTetrominoRight(tetromino, _cellSize); }
+    inline Result MoveTetrominoDown(Tetromino* tetromino)  { return MoveTetrominoDown(tetromino, -_cellSize); }
 
     void DropTetromino(Tetromino* tetromino);
 
@@ -62,9 +69,9 @@ private:
     
     bool RotateTetromino(Tetromino* tetromino, float deltaRadians);
     
-    bool MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance);
-    bool MoveTetrominoRight(Tetromino* tetromino, float deltaDistance);
-    bool MoveTetrominoDown(Tetromino* tetromino, float deltaDistance, bool needCheck=true);
+    Result MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance);
+    Result MoveTetrominoRight(Tetromino* tetromino, float deltaDistance);
+    Result MoveTetrominoDown(Tetromino* tetromino, float deltaDistance, bool needCheck=true);
     
     bool IsMoveLeftPossible(Tetromino* tetromino);
     bool IsMoveRightPossible(Tetromino* tetromino);
