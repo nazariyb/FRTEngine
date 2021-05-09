@@ -20,16 +20,16 @@ using namespace DirectX;
 using namespace frt;
 
 const TetrisApp::LevelInfo TetrisApp::Levels[] = {
-    {{1.f, 1.f, .1f, 1.f}, 1.f, 3u},
-    {{1.f, .9f, .2f, 1.f}, 2.f, 3u},
-    {{1.f, .8f, .3f, 1.f}, 3.f, 3u},
-    {{1.f, .7f, .4f, 1.f}, 4.f, 3u},
-    {{1.f, .6f, .5f, 1.f}, 5.f, 3u},
-    {{1.f, .5f, .6f, 1.f}, 6.f, 3u},
-    {{1.f, .4f, .7f, 1.f}, 7.f, 3u},
-    {{1.f, .3f, .8f, 1.f}, 8.f, 3u},
-    {{1.f, .2f, .9f, 1.f}, 9.f, 3u},
-    {{1.f, .1f, 1.f, 1.f}, 10.f, 3u},
+    {{0.97f, 0.7f, 0.27f, 1.0f}, 1.f, 3u},  // maximum yellow red
+    {{0.47f, 0.7f, 0.68f, 1.f}, 3.f, 3u},   // green sheen
+    {{0.93f, 0.6f, 0.64f, 1.f}, 5.f, 3u},   // mauvelous
+    {{0.95f, 0.51f, 0.19f, 1.f}, 9.f, 3u},  // princeton orange 
+    {{0.53f, 0.25f, 0.31f, 1.f}, 2.f, 3u},  // solid pink
+    {{0.74f, 0.57f, 0.6f, 1.f}, 10.f, 3u},  // rosy brown
+    {{0.95f, 0.89f, 0.89f, 1.f}, 4.f, 3u},  // lavender blush
+    {{0.89f, 0.44f, 0.57f, 1.f}, 8.f, 3u},  // cyclamen
+    {{0.67f, 0.78f, 0.69f, 1.f}, 6.f, 3u},  // cambridge blue
+    {{0.8f, 0.55f, 0.53f, 1.f}, 7.f, 3u},   // old rose
 };
 
 
