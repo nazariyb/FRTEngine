@@ -42,7 +42,7 @@ float4 main(PSInput input) : SV_TARGET
 
     float3 toCamera = normalize(input.cameraPosition - input.positionWorld);
 
-    input.material.DiffuseAlbedo = float4(0.97f, 0.7f, 0.f, 1.0f);
+    // input.material.DiffuseAlbedo = float4(0.97f, 0.7f, 0.f, 1.0f);
     float4 ambient = input.ambient * input.material.DiffuseAlbedo;
 
     float3 shadowFactor = 1;

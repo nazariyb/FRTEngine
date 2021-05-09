@@ -25,7 +25,7 @@ public:
     TetrisBoard(unsigned int width, unsigned int height, float cellSize=2.0f);
     virtual ~TetrisBoard();
 
-    Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
+    Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool, DirectX::XMFLOAT4 color);
     Result HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino, frt::MeshPool* meshPool);
     
     inline void RotateTetrominoClockwise(Tetromino* tetromino)

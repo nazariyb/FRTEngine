@@ -24,8 +24,8 @@ TetrisBoard::TetrisBoard()
 
 TetrisBoard::TetrisBoard(unsigned int width, unsigned int height, float cellSize /* = 2.0f*/)
     : _width(width)
-    , _height(height)
-    , _cellSize(cellSize)
+      , _height(height)
+      , _cellSize(cellSize)
 {
     _cells.reserve(_width * _height);
 
@@ -56,10 +56,11 @@ TetrisBoard::~TetrisBoard()
     }
 }
 
-Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
+Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool, XMFLOAT4 color)
 {
     // return gameWorld->SpawnObject<Tetromino>(Tetromino::Type::T, _cellSize / 2.f, TopBound, meshPool);
-    return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
+    return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound,
+                                             color, meshPool);
 }
 
 TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino, frt::MeshPool* meshPool)
@@ -81,11 +82,13 @@ TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromin
             {
                 if (cell->mesh != nullptr)
                 {
+#if defined(_DEBUG)
                     __debugbreak();
+#endif
                     isGameOver = true;
                     break;
                 }
-                
+
                 cell->mesh = tetromino->_meshes[i];
                 tetromino->_meshes[i] = nullptr;
                 ++harvested;
@@ -141,7 +144,7 @@ void TetrisBoard::UpdateContantBuffers()
         XMStoreFloat4x4(&projection,
                         App::GetInstance()->GetWindow()->GetGraphics()._camera.GetProjectionMatrix(
                             1.f, App::GetInstance()->GetWindow()->GetGraphics()._aspectRatio));
-        
+
         XMStoreFloat4x4(&mvp, XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection));
 
         memcpy(&buffer, &Tetromino::baseBuffer, sizeof(Mesh::SceneObjectConstantBuffer));
@@ -149,7 +152,8 @@ void TetrisBoard::UpdateContantBuffers()
         // XMStoreFloat4x4(&buffer.modelView, XMMatrixTranspose(XMLoadFloat4x4(&model) * XMLoadFloat4x4(&view)));
         XMStoreFloat4x4(&buffer.model, XMMatrixTranspose(XMLoadFloat4x4(&model)));
         XMStoreFloat4x4(&buffer.viewProj, XMMatrixTranspose(XMLoadFloat4x4(&view) * XMLoadFloat4x4(&projection)));
-        
+
+        buffer.diffuseAlbedo = cell->mesh->Color;
         cell->mesh->UpdateConstantBuffer(buffer);
     }
 }
@@ -301,15 +305,15 @@ void TetrisBoard::DropTetromino(Tetromino* tetromino)
     int row;
     unsigned column;
     Cell* cell;
-    
+
     for (Mesh* cube : tetromino->_meshes)
     {
         meshPosition = cube->GetWorldPosition();
         dists.push_back(meshPosition.y);
-        
+
         row = static_cast<int>(roundf((meshPosition.y - 1) / _cellSize));
         column = static_cast<unsigned>(roundf(meshPosition.x / _cellSize)) + _width / 2;
-        
+
         for (; row >= 0; --row)
         {
             if (row >= _height) continue;
@@ -392,7 +396,7 @@ unsigned TetrisBoard::ClearRowsIfNeeded(MeshPool* meshPool)
             cell->mesh = nullptr;
         }
     }
-    
+
     return rowsToClear.size();
 }
 
@@ -401,7 +405,7 @@ void TetrisBoard::Clear(MeshPool* meshPool)
     for (Cell* cell : _cells)
     {
         if (cell->mesh == nullptr) continue;
-        
+
         cell->mesh->Resize(0.f);
         cell->mesh->UpdateConstantBuffer({});
         meshPool->ReleaseMesh(cell->mesh);

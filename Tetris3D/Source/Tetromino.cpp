@@ -13,11 +13,11 @@ const unsigned int Tetromino::MeshesNum = 4;
 Mesh::SceneObjectConstantBuffer Tetromino::baseBuffer{};
 
 Tetromino::Tetromino(Type type)
-    : Tetromino(type, 1.0f, {}, nullptr)
+    : Tetromino(type, 1.0f, {}, { 1, 1, 1, 1 }, nullptr)
 {
 }
 
-Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshPool* meshPool/* = nullptr*/)
+Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, XMFLOAT4 color, MeshPool* meshPool/* = nullptr*/)
     : _type(type)
       , _radius(radius)
       , _rotation{}
@@ -27,7 +27,7 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
       , _leftBound{std::numeric_limits<float>::infinity()}
       , _rightBound{-std::numeric_limits<float>::infinity()}
 {
-    _owner = frt::App::GetInstance();
+    _owner = App::GetInstance();
 
     if (meshPool == nullptr)
     {
@@ -43,6 +43,7 @@ Tetromino::Tetromino(Type type, float radius, XMFLOAT3 worldPosition, frt::MeshP
         for (Mesh* mesh : _meshes)
         {
             mesh->Resize(_radius);
+            mesh->Color = color;
         }
     }
 
@@ -190,7 +191,8 @@ void Tetromino::UpdateConstantBuffers()
         {
             bounds.w = meshPosition.y;
         }
-        
+
+        buffer.diffuseAlbedo = _meshes[i]->Color;
         _meshes[i]->UpdateConstantBuffer(buffer);
     }
     _leftBound = bounds.x - _radius;

@@ -41,7 +41,8 @@ protected:
     unsigned _progress;
     float _lastTimeCheck;
     bool _isInputEnabled;
-    bool toDrop, toMoveDown;
+    bool toDrop, toMoveDown, toMoveLeft, toMoveRight;
+    bool toRotateClockwise, toRotateCounterClockwise;
     
     Tetromino* tetromino;
 

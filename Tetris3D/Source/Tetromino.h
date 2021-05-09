@@ -39,7 +39,7 @@ public:
     Tetromino() = delete;
     Tetromino(Type type);
     //Tetromino(Type type, float radius);
-    Tetromino(Type type, float radius, DirectX::XMFLOAT3 worldPosition, frt::MeshPool* meshPool = nullptr);
+    Tetromino(Type type, float radius, DirectX::XMFLOAT3 worldPosition, DirectX::XMFLOAT4 color, frt::MeshPool* meshPool = nullptr);
     //Tetromino(class frt::App* owner, frt::Mesh::SceneObjectConstantBuffer* buffer);
 
     inline void MoveX(float deltaX) { _worldPosition.x += deltaX; }

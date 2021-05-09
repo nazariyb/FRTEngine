@@ -20,16 +20,16 @@ using namespace DirectX;
 using namespace frt;
 
 const TetrisApp::LevelInfo TetrisApp::Levels[] = {
-    {{1.f, 1.f, .1f, 1.f}, 1.f, 10u},
-    {{1.f, .9f, .2f, 1.f}, 2.f, 10u},
-    {{1.f, .8f, .3f, 1.f}, 3.f, 10u},
-    {{1.f, .7f, .4f, 1.f}, 4.f, 10u},
-    {{1.f, .6f, .5f, 1.f}, 5.f, 10u},
-    {{1.f, .5f, .6f, 1.f}, 6.f, 10u},
-    {{1.f, .4f, .7f, 1.f}, 7.f, 10u},
-    {{1.f, .3f, .8f, 1.f}, 8.f, 10u},
-    {{1.f, .2f, .9f, 1.f}, 9.f, 10u},
-    {{1.f, .1f, 1.f, 1.f}, 10.f, 10u},
+    {{1.f, 1.f, .1f, 1.f}, 1.f, 3u},
+    {{1.f, .9f, .2f, 1.f}, 2.f, 3u},
+    {{1.f, .8f, .3f, 1.f}, 3.f, 3u},
+    {{1.f, .7f, .4f, 1.f}, 4.f, 3u},
+    {{1.f, .6f, .5f, 1.f}, 5.f, 3u},
+    {{1.f, .5f, .6f, 1.f}, 6.f, 3u},
+    {{1.f, .4f, .7f, 1.f}, 7.f, 3u},
+    {{1.f, .3f, .8f, 1.f}, 8.f, 3u},
+    {{1.f, .2f, .9f, 1.f}, 9.f, 3u},
+    {{1.f, .1f, 1.f, 1.f}, 10.f, 3u},
 };
 
 
@@ -41,6 +41,10 @@ TetrisApp::TetrisApp()
       , _isInputEnabled(true)
       , toDrop(false)
       , toMoveDown(false)
+      , toMoveLeft(false)
+      , toMoveRight(false)
+      , toRotateClockwise(false)
+      , toRotateCounterClockwise(false)
       , tetromino(nullptr)
       , _meshPool(nullptr)
       , _board(nullptr)
@@ -79,7 +83,7 @@ int TetrisApp::Run()
     world->SpawnObject<BoardBox>();
     _meshPool = world->SpawnObject<MeshPool>(10u * 20u);
     _board = world->SpawnObject<TetrisBoard>(10u, 20u, 2.0f);
-    tetromino = _board->SpawnTetromino(world, _meshPool);
+    tetromino = _board->SpawnTetromino(world, _meshPool, Levels[_currentLevel].color);
 
     window->keyboard.onKeyPressedEvent += [this](Event* event)
     {
@@ -95,7 +99,8 @@ int TetrisApp::Run()
             break;
         case 'F':
             if (tetromino == nullptr) break;
-            _board->MoveTetrominoLeft(tetromino);
+            if (!_isInputEnabled) break;
+            toMoveLeft = true;
             break;
         case 'G':
             if (tetromino == nullptr) break;
@@ -104,15 +109,18 @@ int TetrisApp::Run()
             break;
         case 'H':
             if (tetromino == nullptr) break;
-            _board->MoveTetrominoRight(tetromino);
+            if (!_isInputEnabled) break;
+            toMoveRight = true;
             break;
         case 'R':
             if (tetromino == nullptr) break;
-            _board->RotateTetrominoCounterclockwise(tetromino);
+            if (!_isInputEnabled) break;
+            toRotateCounterClockwise = true;
             break;
         case 'Y':
             if (tetromino == nullptr) break;
-            _board->RotateTetrominoClockwise(tetromino);
+            if (!_isInputEnabled) break;
+            toRotateClockwise = true;
             break;
         default: break;
         }
@@ -157,6 +165,8 @@ int TetrisApp::Run()
 
 void TetrisApp::Start()
 {
+    _progress = 0;
+    tetromino = _board->SpawnTetromino(world, _meshPool, Levels[_currentLevel].color);
 }
 
 void TetrisApp::Reset()
@@ -175,15 +185,15 @@ void TetrisApp::OnTetrominoLanded()
         return;
     }
     _progress += _board->ClearRowsIfNeeded(_meshPool);
+    Tetromino::baseBuffer.progress = static_cast<float>(_progress) / static_cast<float>(Levels[_currentLevel].goal);
     if (_progress >= Levels[_currentLevel].goal)
     {
         Logger::LogInfo("Level passed, go to level #" + std::to_string(_currentLevel + 1));
         ++_currentLevel;
-        Reset();
+        Start();
         return;
     }
-    Tetromino::baseBuffer.progress = static_cast<float>(_progress) / static_cast<float>(Levels[_currentLevel].goal);
-    tetromino = _board->SpawnTetromino(world, _meshPool);
+    tetromino = _board->SpawnTetromino(world, _meshPool, Levels[_currentLevel].color);
 }
 
 void TetrisApp::Update()
@@ -198,7 +208,31 @@ void TetrisApp::Update()
 
     if (tetromino == nullptr)
     {
-        tetromino = _board->SpawnTetromino(world, _meshPool);
+        tetromino = _board->SpawnTetromino(world, _meshPool, Levels[_currentLevel].color);
+    }
+
+    if (toMoveLeft)
+    {
+        _board->MoveTetrominoLeft(tetromino);
+        toMoveLeft = false;
+    }
+
+    if (toMoveRight)
+    {
+        _board->MoveTetrominoRight(tetromino);
+        toMoveRight = false;
+    }
+
+    if (toRotateClockwise)
+    {
+        _board->RotateTetrominoClockwise(tetromino);
+        toRotateClockwise = false;
+    }
+
+    if (toRotateCounterClockwise)
+    {
+        _board->RotateTetrominoCounterclockwise(tetromino);
+        toRotateCounterClockwise = false;
     }
 
     if (toDrop)

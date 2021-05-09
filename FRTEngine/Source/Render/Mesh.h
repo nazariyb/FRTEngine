@@ -77,6 +77,8 @@ public:
 
     static std::vector<UINT8> GenerateTextureData(uint32_t color1, uint32_t color2);
 
+    DirectX::XMFLOAT4 Color;
+    
 protected:
     std::vector<ConstantBuffer<SceneObjectConstantBuffer>*> _constantBuffers;
     class IndexBuffer* _indexBuffer;
