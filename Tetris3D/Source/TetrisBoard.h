@@ -64,7 +64,7 @@ private:
     
     bool MoveTetrominoLeft(Tetromino* tetromino, float deltaDistance);
     bool MoveTetrominoRight(Tetromino* tetromino, float deltaDistance);
-    bool MoveTetrominoDown(Tetromino* tetromino, float deltaDistance);
+    bool MoveTetrominoDown(Tetromino* tetromino, float deltaDistance, bool needCheck=true);
     
     bool IsMoveLeftPossible(Tetromino* tetromino);
     bool IsMoveRightPossible(Tetromino* tetromino);

@@ -69,7 +69,7 @@ int TetrisApp::Start()
         window->GetGraphics().OnKeyDown(ev->GetKeyCode());
 
         if (window->keyboard.IsKeyPressed('T'))
-            object1->MoveY(2.f);
+            _board->DropTetromino(object1);
         else if (window->keyboard.IsKeyPressed('F'))
             _board->MoveTetrominoLeft(object1);
         else if (window->keyboard.IsKeyPressed('G'))
