@@ -1,19 +1,14 @@
 #include "TetrisApp.h"
 #include <sstream>
 #include <Winuser.h>
-#include <iostream>
 #include <string>
 #include <vector>
-
 #include "window.h"
-#include "Exception.h"
 #include "Input/KeyboardEvent.h"
 #include "Debug/Debug.h"
-#include "MathLib.h"
 #include "Render/Graphics.h"
 #include "Render/Mesh.h"
 #include <DirectXMath.h>
-
 #include "BoardBox.h"
 #include "Tetromino.h"
 #include "Time/Time.h"
@@ -24,10 +19,28 @@
 using namespace DirectX;
 using namespace frt;
 
+const TetrisApp::LevelInfo TetrisApp::Levels[] = {
+    {{1.f, 1.f, .1f, 1.f}, 1.f, 10u},
+    {{1.f, .9f, .2f, 1.f}, 2.f, 10u},
+    {{1.f, .8f, .3f, 1.f}, 3.f, 10u},
+    {{1.f, .7f, .4f, 1.f}, 4.f, 10u},
+    {{1.f, .6f, .5f, 1.f}, 5.f, 10u},
+    {{1.f, .5f, .6f, 1.f}, 6.f, 10u},
+    {{1.f, .4f, .7f, 1.f}, 7.f, 10u},
+    {{1.f, .3f, .8f, 1.f}, 8.f, 10u},
+    {{1.f, .2f, .9f, 1.f}, 9.f, 10u},
+    {{1.f, .1f, 1.f, 1.f}, 10.f, 10u},
+};
+
 
 TetrisApp::TetrisApp()
     : App(1920, 1080, "Tetris3D")
+      , _currentLevel(0)
+      , _progress(0)
       , _lastTimeCheck{0.f}
+      , _isInputEnabled(true)
+      , toDrop(false)
+      , toMoveDown(false)
       , tetromino(nullptr)
       , _meshPool(nullptr)
       , _board(nullptr)
@@ -77,8 +90,8 @@ int TetrisApp::Run()
         {
         case 'T':
             if (tetromino == nullptr) break;
-            _board->DropTetromino(tetromino);
-            _runOnNextTick = [this]() { this->OnTetrominoLanded(); };
+            if (!_isInputEnabled) break;
+            toDrop = true;
             break;
         case 'F':
             if (tetromino == nullptr) break;
@@ -86,8 +99,8 @@ int TetrisApp::Run()
             break;
         case 'G':
             if (tetromino == nullptr) break;
-            if (_board->MoveTetrominoDown(tetromino) == TetrisBoard::UnableToMove)
-                OnTetrominoLanded();
+            if (!_isInputEnabled) break;
+            toMoveDown = true;
             break;
         case 'H':
             if (tetromino == nullptr) break;
@@ -148,20 +161,28 @@ void TetrisApp::Start()
 
 void TetrisApp::Reset()
 {
+    _progress = 0;
     tetromino = nullptr;
     _board->Clear(_meshPool);
 }
 
 void TetrisApp::OnTetrominoLanded()
 {
-    Tetromino::baseBuffer.progress += .1f;
     if (_board->HarvestTetromino(world, tetromino, _meshPool) == TetrisBoard::GameOver)
     {
         Logger::LogInfo("Game Over");
         Reset();
         return;
     }
-    _board->ClearRowsIfNeeded(_meshPool);
+    _progress += _board->ClearRowsIfNeeded(_meshPool);
+    if (_progress >= Levels[_currentLevel].goal)
+    {
+        Logger::LogInfo("Level passed, go to level #" + std::to_string(_currentLevel + 1));
+        ++_currentLevel;
+        Reset();
+        return;
+    }
+    Tetromino::baseBuffer.progress = static_cast<float>(_progress) / static_cast<float>(Levels[_currentLevel].goal);
     tetromino = _board->SpawnTetromino(world, _meshPool);
 }
 
@@ -169,19 +190,32 @@ void TetrisApp::Update()
 {
     App::Update();
 
+    for (auto handler : _runOnNextTick)
+    {
+        handler();
+        _runOnNextTick.clear();
+    }
+
     if (tetromino == nullptr)
     {
         tetromino = _board->SpawnTetromino(world, _meshPool);
     }
 
-    if (_runOnNextTick != nullptr)
+    if (toDrop)
     {
-        _runOnNextTick();
-        _runOnNextTick = nullptr;
+        _board->DropTetromino(tetromino);
+        toDrop = false;
+        return;
+    }
+    if (toMoveDown)
+    {
+        _board->MoveTetrominoDown(tetromino);
+        toMoveDown = false;
     }
 
+    _isInputEnabled = false;
     const float currentTime = Time::GetSecondsSinceFirstTick();
-    if (currentTime - _lastTimeCheck > 1.2f)
+    if (currentTime - _lastTimeCheck > 1 / Levels[_currentLevel].speed)
     {
         _lastTimeCheck = currentTime;
         if (_board->MoveTetrominoDown(tetromino) == TetrisBoard::UnableToMove)
@@ -189,4 +223,5 @@ void TetrisApp::Update()
             OnTetrominoLanded();
         }
     }
+    _isInputEnabled = true;
 }

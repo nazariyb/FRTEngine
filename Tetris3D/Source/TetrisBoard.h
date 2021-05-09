@@ -77,7 +77,7 @@ private:
     
     bool IsMoveLeftPossible(Tetromino* tetromino);
     bool IsMoveRightPossible(Tetromino* tetromino);
-    bool IsMoveDownPossible(Tetromino* tetromino);
+    bool IsMoveDownPossible(Tetromino* tetromino, float deltaDistance=1.f);
 
     bool ArePositionsValid(const std::vector<DirectX::XMFLOAT3>& positions, const DirectX::XMFLOAT3& offset={});
     bool IsPositionValid(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& offset={});

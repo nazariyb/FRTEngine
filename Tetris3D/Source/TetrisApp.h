@@ -15,6 +15,15 @@ class TetrisApp :
     public App
 {
 public:
+    struct LevelInfo
+    {
+        DirectX::XMFLOAT4 color;
+        float speed;
+        unsigned goal;
+    };
+    static const LevelInfo Levels[10];
+    
+public:
     TetrisApp();
     virtual ~TetrisApp();
     
@@ -27,14 +36,18 @@ protected:
     void Update() override;
 
     void OnTetrominoLanded();
-    
-    float _lastTimeCheck;
 
+    unsigned _currentLevel;
+    unsigned _progress;
+    float _lastTimeCheck;
+    bool _isInputEnabled;
+    bool toDrop, toMoveDown;
+    
     Tetromino* tetromino;
 
     frt::MeshPool* _meshPool;
     TetrisBoard* _board;
 
-    std::function<void()> _runOnNextTick;
+    std::vector<std::function<void()>> _runOnNextTick;
 };
 
