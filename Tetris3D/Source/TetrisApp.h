@@ -16,13 +16,18 @@ class TetrisApp :
 {
 public:
     TetrisApp();
+    virtual ~TetrisApp();
+    
     int Run() override;
 
 protected:
-    void OnTetrominoLanded();
+    void Start();
+    void Reset();
     
     void Update() override;
 
+    void OnTetrominoLanded();
+    
     float _lastTimeCheck;
 
     Tetromino* tetromino;

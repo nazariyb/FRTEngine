@@ -27,11 +27,17 @@ using namespace frt;
 
 TetrisApp::TetrisApp()
     : App(1920, 1080, "Tetris3D")
-    , _lastTimeCheck{0.f}
-    , tetromino(nullptr)
-    , _meshPool(nullptr)
-    , _board(nullptr)
+      , _lastTimeCheck{0.f}
+      , tetromino(nullptr)
+      , _meshPool(nullptr)
+      , _board(nullptr)
 {
+}
+
+TetrisApp::~TetrisApp()
+{
+    _board->Clear(_meshPool);
+    // TODO delete others
 }
 
 int TetrisApp::Run()
@@ -39,10 +45,10 @@ int TetrisApp::Run()
     Mesh::SceneObjectConstantBuffer& buffer = Tetromino::baseBuffer;
     XMStoreFloat3(&buffer.cameraPosition, XMLoadFloat3(&window->GetGraphics()._camera._position));
     XMStoreFloat3(&buffer.lightPosition,
-        //XMVector3Transform(
-                        // XMLoadFloat3(&window->GetGraphics()._camera._position),
-                      XMVectorSet(0.f, 30.f, 25.f, 1.f));
-          //            window->GetGraphics()._camera.GetViewMatrix()));
+                  //XMVector3Transform(
+                  // XMLoadFloat3(&window->GetGraphics()._camera._position),
+                  XMVectorSet(0.f, 30.f, 25.f, 1.f));
+    //            window->GetGraphics()._camera.GetViewMatrix()));
     XMStoreFloat4(&buffer.diffuseAlbedo, XMVectorSet(.2f, .6f, .2f, 1.f));
     XMStoreFloat4(&buffer.ambient, XMVectorSet(0.25f, 0.25f, 0.25f, 1.f));
     XMStoreFloat3(&buffer.lightColor, XMVectorSet(1.f, 1.f, 0.9f, 1.0f));
@@ -67,26 +73,36 @@ int TetrisApp::Run()
         KeyboardEvent* ev = static_cast<KeyboardEvent*>(event);
         window->GetGraphics().OnKeyDown(ev->GetKeyCode());
 
-        if (window->keyboard.IsKeyPressed('T'))
+        switch (ev->GetKeyCode())
         {
+        case 'T':
+            if (tetromino == nullptr) break;
             _board->DropTetromino(tetromino);
-            _runOnNextTick = [this](){ this->OnTetrominoLanded(); };
-        }
-        else if (window->keyboard.IsKeyPressed('F'))
+            _runOnNextTick = [this]() { this->OnTetrominoLanded(); };
+            break;
+        case 'F':
+            if (tetromino == nullptr) break;
             _board->MoveTetrominoLeft(tetromino);
-        else if (window->keyboard.IsKeyPressed('G'))
-        {
+            break;
+        case 'G':
+            if (tetromino == nullptr) break;
             if (_board->MoveTetrominoDown(tetromino) == TetrisBoard::UnableToMove)
-            {
                 OnTetrominoLanded();
-            }
-        }
-        else if (window->keyboard.IsKeyPressed('H'))
+            break;
+        case 'H':
+            if (tetromino == nullptr) break;
             _board->MoveTetrominoRight(tetromino);
-        else if (window->keyboard.IsKeyPressed('R'))
+            break;
+        case 'R':
+            if (tetromino == nullptr) break;
             _board->RotateTetrominoCounterclockwise(tetromino);
-        else if (window->keyboard.IsKeyPressed('Y'))
+            break;
+        case 'Y':
+            if (tetromino == nullptr) break;
             _board->RotateTetrominoClockwise(tetromino);
+            break;
+        default: break;
+        }
     };
 
     window->keyboard.onKeyReleasedEvent += [this](Event* event)
@@ -126,12 +142,23 @@ int TetrisApp::Run()
     return 0;
 }
 
+void TetrisApp::Start()
+{
+}
+
+void TetrisApp::Reset()
+{
+    tetromino = nullptr;
+    _board->Clear(_meshPool);
+}
+
 void TetrisApp::OnTetrominoLanded()
 {
     Tetromino::baseBuffer.progress += .1f;
-    if (_board->HarvestTetromino(world, tetromino) == TetrisBoard::GameOver)
+    if (_board->HarvestTetromino(world, tetromino, _meshPool) == TetrisBoard::GameOver)
     {
         Logger::LogInfo("Game Over");
+        Reset();
         return;
     }
     _board->ClearRowsIfNeeded(_meshPool);
@@ -141,6 +168,11 @@ void TetrisApp::OnTetrominoLanded()
 void TetrisApp::Update()
 {
     App::Update();
+
+    if (tetromino == nullptr)
+    {
+        tetromino = _board->SpawnTetromino(world, _meshPool);
+    }
 
     if (_runOnNextTick != nullptr)
     {

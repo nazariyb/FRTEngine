@@ -62,8 +62,10 @@ Tetromino* TetrisBoard::SpawnTetromino(GameWorld* gameWorld, MeshPool* meshPool)
     return gameWorld->SpawnObject<Tetromino>(static_cast<Tetromino::Type>(rand() % 7), _cellSize / 2.f, TopBound, meshPool);
 }
 
-TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino)
-{    
+TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromino* tetromino, frt::MeshPool* meshPool)
+{
+    unsigned harvested = 0;
+    bool isGameOver = false;
     for (int i = 0; i < tetromino->MeshesNum; ++i)
     {
         const XMFLOAT3& meshPosition = tetromino->_meshes[i]->GetWorldPosition();
@@ -77,12 +79,20 @@ TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromin
                                    XMLoadFloat3(&meshPosition),
                                    XMVectorReplicate(1e-3)))
             {
+                if (cell->mesh != nullptr)
+                {
+                    isGameOver = true;
+                    break;
+                }
+                
                 cell->mesh = tetromino->_meshes[i];
                 tetromino->_meshes[i] = nullptr;
+                ++harvested;
                 Logger::DebugLogInfo("Harvested");
                 break;
             }
         }
+        if (isGameOver) break;
     }
     gameWorld->DestroyObject(tetromino);
 #if defined(_DEBUG)
@@ -98,7 +108,19 @@ TetrisBoard::Result TetrisBoard::HarvestTetromino(GameWorld* gameWorld, Tetromin
     }
 #endif
 
-    return tetromino->GetWorldPosition().y >= TopBound.y ? GameOver : Ok;
+    if (isGameOver || harvested < tetromino->MeshesNum)
+    {
+        for (unsigned i = 0; i < tetromino->MeshesNum; ++i)
+        {
+            if (tetromino->_meshes[i] == nullptr) continue;
+            tetromino->_meshes[i]->Resize(0.f);
+            tetromino->_meshes[i]->UpdateConstantBuffer({});
+            meshPool->ReleaseMesh(tetromino->_meshes[i]);
+            tetromino->_meshes[i] = nullptr;
+        }
+        return GameOver;
+    }
+    return Ok;
 }
 
 void TetrisBoard::UpdateContantBuffers()
@@ -371,6 +393,19 @@ unsigned TetrisBoard::ClearRowsIfNeeded(MeshPool* meshPool)
     }
     
     return rowsToClear.size();
+}
+
+void TetrisBoard::Clear(MeshPool* meshPool)
+{
+    for (Cell* cell : _cells)
+    {
+        if (cell->mesh == nullptr) continue;
+        
+        cell->mesh->Resize(0.f);
+        cell->mesh->UpdateConstantBuffer({});
+        meshPool->ReleaseMesh(cell->mesh);
+        cell->mesh = nullptr;
+    }
 }
 
 void TetrisBoard::Update()

@@ -26,7 +26,7 @@ public:
     virtual ~TetrisBoard();
 
     Tetromino* SpawnTetromino(frt::GameWorld* gameWorld, frt::MeshPool* meshPool);
-    Result HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino);
+    Result HarvestTetromino(frt::GameWorld* gameWorld, Tetromino* tetromino, frt::MeshPool* meshPool);
     
     inline void RotateTetrominoClockwise(Tetromino* tetromino)
         { RotateTetromino(tetromino, -DirectX::XM_PIDIV2); }
@@ -41,6 +41,8 @@ public:
 
     unsigned ClearRowsIfNeeded(frt::MeshPool* meshPool);
 
+    void Clear(frt::MeshPool* meshPool);
+    
     virtual void Update() override;
 
 public:
