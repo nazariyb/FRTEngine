@@ -1,6 +1,4 @@
 #include "Window.h"
-#include <sstream>
-#include "Debug/Debug.h"
 
 namespace frt
 {
@@ -29,9 +27,9 @@ Window::~Window()
 }
 
 Window::Window(int width, int height, const char* name, HICON icon)
-#ifndef _DEBUG
+#if !defined(_DEBUG)
 noexcept
-#endif // _DEBUG
+#endif
     : _width(width), _height(height), _hInstance(GetModuleHandle(nullptr))
 {
     RegisterWinAPIClass(icon);

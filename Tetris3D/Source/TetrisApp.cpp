@@ -89,32 +89,32 @@ int TetrisApp::Run()
 
         switch (ev->GetKeyCode())
         {
-        case 'T':
+        case VK_UP:
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toDrop = true;
             break;
-        case 'F':
+        case VK_LEFT:
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toMoveLeft = true;
             break;
-        case 'G':
+        case VK_DOWN:
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toMoveDown = true;
             break;
-        case 'H':
+        case VK_RIGHT:
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toMoveRight = true;
             break;
-        case 'R':
+        case 'Z':
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toRotateCounterClockwise = true;
             break;
-        case 'Y':
+        case 'X':
             if (tetromino == nullptr) break;
             if (!_isInputEnabled) break;
             toRotateClockwise = true;

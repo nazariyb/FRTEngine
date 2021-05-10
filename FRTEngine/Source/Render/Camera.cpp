@@ -110,16 +110,16 @@ void Camera::OnKeyDown(WPARAM key)
     case 'D':
         _keysPressed.d = true;
         break;
-    case VK_LEFT:
+    case 'F':
         _keysPressed.left = true;
         break;
-    case VK_RIGHT:
+    case 'H':
         _keysPressed.right = true;
         break;
-    case VK_UP:
+    case 'T':
         _keysPressed.up = true;
         break;
-    case VK_DOWN:
+    case 'G':
         _keysPressed.down = true;
         break;
     case 'I':
@@ -145,16 +145,16 @@ void Camera::OnKeyUp(WPARAM key)
     case 'D':
         _keysPressed.d = false;
         break;
-    case VK_LEFT:
+    case 'F':
         _keysPressed.left = false;
         break;
-    case VK_RIGHT:
+    case 'H':
         _keysPressed.right = false;
         break;
-    case VK_UP:
+    case 'T':
         _keysPressed.up = false;
         break;
-    case VK_DOWN:
+    case 'G':
         _keysPressed.down = false;
         break;
     default: break;
