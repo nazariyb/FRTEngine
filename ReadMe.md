@@ -2,17 +2,17 @@
 
 ![game screenshot](ReadmeSrc/screenshot.jpg)
 
-###Controls
+### Controls
 
 `ESC` - exit the game
 
-#####Tetromino
+##### Tetromino
 
 `arrow up` - instantly drop tetromino<br>
 `other arrows` - move tetromino<br>
 `Z`/`X` - rotate tetromino counterclockwise/clockwise<br>
 
-#####Camera
+##### Camera
 
 `WASD` - move<br>
 `TFGH` - change angle of view<br>
