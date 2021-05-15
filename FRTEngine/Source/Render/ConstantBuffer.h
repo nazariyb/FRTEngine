@@ -50,7 +50,9 @@ public:
 
     inline virtual ~ConstantBuffer()
     {
-    };
+        CD3DX12_RANGE readRange(0, 0);
+        _cbvUploadHeap->Unmap(0, &readRange);
+    }
 
     virtual void Update() override {}
     virtual void PopulateCommandList() override {}

@@ -1,4 +1,6 @@
 #include "Window.h"
+#include "Exception.h"
+
 
 namespace frt
 {
@@ -26,10 +28,7 @@ Window::~Window()
     DestroyWindow(_hWindow);
 }
 
-Window::Window(int width, int height, const char* name, HICON icon)
-#if !defined(_DEBUG)
-noexcept
-#endif
+Window::Window(int width, int height, const char* name, HICON icon) //noexcept(IS_DEBUG)
     : _width(width), _height(height), _hInstance(GetModuleHandle(nullptr))
 {
     RegisterWinAPIClass(icon);

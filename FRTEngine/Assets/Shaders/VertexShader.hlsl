@@ -1,22 +1,5 @@
 cbuffer SceneConstantBuffer : register(b0)
 {
-    // float4x4 g_mWorldViewProj;
-    // float4x4 modelView;
-    // float3 lightPosition;  //
-    // float falloffStart;    //
-    // float3 lightColor;     //
-    // float falloffEnd;      //
-    // float4 diffuseColor;
-    // float4 ambient;
-    // float4 padding1;
-    // float diffuseIntensity;
-    // float attenuationConst;
-    // float attenuationLinear;
-    // float attenuationQuad;
-    // float specularIntensity;
-    // float specularPower;
-    // float deltaTime;
-    // float padding2[5];
     float4x4 model;
     float4x4 viewProj;
     float3 cameraPosition;

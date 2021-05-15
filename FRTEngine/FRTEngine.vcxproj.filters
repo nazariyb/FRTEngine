@@ -108,6 +108,23 @@
     <ClInclude Include="Source\Render\MeshPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Assets\Shaders\LightHelper.hlsli" />
+    <ClInclude Include="Assets\Shaders\Structures.hlsli" />
+    <ClInclude Include="Source\Render\PixelShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Primitives\Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\Primitives\Plane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Render\VertexShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\ShaderReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Window.cpp">
@@ -185,13 +202,30 @@
     <ClCompile Include="Source\Render\MeshPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Render\PixelShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Primitives\Cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\Primitives\Plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Render\VertexShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\ShaderReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Assets\Shaders\shaders.hlsl" />
-    <FxCompile Include="Assets\Shaders\PixelShader.hlsl" />
     <FxCompile Include="Assets\Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Assets\Shaders\BoardWallPixelShader.hlsl" />
+    <FxCompile Include="Assets\Shaders\FloorPixelShader.hlsl" />
+    <FxCompile Include="Assets\Shaders\BlockPixelShader.hlsl" />
   </ItemGroup>
 </Project>

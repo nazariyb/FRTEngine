@@ -1,9 +1,7 @@
 #pragma once
+#include "Exception.h"
 #include "Render/GraphicsResource.h"
 #include "Tools/DXHelper.h"
-
-#include "Utils/Logger/Logger.h"
-#include <utility>
 
 
 namespace frt

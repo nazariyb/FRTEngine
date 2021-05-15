@@ -1,5 +1,7 @@
 #include "IndexBuffer.h"
 
+#include "Exception.h"
+
 namespace frt
 {
 IndexBuffer::IndexBuffer(Graphics* owner, UINT8* indices, UINT indicesNum)

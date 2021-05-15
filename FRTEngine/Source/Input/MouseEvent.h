@@ -3,7 +3,7 @@
 #include "Input/InputEvent.h"
 #include "Input/MouseInfo.h"
 
-
+ 
 namespace frt
 {
 enum class FRTENGINE_API MouseEventType

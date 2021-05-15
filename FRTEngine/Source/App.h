@@ -1,9 +1,7 @@
 #pragma once
 #include "FRTEngine.h"
-#include "WindowsMinimal.h"
 #include "Window.h"
 #include "GameWorld.h"
-
 #include <cassert>
 
 using frt::Window;
@@ -21,7 +19,7 @@ public:
     static App* GetInstance();
     
     template<class T>
-    static frt::App* Launch(HINSTANCE hInstance, HICON icon);
+    static App* Launch(HINSTANCE hInstance, HICON icon);
     static void Shutdown();
 
     Window* GetWindow();
@@ -48,9 +46,9 @@ protected:
 
 
 template<class T>
-frt::App* frt::App::Launch(HINSTANCE hInstance, HICON icon)
+App* App::Launch(HINSTANCE hInstance, HICON icon)
 {
-    static_assert((std::is_base_of<frt::App, T>::value));
+    static_assert(std::is_base_of<App, T>::value);
     _instance = new T();
     _instance->Init(hInstance, icon);
     _instance->Run();
@@ -58,4 +56,3 @@ frt::App* frt::App::Launch(HINSTANCE hInstance, HICON icon)
 }
 
 }
-

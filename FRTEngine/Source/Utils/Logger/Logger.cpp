@@ -15,7 +15,8 @@ using DirectX::XMFLOAT4;
 
 namespace frt
 {
-const string Logger::_logFileName = "..\\Binaries\\x64\\Debug\\Tetris3D\\log.txt"; // TODO: path
+//const string Logger::_logFileName = "..\\Binaries\\x64\\Debug\\Tetris3D\\log.txt"; // TODO: path
+ const string Logger::_logFileName = "log.txt"; // TODO: path
 ofstream Logger::_logBuffer{ _logFileName }; // TODO: don't keep the entire log file in memory through entire runtime
 
 void Logger::DebugLogInfo(const string& message)

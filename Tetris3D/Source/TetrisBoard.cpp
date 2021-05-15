@@ -1,5 +1,4 @@
 #include "TetrisBoard.h"
-
 #include <complex>
 #include "App.h"
 #include "Tetromino.h"
@@ -8,6 +7,7 @@
 #include "GameWorld.h"
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 
 using namespace frt;
 using namespace DirectX;
@@ -331,7 +331,11 @@ void TetrisBoard::DropTetromino(Tetromino* tetromino)
     }
     float distToMove = *std::min_element(dists.begin(), dists.end()) - _cellSize / 2;
     Logger::DebugLogInfo("drop to: " + std::to_string(tetromino->GetWorldPosition().y - distToMove));
+#if IS_DEBUG
     if (MoveTetrominoDown(tetromino, -distToMove) == UnableToMove) __debugbreak();
+#else
+    MoveTetrominoDown(tetromino, -distToMove);
+#endif
 }
 
 unsigned TetrisBoard::ClearRowsIfNeeded(MeshPool* meshPool)

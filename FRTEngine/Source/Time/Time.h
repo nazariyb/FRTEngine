@@ -2,10 +2,6 @@
 
 #include "FRTEngine.h"
 #include "WindowsMinimal.h"
-
-#include <profileapi.h>
-#include <sysinfoapi.h>
-#include <timezoneapi.h>
 #include <chrono>
 
 

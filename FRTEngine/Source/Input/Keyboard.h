@@ -1,9 +1,6 @@
 #pragma once
 #include "FRTEngine.h"
-
-
 #include "Input/KeyboardEvent.h"
-
 #include <bitset>
 
 
@@ -14,7 +11,6 @@ class FRTENGINE_API Keyboard
     friend class Window;
 
 public:
-
     KeyboardEvent onKeyPressedEvent;
     KeyboardEvent onKeyReleasedEvent;
     KeyboardEvent onCharEnteredEvent;
@@ -29,7 +25,6 @@ public:
     bool IsAutorepeatEnabled() const noexcept;
 
 private:
-
     void OnKeyPressed(unsigned char keycode) noexcept;
     void OnKeyReleased(unsigned char keycode) noexcept;
     void OnCharEntered(char character) noexcept;
@@ -37,7 +32,6 @@ private:
     void ClearKeyStates() noexcept;
 
 private:
-
     bool autorepeatEnabled = false;
 
     static constexpr unsigned int maxKeysNumber = 256u;

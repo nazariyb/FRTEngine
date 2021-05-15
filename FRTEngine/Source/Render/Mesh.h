@@ -35,31 +35,23 @@ public:
 
     struct SceneObjectConstantBuffer
     {
-        // DirectX::XMFLOAT4X4 mvp;   // Model-view-projection
         DirectX::XMFLOAT4X4 model;
         DirectX::XMFLOAT4X4 viewProj;
         DirectX::XMFLOAT3 cameraPosition;
         FLOAT roughness;
-        DirectX::XMFLOAT3 lightPosition1; //
-        FLOAT falloffStart;              //
-        DirectX::XMFLOAT3 lightPosition2; //
-        FLOAT falloffEnd;                //
-        DirectX::XMFLOAT3 lightColor;    //
+        DirectX::XMFLOAT3 lightPosition1;
+        FLOAT falloffStart;
+        DirectX::XMFLOAT3 lightPosition2;
+        FLOAT falloffEnd;
+        DirectX::XMFLOAT3 lightColor;
         float padding0;
         DirectX::XMFLOAT4 ambient;
         DirectX::XMFLOAT4 diffuseAlbedo;
         DirectX::XMFLOAT3 FresnelR0;
-        // FLOAT diffuseIntensity;
-        // FLOAT attenuationConst;
-        // FLOAT attenuationLinear;
-        // FLOAT attenuationQuad;
-        // FLOAT specularIntensity;
-        // FLOAT specularPower;
-        // FLOAT deltaTime;
         FLOAT progress;
         FLOAT padding[4];
     };
-    static_assert((sizeof(SceneObjectConstantBuffer) % 256) == 0, "Constant Buffer size must be 256-byte aligned");
+    static_assert(sizeof(SceneObjectConstantBuffer) % 256 == 0, "Constant Buffer size must be 256-byte aligned");
 
     struct Vertex
     {

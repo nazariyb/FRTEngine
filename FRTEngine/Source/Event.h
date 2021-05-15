@@ -11,6 +11,7 @@ namespace frt
 class FRTENGINE_API Event
 {
 public:
+    virtual ~Event() = default;
     virtual void Invoke() noexcept;
 
     virtual Event& operator+=(std::function<void(Event*)>);

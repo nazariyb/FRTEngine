@@ -1,24 +1,24 @@
 #include "WindowsMinimal.h"
 #include "Exception.h"
 #include "TetrisApp.h"
-//#include "d3dx12.h"
 #include "FRTEngine.h"
 #include "resource.h"
 
-using frt::Window;
 using frt::Exception;
-using frt::Mouse;
 using frt::Logger;
 
-#include <iostream>
-
+void Exit()
+{
+    App::Shutdown();
+    Logger::Flush();
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 #ifdef _DEBUG
     try
     {
-#endif // _DEBUG
+#endif
         
         App::Launch<TetrisApp>(hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(WIN_ICON)));
 
@@ -26,7 +26,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     catch (const Exception& e)
     {
-        // TODO: log
         Logger::DebugLogError(e.GetType());
         Logger::DebugLogError(e.What());
         Logger::Flush();
@@ -44,10 +43,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
 
-#endif // _DEBUG
+#endif
 
-    App::Shutdown();
-
-    Logger::Flush();
+    Exit();
     return 0;
 }

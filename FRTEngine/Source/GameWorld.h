@@ -1,9 +1,6 @@
 #pragma once
 #include "FRTEngine.h"
-#include <DirectXMath.h>
 #include <vector>
-#include <WindowsMinimal.h>
-#include <memory>
 #include "Render/Mesh.h"
 #include "ITickable.h"
 #include "GameObject.h"

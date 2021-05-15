@@ -362,14 +362,28 @@ namespace frt
         ComPtr<IDXGIFactory4> factory;
         THROW_IF_FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
 
-        ComPtr<IDXGIAdapter1> hardwareAdapter;
-        GetHardwareAdapter(factory.Get(), &hardwareAdapter);
+        if (false)
+        {
+            ComPtr<IDXGIAdapter> warpAdapter;
+            THROW_IF_FAILED(factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 
-        THROW_IF_FAILED(D3D12CreateDevice(
-            hardwareAdapter.Get(),
-            D3D_FEATURE_LEVEL_11_0,
-            IID_PPV_ARGS(&_device)
-        ));
+            THROW_IF_FAILED(D3D12CreateDevice(
+                warpAdapter.Get(),
+                D3D_FEATURE_LEVEL_11_0,
+                IID_PPV_ARGS(&_device)
+                ));
+        }
+        else
+        {
+            ComPtr<IDXGIAdapter1> hardwareAdapter;
+            GetHardwareAdapter(factory.Get(), &hardwareAdapter);
+
+            THROW_IF_FAILED(D3D12CreateDevice(
+                hardwareAdapter.Get(),
+                D3D_FEATURE_LEVEL_11_0,
+                IID_PPV_ARGS(&_device)
+            ));
+        }
 
         // Describe and create the command queue.
         D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -526,11 +540,11 @@ namespace frt
             // FIXME: paths
             THROW_IF_FAILED(
                 ShaderReader::ReadDataFromFile(
-                    L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\VertexShader.cso",
+                    L"VertexShader.cso",
                     &pVertexShaderData, &vertexShaderDataLength));
             THROW_IF_FAILED(
                 ShaderReader::ReadDataFromFile(
-                    L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\BlockPixelShader.cso",
+                    L"BlockPixelShader.cso",
                     &pPixelShaderData, &pixelShaderDataLength));
 
             // Define the vertex input layout.
@@ -566,7 +580,7 @@ namespace frt
             {
                 THROW_IF_FAILED(
                     ShaderReader::ReadDataFromFile(
-                        L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\BoardWallPixelShader.cso",
+                        L"BoardWallPixelShader.cso",
                         &pPixelShaderData, &pixelShaderDataLength));
 
                 D3D12_INPUT_ELEMENT_DESC inputElementDescs2[] =
@@ -586,7 +600,7 @@ namespace frt
             {
                 THROW_IF_FAILED(
                     ShaderReader::ReadDataFromFile(
-                        L"D:\\FRT\\FRTEngine\\Binaries\\x64\\Debug\\Tetris3D\\FloorPixelShader.cso",
+                        L"FloorPixelShader.cso",
                         &pPixelShaderData, &pixelShaderDataLength));
 
                 D3D12_INPUT_ELEMENT_DESC inputElementDescs3[] =
@@ -667,7 +681,9 @@ namespace frt
         _commandList->ClearDepthStencilView(_dsvHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH,
                                             1.0f, 0, 0, nullptr);
 
+#if IS_DEBUG
         PIXBeginEvent(_commandList.Get(), 0, L"Draw");
+#endif
         if (bUseBundles)
         {
             // Execute the prebuilt bundle.
@@ -735,8 +751,9 @@ namespace frt
                 }
             }
         }
+#if IS_DEBUG
         PIXEndEvent(_commandList.Get());
-
+#endif
         // Indicate that the back buffer will now be used to present.
         auto bar4 = CD3DX12_RESOURCE_BARRIER::Transition(_renderTargets[_frameIndex].Get(),
                                                          D3D12_RESOURCE_STATE_RENDER_TARGET,

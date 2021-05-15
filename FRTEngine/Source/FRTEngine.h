@@ -9,5 +9,11 @@
 #endif
 
 
+#if defined(_DEBUG)
+#define IS_DEBUG 1
 #define D3DCOMPILE_DEBUG 1
+#else
+#define IS_DEBUG 0
+#define D3DCOMPILE_DEBUG 0
+#endif
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "FRTEngine.h"
 #include "WindowsMinimal.h"
-
 #include <stdint.h>
 
 

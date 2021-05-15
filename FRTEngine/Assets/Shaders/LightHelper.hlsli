@@ -6,7 +6,7 @@ float CalcAttenuation(float d, float falloffStart, float falloffEnd)
     return saturate((falloffEnd - d) / (falloffEnd - falloffStart));
 }
 
-// Schlick gives an approximation to Fresnel reflectance (see pg. 233 "Real-Time Rendering 3rd Ed.").
+// Schlick gives an approximation to Fresnel reflectance
 // R0 = ( (n-1)/(n+1) )^2, where n is the index of refraction.
 float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
 {
