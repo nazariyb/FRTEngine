@@ -1,0 +1,762 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="frt::App">
+    <Position X="14" Y="10.5" Width="1.5" />
+    <Members>
+      <Field Name="_windowHeight" Hidden="true" />
+      <Field Name="_windowName" Hidden="true" />
+      <Field Name="_windowWidth" Hidden="true" />
+      <Method Name="~App" Hidden="true" />
+      <Method Name="App" Hidden="true" />
+      <Method Name="GetInstance" Hidden="true" />
+      <Method Name="GetResolution" Hidden="true" />
+      <Method Name="GetWindow" Hidden="true" />
+      <Method Name="GetWorld" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Struct Name="frt::App::__unnamed_struct_0025_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\App.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <AssociationLine Name="window" Type="frt::Window" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.688" Y="10.5" />
+        <Point X="14.688" Y="10.151" />
+        <Point X="13.562" Y="10.151" />
+        <Point X="13.562" Y="9.776" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="world" Type="frt::GameWorld" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14" Y="13.25" />
+        <Point X="14" Y="13.324" />
+        <Point X="12.833" Y="13.324" Type="JumpStart" />
+        <Point X="12.667" Y="13.324" Type="JumpEnd" />
+        <Point X="7.375" Y="13.324" />
+        <Point X="7.375" Y="14" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>IAQEEAIAQAAAAAAAAAAAAQAABAAAAAAIAhADCACgAQI=</HashCode>
+      <FileName>Source\App.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="window" />
+      <Field Name="world" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Event">
+    <Position X="5.5" Y="6" Width="1.5" />
+    <Members>
+      <Method Name="~Event" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAEAgAAQAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Event.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::Exception">
+    <Position X="10.75" Y="15.25" Width="2.5" />
+    <Members>
+      <Method Name="~Exception" Hidden="true" />
+      <Method Name="Exception" Hidden="true" />
+      <Field Name="file" Hidden="true" />
+      <Method Name="GetOriginString" Hidden="true" />
+      <Field Name="hr" Hidden="true" />
+      <Field Name="line" Hidden="true" />
+      <Method Name="what" Hidden="true" />
+      <Field Name="whatBuffer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEAAIAIAACAAAAAAAAAABAAAIABAAFAJABEAAAAAIA=</HashCode>
+      <FileName>Source\Exception.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::GameObject">
+    <Position X="5.25" Y="3.5" Width="2.25" />
+    <InheritanceLine Type="frt::ITickable" ManuallyRouted="true">
+      <Path>
+        <Point X="9" Y="2.046" />
+        <Point X="9" Y="2.318" />
+        <Point X="8.06" Y="2.318" />
+        <Point X="8.06" Y="3.308" />
+        <Point X="6.375" Y="3.308" />
+        <Point X="6.375" Y="3.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::GameWorld">
+    <Position X="5.25" Y="0.5" Width="2.25" />
+    <Members>
+      <Method Name="~GameWorld" Hidden="true" />
+      <Method Name="GameWorld" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAQCABAAAAAABAEAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\GameWorld.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::InputEvent">
+    <Position X="6.5" Y="11.75" Width="1.5" />
+    <Members>
+      <Method Name="InputEvent" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="frt::Event" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.688" Y="7.747" />
+        <Point X="5.688" Y="12.438" />
+        <Point X="6.5" Y="12.438" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAAgAAAAAAAAAAAgQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Input\InputEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::KeyboardEvent">
+    <Position X="6.5" Y="8.75" Width="2" />
+    <Members>
+      <Method Name="GetKeyCharacter" Hidden="true" />
+      <Method Name="GetKeyCode" Hidden="true" />
+      <Method Name="GetType" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+      <Method Name="KeyboardEvent" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="frt::InputEvent" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6.5" Y="12" />
+        <Point X="6.06" Y="12" />
+        <Point X="6.06" Y="10" />
+        <Point X="6.5" Y="10" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AgAoAIAAAAAIAAAAAAgQAAAAAAABAAEAgAAAQAAAAAA=</HashCode>
+      <FileName>Source\Input\KeyboardEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::MouseEvent">
+    <Position X="8.75" Y="11" Width="1.5" />
+    <Members>
+      <Method Name="GetPosition" Hidden="true" />
+      <Method Name="GetPositionX" Hidden="true" />
+      <Method Name="GetPositionY" Hidden="true" />
+      <Method Name="GetType" Hidden="true" />
+      <Method Name="Invoke" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+      <Method Name="MouseEvent" Hidden="true" />
+      <Field Name="mouseState" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAACAIAAEAAAgQAAAAAAABAAGAAAAAIAAAAAA=</HashCode>
+      <FileName>Source\Input\MouseEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::ITickable">
+    <Position X="8" Y="0.75" Width="2" />
+    <Members>
+      <Method Name="~ITickable" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Source\ITickable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::ConstantBuffer&lt;C&gt;">
+    <Position X="8" Y="2.75" Width="2" />
+    <Members>
+      <Method Name="~ConstantBuffer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIQAAgAgAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Render\ConstantBuffer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::GraphicsResource">
+    <Position X="10.75" Y="1" Width="1.5" />
+    <Members>
+      <Method Name="~GraphicsResource" Hidden="true" />
+      <Method Name="GraphicsResource" Hidden="true" />
+      <Method Name="PostIncConstBuffersNum" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="_owner" Type="frt::Graphics" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.25" Y="1.531" />
+        <Point X="15.125" Y="1.531" />
+        <Point X="15.125" Y="7" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAgIQAAAAAAAIAAAAACAAAAAgAIAAAAAAAABA=</HashCode>
+      <FileName>Source\Render\GraphicsResource.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_owner" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::IndexBuffer">
+    <Position X="12.5" Y="2" Width="2" />
+    <Members>
+      <Method Name="IndexBuffer" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="frt::GraphicsResource" FixedFromPoint="true">
+      <Path>
+        <Point X="12.25" Y="1.75" />
+        <Point X="13.5" Y="1.75" />
+        <Point X="13.5" Y="2" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="_indexBufferView" Type="D3D12_INDEX_BUFFER_VIEW" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.5" Y="3.035" />
+        <Point X="11.75" Y="3.035" />
+        <Point X="11.75" Y="3.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AIQAAgAIAAAAAAAAAAAAEAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Render\IndexBuffer.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_indexBufferView" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Mesh">
+    <Position X="15.75" Y="0.75" Width="2.25" />
+    <Members>
+      <Field Name="_initialPosition" Hidden="true" />
+      <Field Name="_texture" Hidden="true" />
+      <Method Name="~Mesh" Hidden="true" />
+      <Method Name="GenerateTextureData" Hidden="true" />
+      <Method Name="GetIndexDataSize" Hidden="true" />
+      <Method Name="GetIndices" Hidden="true" />
+      <Method Name="GetVertexDataSize" Hidden="true" />
+      <Method Name="GetVertices" Hidden="true" />
+      <Method Name="GetWorldPosition" Hidden="true" />
+      <Method Name="Mesh" Hidden="true" />
+      <Method Name="Resize" Hidden="true" />
+      <Field Name="TextureHeight" Hidden="true" />
+      <Field Name="TexturePixelSize" Hidden="true" />
+      <Field Name="TextureWidth" Hidden="true" />
+      <Field Name="vertexBufferSlot" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="frt::Mesh::SceneObjectConstantBuffer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Render\Mesh.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="frt::Mesh::Vertex">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Render\Mesh.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <InheritanceLine Type="frt::ITickable" FixedToPoint="true">
+      <Path>
+        <Point X="9" Y="0.75" />
+        <Point X="9" Y="0.375" />
+        <Point X="16.438" Y="0.375" />
+        <Point X="16.438" Y="0.75" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="_vertexBuffer" Type="frt::VertexBuffer" FixedFromPoint="true">
+      <Path>
+        <Point X="15.75" Y="5.625" />
+        <Point X="15.208" Y="5.625" Type="JumpStart" />
+        <Point X="15.042" Y="5.625" Type="JumpEnd" />
+        <Point X="14.5" Y="5.625" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_worldPosition" Type="DirectX::XMFLOAT3" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.938" Y="6.907" />
+        <Point X="17.938" Y="9.5" />
+        <Point X="18.108" Y="9.5" />
+        <Point X="18.108" Y="15.125" />
+        <Point X="17.562" Y="15.125" />
+        <Point X="17.562" Y="15.5" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>CIQAAAFACQGEAASAggAAECIgAAAAAoSAAQgEgAEoAAA=</HashCode>
+      <FileName>Source\Render\Mesh.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_indexBuffer" />
+      <Field Name="_vertexBuffer" />
+      <Field Name="Color" />
+      <Field Name="_worldPosition" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::MeshPool">
+    <Position X="7.75" Y="5.25" Width="2.25" />
+    <Members>
+      <Method Name="~MeshPool" Hidden="true" />
+      <Method Name="MeshPool" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Enum Name="frt::MeshPool::Result" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Render\MeshPool.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <InheritanceLine Type="frt::GameObject" FixedToPoint="true">
+      <Path>
+        <Point X="6.375" Y="5.31" />
+        <Point X="6.375" Y="5.687" />
+        <Point X="7.75" Y="5.687" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AIAAAAQQAACEAAAAAAAEAAABAAAgAAAAQAAAAAgAAAA=</HashCode>
+      <FileName>Source\Render\MeshPool.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::Cube">
+    <Position X="16" Y="9.75" Width="2" />
+    <Members>
+      <Method Name="~Cube" Hidden="true" />
+      <Method Name="Cube" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="frt::Mesh" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="17" Y="6.907" />
+        <Point X="17" Y="8.611" />
+        <Point X="17" Y="8.611" />
+        <Point X="17" Y="9.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAgAAAAAAAAAAAAAAAAAAAAAAABAAAAAAEAAAA=</HashCode>
+      <FileName>Source\Render\Primitives\Cube.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::Plane">
+    <Position X="16" Y="11.75" Width="2" />
+    <NestedTypes>
+      <Enum Name="frt::Plane::Orientation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Render\Primitives\Plane.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <InheritanceLine Type="frt::Mesh" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17" Y="6.907" />
+        <Point X="17" Y="9.458" />
+        <Point X="15.872" Y="9.458" />
+        <Point X="15.872" Y="11.558" />
+        <Point X="16.938" Y="11.558" />
+        <Point X="16.938" Y="11.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAACAIAAAAgAAAAAAABAAAAAAAAIAAAEAAAA=</HashCode>
+      <FileName>Source\Render\Primitives\Plane.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::Logger">
+    <Position X="8" Y="15" Width="2.25" />
+    <Members>
+      <Method Name="Flush" Hidden="true" />
+      <Method Name="FormatTwoDigits" Hidden="true" />
+      <Method Name="Log" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAgAAAAAAAAAABoAAAAIAgIAAAAAAAAgAAIABA=</HashCode>
+      <FileName>Source\Utils\Logger\Logger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::Time">
+    <Position X="5.75" Y="15" Width="2" />
+    <Members>
+      <Method Name="GetCurrentTimeInMilliSeconds" Hidden="true" />
+      <Method Name="GetCurrentTimeInSeconds" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ABAAAACAAAAAAAAQAAAEAAQBgAAAAQAAAAACAAAAQAA=</HashCode>
+      <FileName>Source\Time\Time.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::VertexBuffer">
+    <Position X="12.5" Y="4.5" Width="2" />
+    <Members>
+      <Field Name="_vertexBufferSlot" Hidden="true" />
+      <Method Name="VertexBuffer" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="frt::GraphicsResource" FixedToPoint="true">
+      <Path>
+        <Point X="11.5" Y="2.041" />
+        <Point X="11.5" Y="4.2" />
+        <Point X="13.375" Y="4.2" />
+        <Point X="13.375" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="_vertexBufferView" Type="D3D12_VERTEX_BUFFER_VIEW" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.5" Y="5.5" />
+        <Point X="11.938" Y="5.5" />
+        <Point X="11.938" Y="5.062" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAQAAAAAAggAAgAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Source\Render\VertexBuffer.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_vertexBufferView" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Graphics">
+    <Position X="14.25" Y="7" Width="2" />
+    <Members>
+      <Field Name="_aspectRatio" Hidden="true" />
+      <Field Name="_bundle" Hidden="true" />
+      <Field Name="_cbvSrvDescriptorSize" Hidden="true" />
+      <Field Name="_cbvSrvHeap" Hidden="true" />
+      <Field Name="_commandAllocator" Hidden="true" />
+      <Field Name="_commandAllocators" Hidden="true" />
+      <Field Name="_commandList" Hidden="true" />
+      <Field Name="_commandQueue" Hidden="true" />
+      <Field Name="_constBuffersNum" Hidden="true" />
+      <Field Name="_currentFrameResourceIndex" Hidden="true" />
+      <Field Name="_depthStencil" Hidden="true" />
+      <Field Name="_device" Hidden="true" />
+      <Field Name="_dsvHeap" Hidden="true" />
+      <Field Name="_fence" Hidden="true" />
+      <Field Name="_fenceEvent" Hidden="true" />
+      <Field Name="_fenceValue" Hidden="true" />
+      <Field Name="_fenceValues" Hidden="true" />
+      <Field Name="_frameCounter" Hidden="true" />
+      <Field Name="_frameIndex" Hidden="true" />
+      <Field Name="_indicesNum" Hidden="true" />
+      <Field Name="_pipelineStates" Hidden="true" />
+      <Field Name="_renderTargets" Hidden="true" />
+      <Field Name="_rootSignature" Hidden="true" />
+      <Field Name="_rtvDescriptorSize" Hidden="true" />
+      <Field Name="_rtvHeap" Hidden="true" />
+      <Field Name="_samplerHeap" Hidden="true" />
+      <Field Name="_scissorRect" Hidden="true" />
+      <Field Name="_swapChain" Hidden="true" />
+      <Field Name="_textures" Hidden="true" />
+      <Field Name="_viewport" Hidden="true" />
+      <Method Name="~Graphics" Hidden="true" />
+      <Field Name="bMove" Hidden="true" />
+      <Field Name="bRotate" Hidden="true" />
+      <Field Name="bUseBundles" Hidden="true" />
+      <Field Name="ColumnCount" Hidden="true" />
+      <Field Name="currentOffsetX" Hidden="true" />
+      <Field Name="currentOffsetY" Hidden="true" />
+      <Field Name="currentRotation" Hidden="true" />
+      <Field Name="currentTranslation" Hidden="true" />
+      <Method Name="Destroy" Hidden="true" />
+      <Field Name="fovDegrees" Hidden="true" />
+      <Field Name="FrameCount" Hidden="true" />
+      <Method Name="Graphics" Hidden="true" />
+      <Field Name="MaterialCount" Hidden="true" />
+      <Field Name="offsetBoundsX" Hidden="true" />
+      <Field Name="offsetBoundsY" Hidden="true" />
+      <Method Name="OnKeyDown" Hidden="true" />
+      <Method Name="OnKeyUp" Hidden="true" />
+      <Field Name="perspectiveFarZ" Hidden="true" />
+      <Field Name="perspectiveNearZ" Hidden="true" />
+      <Field Name="Pitch" Hidden="true" />
+      <Field Name="PlanesCount" Hidden="true" />
+      <Field Name="Roll" Hidden="true" />
+      <Field Name="RowCount" Hidden="true" />
+      <Field Name="SpacingInterval" Hidden="true" />
+      <Field Name="translationSpeed" Hidden="true" />
+      <Field Name="Yaw" Hidden="true" />
+      <Field Name="zOffset" Hidden="true" />
+    </Members>
+    <AssociationLine Name="_owner" Type="frt::Window" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.188" Y="9.257" />
+        <Point X="15.188" Y="9.688" />
+        <Point X="13.75" Y="9.688" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>IJQAiCUCiyCAA8EAATAEQQARSIJEjAAIABfeECSJAhM=</HashCode>
+      <FileName>Source\Render\Graphics.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_owner" />
+      <Field Name="_camera" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Window">
+    <Position X="12" Y="7" Width="1.75" />
+    <Members>
+      <Method Name="~Window" Hidden="true" />
+      <Method Name="GetGraphics" Hidden="true" />
+      <Method Name="HandleMsgSetup" Hidden="true" />
+      <Method Name="HandleMsgThunk" Hidden="true" />
+      <Method Name="SetTitle" Hidden="true" />
+      <Method Name="Window" Hidden="true" />
+      <Field Name="windowClassName" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Struct Name="frt::Window::__unnamed_struct_0064_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Window.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <AssociationLine Name="_hInstance" Type="HINSTANCE" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.625" Y="7" />
+        <Point X="12.625" Y="6.75" />
+        <Point X="11.344" Y="6.75" />
+        <Point X="11.344" Y="6.312" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_hWindow" Type="HWND" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12" Y="7.938" />
+        <Point X="11.25" Y="7.938" />
+        <Point X="11.25" Y="7.562" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="keyboard" Type="frt::Keyboard" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12" Y="8.375" />
+        <Point X="10.875" Y="8.375" />
+        <Point X="10.875" Y="8.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AQAAAQgMABCBBAAAAQAAAEAAARAEAAACAAAgCAAAAAA=</HashCode>
+      <FileName>Source\Window.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_hInstance" />
+      <Field Name="_hWindow" />
+      <Field Name="keyboard" />
+      <Field Name="mouse" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Camera">
+    <Position X="13.5" Y="13.75" Width="1.75" />
+    <Members>
+      <Field Name="_initialPosition" Hidden="true" />
+      <Field Name="_keysPressed" Hidden="true" />
+      <Field Name="_moveSpeed" Hidden="true" />
+      <Field Name="_pitch" Hidden="true" />
+      <Field Name="_position" Hidden="true" />
+      <Field Name="_turnSpeed" Hidden="true" />
+      <Field Name="_yaw" Hidden="true" />
+      <Method Name="Camera" Hidden="true" />
+      <Method Name="OnKeyDown" Hidden="true" />
+      <Method Name="OnKeyUp" Hidden="true" />
+      <Method Name="SetMoveSpeed" Hidden="true" />
+      <Method Name="SetTurnSpeed" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Struct Name="frt::Camera::KeysPressed" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Source\Render\Camera.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <AssociationLine Name="_lookDirection" Type="DirectX::XMFLOAT3" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.375" Y="15.882" />
+        <Point X="14.375" Y="17.312" />
+        <Point X="15.75" Y="17.312" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="_upDirection" Type="DirectX::XMFLOAT3" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.875" Y="15.882" />
+        <Point X="14.875" Y="16.75" />
+        <Point X="15.75" Y="16.75" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAUCAQEACACABAAAAAAIAAAAAGoAAAgABAACgIAAABA=</HashCode>
+      <FileName>Source\Render\Camera.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_lookDirection" />
+      <Field Name="_upDirection" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Keyboard">
+    <Position X="10" Y="8.75" Width="1.75" />
+    <Members>
+      <Method Name="~Keyboard" Hidden="true" />
+      <Method Name="ClearKeyStates" Hidden="true" />
+      <Method Name="DisableAutorepeat" Hidden="true" />
+      <Method Name="EnableAutorepeat" Hidden="true" />
+      <Method Name="IsAutorepeatEnabled" Hidden="true" />
+      <Method Name="Keyboard" Hidden="true" />
+      <Method Name="OnKeyPressed" Hidden="true" />
+      <Method Name="OnKeyReleased" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BgggAAABAAECAAACAAABIAAAgAACAAAAACAAAAAQAQA=</HashCode>
+      <FileName>Source\Input\Keyboard.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="onCharEnteredEvent" />
+      <Field Name="onKeyPressedEvent" />
+      <Field Name="onKeyReleasedEvent" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::Mouse">
+    <Position X="12" Y="11" Width="1.5" />
+    <Members>
+      <Method Name="GetPositionX" Hidden="true" />
+      <Method Name="GetPositionY" Hidden="true" />
+      <Method Name="Mouse" Hidden="true" />
+      <Method Name="OnButtonPressed" Hidden="true" />
+      <Method Name="OnButtonReleased" Hidden="true" />
+      <Method Name="OnEnterWindow" Hidden="true" />
+      <Method Name="OnLeaveWindow" Hidden="true" />
+      <Method Name="OnMouseMove" Hidden="true" />
+      <Method Name="OnWheelDelta" Hidden="true" />
+      <Method Name="OnWheelDown" Hidden="true" />
+      <Method Name="OnWheelUp" Hidden="true" />
+      <Field Name="wheelDeltaCarry" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAMAICCAAYAEAQAAAAAAwQBABEACAAAAhYAAACQE=</HashCode>
+      <FileName>Source\Input\Mouse.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="mouseState" />
+      <Field Name="onButtonPressedEvent" />
+      <Field Name="onButtonReleasedEvent" />
+      <Field Name="onEnterWindowEvent" />
+      <Field Name="onLeaveWindowEvent" />
+      <Field Name="onMouseMoveEvent" />
+      <Field Name="onWheelDownEvent" />
+      <Field Name="onWheelUpEvent" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::MouseState">
+    <Position X="10.5" Y="13.5" Width="1.5" />
+    <Members>
+      <Field Name="buttonNumber" Hidden="true" />
+      <Method Name="MouseState" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAQAAAAAIAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\Input\MouseInfo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::MouseEvent">
+    <Position X="8.75" Y="11" Width="1.5" />
+    <Members>
+      <Method Name="GetPosition" Hidden="true" />
+      <Method Name="GetPositionX" Hidden="true" />
+      <Method Name="GetPositionY" Hidden="true" />
+      <Method Name="GetType" Hidden="true" />
+      <Method Name="Invoke" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+      <Method Name="MouseEvent" Hidden="true" />
+    </Members>
+    <AssociationLine Name="mouseState" Type="frt::MouseState" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="9.5" Y="13.261" />
+        <Point X="9.5" Y="14.25" />
+        <Point X="10.5" Y="14.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAACAIAAEAAAgQAAAAAAABAAGAAAAAIAAAAAA=</HashCode>
+      <FileName>Source\Input\MouseEvent.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="mouseState" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="frt::KeyboardEvent">
+    <Position X="6.5" Y="8.75" Width="2" />
+    <Members>
+      <Method Name="GetKeyCharacter" Hidden="true" />
+      <Method Name="GetKeyCode" Hidden="true" />
+      <Method Name="GetType" Hidden="true" />
+      <Method Name="IsValid" Hidden="true" />
+      <Method Name="KeyboardEvent" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgAoAIAAAAAIAAAAAAgQAAAAAAABAAEAgAAAQAAAAAA=</HashCode>
+      <FileName>Source\Input\KeyboardEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="frt::GameWorld" Collapsed="true">
+    <Position X="6.25" Y="14" Width="2.25" />
+    <Members>
+      <Method Name="~GameWorld" Hidden="true" />
+      <Method Name="GameWorld" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAQCABAAAAAABAEAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Source\GameWorld.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="DirectX::XMFLOAT4" Collapsed="true">
+    <Position X="13.5" Y="0.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAhgAQAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\DirectXMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DirectX::XMFLOAT3">
+    <Position X="15.75" Y="15.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAABgAQAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\DirectXMath.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="D3D12_VERTEX_BUFFER_VIEW" Collapsed="true">
+    <Position X="10.25" Y="4.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAggAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\d3d12.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="D3D12_INDEX_BUFFER_VIEW" Collapsed="true">
+    <Position X="10.25" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAgAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\um\d3d12.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="HINSTANCE" Collapsed="true">
+    <Position X="10.25" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\wtypes.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="HWND" Collapsed="true">
+    <Position X="10.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\shared\wtypes.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
