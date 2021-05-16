@@ -34,7 +34,7 @@ const TetrisApp::LevelInfo TetrisApp::Levels[] = {
 
 
 TetrisApp::TetrisApp()
-    : App(1920, 1080, "Tetris3D")
+    : App(1920, 1080, "Tetris3D v0.0.005")
       , _currentLevel(0)
       , _progress(0)
       , _lastTimeCheck{0.f}

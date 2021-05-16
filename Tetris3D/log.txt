@@ -1,0 +1,11 @@
+2021:05:16 10:56:06 [Info] Initting game app
+2021:05:16 10:56:06 [Info] Aspect ratio is 1.777778
+2021:05:16 10:56:06 [Info] shader path: D
+2021:05:16 10:56:06 [Info] shader path: D
+2021:05:16 10:56:06 [Info] shader path: D
+2021:05:16 10:56:06 [Info] shader path: D
+2021:05:16 10:57:31 [Info] Level passed, go to level #1
+2021:05:16 10:57:43 [Info] Level passed, go to level #2
+2021:05:16 10:58:20 [Info] Level passed, go to level #3
+2021:05:16 10:58:55 [Info] Game Over
+2021:05:16 10:58:58 [Info] Exit from App

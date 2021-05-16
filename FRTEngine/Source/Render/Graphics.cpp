@@ -117,17 +117,18 @@ namespace frt
 
     void Graphics::Render()
     {
+#if IS_DEBUG
         PIXBeginEvent(_commandQueue.Get(), 0, L"Render");
-
+#endif
         // Record all the commands we need to render the scene into the command list.
         PopulateCommandList();
 
         // Execute the command list.
         ID3D12CommandList* ppCommandLists[] = {_commandList.Get()};
         _commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-
+#if IS_DEBUG
         PIXEndEvent(_commandQueue.Get());
-
+#endif
         // Present and update the frame index for the next frame.
         THROW_IF_FAILED(_swapChain->Present(1, 0));
         _frameIndex = _swapChain->GetCurrentBackBufferIndex();
